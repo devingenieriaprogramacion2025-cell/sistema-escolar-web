@@ -1,0 +1,81 @@
+@model SistemaEscolarWeb.ViewModels.ListadoPaginadoViewModel<SistemaEscolarWeb.Models.Personal>
+@{
+    ViewData["Title"] = "Personal";
+    var puedeGestionarUsuarios = User.HasPermission("usuarios.gestionar", "Crear usuarios", "Editar usuarios", "Eliminar usuarios");
+    var busqueda = ViewBag.Busqueda as string;
+}
+<div class="page-heading d-flex justify-content-between align-items-center">
+    <div>
+        <h2>Personal</h2>
+        <p>Administre y consulte el personal institucional registrado en el sistema.</p>
+    </div>
+    @if (puedeGestionarUsuarios)
+    {
+        <a asp-action="Crear" class="btn btn-primary"><i class="bi bi-plus-circle me-1"></i> Nuevo personal</a>
+    }
+</div>
+
+<div class="content-card mb-3">
+    <form asp-action="Index" method="get" class="row g-2 align-items-end">
+        <div class="col-md-8">
+            <label class="form-label">Buscar</label>
+            <input name="busqueda" value="@busqueda" class="form-control" placeholder="RUT, nombre, correo, cargo, rol o estado..." />
+        </div>
+        <div class="col-md-4 d-flex gap-2">
+            <button class="btn btn-primary" type="submit"><i class="bi bi-search me-1"></i> Buscar</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Limpiar</a>
+        </div>
+    </form>
+</div>
+
+<div class="content-card">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th><a class="table-sort-link" asp-route-busqueda="@busqueda" asp-route-ordenar="rut" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "rut")">RUT <i class="bi @ListadoVista.IconoOrden(Model, "rut")"></i></a></th>
+                    <th><a class="table-sort-link" asp-route-busqueda="@busqueda" asp-route-ordenar="nombre" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "nombre")">Nombre <i class="bi @ListadoVista.IconoOrden(Model, "nombre")"></i></a></th>
+                    <th><a class="table-sort-link" asp-route-busqueda="@busqueda" asp-route-ordenar="correo" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "correo")">Correo <i class="bi @ListadoVista.IconoOrden(Model, "correo")"></i></a></th>
+                    <th><a class="table-sort-link" asp-route-busqueda="@busqueda" asp-route-ordenar="cargo" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "cargo")">Cargo <i class="bi @ListadoVista.IconoOrden(Model, "cargo")"></i></a></th>
+                    <th><a class="table-sort-link" asp-route-busqueda="@busqueda" asp-route-ordenar="rol" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "rol")">Rol <i class="bi @ListadoVista.IconoOrden(Model, "rol")"></i></a></th>
+                    <th><a class="table-sort-link" asp-route-busqueda="@busqueda" asp-route-ordenar="estado" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "estado")">Estado <i class="bi @ListadoVista.IconoOrden(Model, "estado")"></i></a></th>
+                    <th class="text-end">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.Items)
+            {
+                var rutFormateado = ChileanFormatHelper.FormatRutWithDots(item.RutPersonal);
+                <tr>
+                    <td>@rutFormateado</td>
+                    <td>@item.Nombre @item.Apellido</td>
+                    <td>@item.Correo</td>
+                    <td>@item.Cargo</td>
+                    <td>@item.Rol?.NombreRol</td>
+                    <td>
+                        @if (item.Activo)
+                        { <span class="badge text-bg-success">Activo</span> }
+                        else
+                        { <span class="badge text-bg-secondary">Inactivo</span> }
+                    </td>
+                    <td class="text-end">
+                        <div class="actions-cell">
+                            <a asp-action="Detalle" asp-route-id="@rutFormateado" class="btn btn-sm btn-outline-primary">Ver</a>
+                            @if (puedeGestionarUsuarios)
+                            {
+                                <a asp-action="Editar" asp-route-id="@rutFormateado" class="btn btn-sm btn-outline-secondary">Editar</a>
+                                <a asp-controller="Usuarios" asp-action="CrearAcceso" asp-route-rut="@rutFormateado" class="btn btn-sm btn-outline-success">Crear acceso</a>
+                                <form asp-action="Eliminar" asp-route-id="@rutFormateado" method="post" class="d-inline" onsubmit="return confirm('Confirma eliminar este personal? Si tiene historial, se desactivara para conservar la integridad de datos.');">
+                                    @Html.AntiForgeryToken()
+                                    <button class="btn btn-sm btn-outline-danger" type="submit">Eliminar</button>
+                                </form>
+                            }
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    <partial name="_Paginacion" model="Model" />
+</div>

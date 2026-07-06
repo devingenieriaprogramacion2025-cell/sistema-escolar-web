@@ -1,0 +1,85 @@
+@model SistemaEscolarWeb.DTOs.EquipoDto
+@{
+    ViewData["Title"] = "Detalle equipo";
+    var puedeEditar = User.HasPermission("tecnologia.gestionar", "Editar tecnología", "Editar tecnologÃ­a");
+    var puedeSolicitarBaja = User.HasPermission("bajas.solicitar", "Solicitar bajas");
+}
+@functions {
+    string BadgeClass(string estado) => estado switch
+    {
+        "Disponible" => "text-bg-success",
+        "Asignado" => "text-bg-primary",
+        "En ReparaciÃ³n" => "text-bg-warning",
+        "Dado de Baja" => "text-bg-danger",
+        _ => "text-bg-secondary"
+    };
+}
+
+<div class="page-heading">
+    <div>
+        <h2>Equipo @Model.CodigoInventario</h2>
+        <p>Detalle completo de entrada y estado de salida del activo.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+        @if (puedeEditar && Model.PuedeEditar)
+        {
+            <a asp-action="Editar" asp-route-id="@Model.IdTecnologia" class="btn btn-primary">Editar</a>
+        }
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-8">
+        <div class="content-card">
+            <h3>Informacion de entrada</h3>
+            <dl class="row mt-3 mb-0">
+                <dt class="col-sm-4">Codigo inventario</dt>
+                <dd class="col-sm-8"><strong>@Model.CodigoInventario</strong></dd>
+
+                <dt class="col-sm-4">Marca</dt>
+                <dd class="col-sm-8">@Model.Marca</dd>
+
+                <dt class="col-sm-4">Modelo</dt>
+                <dd class="col-sm-8">@Model.Modelo</dd>
+
+                <dt class="col-sm-4">Fecha entrada</dt>
+                <dd class="col-sm-8">@(Model.FechaEntrada?.ToString("dd/MM/yyyy") ?? "Sin fecha")</dd>
+
+                <dt class="col-sm-4">Cantidad</dt>
+                <dd class="col-sm-8">@(Model.Cantidad?.ToString() ?? "-")</dd>
+
+                <dt class="col-sm-4">Numero factura</dt>
+                <dd class="col-sm-8">@Model.NumeroFactura</dd>
+
+                <dt class="col-sm-4">Tipo tecnologia</dt>
+                <dd class="col-sm-8">@Model.TipoTecnologia</dd>
+
+                <dt class="col-sm-4">Descripcion</dt>
+                <dd class="col-sm-8">@Model.Descripcion</dd>
+
+                <dt class="col-sm-4">Estado operativo</dt>
+                <dd class="col-sm-8"><span class="badge @BadgeClass(Model.EstadoOperativo)">@Model.EstadoOperativo</span></dd>
+            </dl>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="content-card">
+            <h3>Acciones</h3>
+            <div class="d-grid gap-2 mt-3">
+                @if ((puedeEditar || puedeSolicitarBaja) && Model.PuedeEditar)
+                {
+                    @if (puedeEditar)
+                    {
+                        <a asp-action="Editar" asp-route-id="@Model.IdTecnologia" class="btn btn-primary">Editar equipo</a>
+                    }
+                    @if (puedeSolicitarBaja)
+                    {
+                        <a asp-controller="Bajas" asp-action="Crear" asp-route-idTecnologia="@Model.IdTecnologia" class="btn btn-outline-danger">Dar de baja</a>
+                    }
+                }
+                <a asp-action="Index" class="btn btn-outline-secondary">Volver al listado</a>
+            </div>
+        </div>
+    </div>
+</div>

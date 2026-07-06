@@ -1,0 +1,18 @@
+@model SistemaEscolarWeb.Models.Insumo
+@{
+    ViewData["Title"] = "Crear insumo";
+}
+
+<div class="page-heading">
+    <div>
+        <h2>Crear insumo</h2>
+        <p>Registre el insumo base del catalogo.</p>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+</div>
+
+<partial name="_FormularioInsumo" model="Model" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

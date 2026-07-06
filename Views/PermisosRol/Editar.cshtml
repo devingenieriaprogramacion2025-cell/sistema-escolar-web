@@ -1,0 +1,37 @@
+@model SistemaEscolarWeb.ViewModels.RolFormViewModel
+@{
+    ViewData["Title"] = "Modificar rol";
+}
+
+<div class="page-heading">
+    <div>
+        <h2>Modificar rol</h2>
+        <p>Actualice el nombre del rol seleccionado.</p>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+</div>
+
+<div class="content-card">
+    <form asp-action="Editar" method="post" class="row g-3">
+        @Html.AntiForgeryToken()
+        <input asp-for="IdRol" type="hidden" />
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+        <div class="col-md-6">
+            <label asp-for="NombreRol" class="form-label"></label>
+            <input asp-for="NombreRol" class="form-control" maxlength="80" />
+            <span asp-validation-for="NombreRol" class="text-danger small"></span>
+        </div>
+
+        <div class="col-12 d-flex gap-2">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save me-1"></i> Guardar cambios
+            </button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

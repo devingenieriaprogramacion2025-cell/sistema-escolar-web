@@ -1,0 +1,40 @@
+@model SistemaEscolarWeb.Models.Personal
+@{
+    ViewData["Title"] = "Detalle Personal";
+    var puedeGestionarUsuarios = User.HasPermission("usuarios.gestionar", "Crear usuarios", "Editar usuarios", "Eliminar usuarios");
+    var tieneUsuario = ViewBag.TieneUsuario as bool? ?? false;
+    var rutFormateado = ChileanFormatHelper.FormatRutWithDots(Model.RutPersonal);
+}
+<div class="page-heading d-flex justify-content-between align-items-center">
+    <div>
+        <h2>@Model.Nombre @Model.Apellido</h2>
+        <p>Ficha institucional de personal.</p>
+    </div>
+    <div>
+        <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+        @if (puedeGestionarUsuarios)
+        {
+            <a asp-action="Editar" asp-route-id="@rutFormateado" class="btn btn-primary">Editar</a>
+            if (!tieneUsuario)
+            {
+                <a asp-controller="Usuarios" asp-action="CrearAcceso" asp-route-rut="@rutFormateado" class="btn btn-success">Crear acceso</a>
+            }
+            <form asp-action="Eliminar" asp-route-id="@rutFormateado" method="post" class="d-inline" onsubmit="return confirm('Confirma eliminar este personal? Si tiene historial, se desactivara para conservar la integridad de datos.');">
+                @Html.AntiForgeryToken()
+                <button class="btn btn-danger" type="submit">Eliminar</button>
+            </form>
+        }
+    </div>
+</div>
+<div class="content-card">
+    <h5>Información general</h5>
+    <div class="row g-3 mt-1">
+        <div class="col-md-4"><strong>RUT</strong><br />@rutFormateado</div>
+        <div class="col-md-4"><strong>Correo</strong><br />@Model.Correo</div>
+        <div class="col-md-4"><strong>Teléfono</strong><br />@(Model.Telefono ?? "No registrado")</div>
+        <div class="col-md-4"><strong>Cargo</strong><br />@(Model.Cargo ?? "No registrado")</div>
+        <div class="col-md-4"><strong>Rol</strong><br />@Model.Rol?.NombreRol</div>
+        <div class="col-md-4"><strong>Estado</strong><br />@(Model.Activo ? "Activo" : "Inactivo")</div>
+        <div class="col-md-4"><strong>Acceso al sistema</strong><br />@(tieneUsuario ? "Sí" : "No")</div>
+    </div>
+</div>

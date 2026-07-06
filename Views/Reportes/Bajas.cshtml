@@ -1,0 +1,25 @@
+@model SistemaEscolarWeb.ViewModels.ReporteBajasViewModel
+@{
+    ViewData["Title"] = "Reporte Bajas";
+}
+<div class="page-heading"><div><h2>Bajas</h2><p>Analisis de bajas por fecha, motivo y tipo de tecnologia.</p></div><a asp-action="Index" class="btn btn-outline-secondary">Volver</a></div>
+<div class="content-card mb-3"><form method="get" class="row g-2 align-items-end">
+    <div class="col-md-3"><label class="form-label">Fecha</label><input name="Fecha" value="@Model.Filtro.Fecha?.ToString("yyyy-MM-dd")" type="date" class="form-control" /></div>
+    <div class="col-md-3"><label class="form-label">Motivo</label><select name="Motivo" asp-for="Filtro.Motivo" asp-items="Model.Motivos" class="form-select"><option value="">Todos</option></select></div>
+    <div class="col-md-3"><label class="form-label">Tipo tecnologia</label><select name="TipoTecnologia" asp-for="Filtro.TipoTecnologia" asp-items="Model.TiposTecnologia" class="form-select"><option value="">Todos</option></select></div>
+    <div class="col-md-3 d-flex gap-2"><button class="btn btn-primary" type="submit">Filtrar</button><a asp-action="Bajas" class="btn btn-outline-secondary">Limpiar</a></div>
+</form></div>
+<div class="content-card mb-3">
+    <h3 class="h5">Resumen</h3>
+    <div class="row g-3">
+        <div class="col-md-3"><div class="metric-card"><span>Cantidad bajas</span><strong>@Model.CantidadBajas</strong><i class="bi bi-trash3"></i></div></div>
+        <div class="col-md-4"><strong>Bajas por tipo</strong>@foreach (var item in Model.BajasPorTipo) { <div class="d-flex justify-content-between border-bottom py-1"><span>@item.Label</span><span>@item.Value</span></div> }</div>
+        <div class="col-md-5"><strong>Bajas por motivo</strong>@foreach (var item in Model.BajasPorMotivo) { <div class="d-flex justify-content-between border-bottom py-1"><span>@item.Label</span><span>@item.Value</span></div> }</div>
+    </div>
+</div>
+<div class="content-card">
+    <div class="d-flex justify-content-end gap-2 mb-3"><a asp-action="ExportarPdf" asp-route-reporte="Bajas" asp-route-Fecha="@Model.Filtro.Fecha?.ToString("yyyy-MM-dd")" asp-route-Motivo="@Model.Filtro.Motivo" asp-route-TipoTecnologia="@Model.Filtro.TipoTecnologia" class="btn btn-outline-danger btn-sm">Exportar PDF</a><a asp-action="ExportarExcel" asp-route-reporte="Bajas" asp-route-Fecha="@Model.Filtro.Fecha?.ToString("yyyy-MM-dd")" asp-route-Motivo="@Model.Filtro.Motivo" asp-route-TipoTecnologia="@Model.Filtro.TipoTecnologia" class="btn btn-outline-success btn-sm">Exportar Excel</a></div>
+    <div class="table-responsive"><table class="table align-middle"><thead><tr><th>SKU</th><th>Equipo</th><th>Motivo</th><th>Fecha baja</th><th>Usuario registra</th><th>Usuario autoriza</th></tr></thead><tbody>
+    @foreach (var item in Model.Filas) { <tr><td><strong>@item.Sku</strong></td><td>@item.Equipo</td><td>@item.Motivo</td><td>@item.FechaBaja.ToString("dd/MM/yyyy")</td><td>@item.UsuarioRegistra</td><td>@item.UsuarioAutoriza</td></tr> }
+    </tbody></table></div>
+</div>

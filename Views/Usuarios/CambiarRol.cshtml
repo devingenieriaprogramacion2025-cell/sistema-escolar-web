@@ -1,0 +1,25 @@
+@model SistemaEscolarWeb.ViewModels.CambiarRolUsuarioViewModel
+@{
+    ViewData["Title"] = "Cambiar Rol";
+}
+<div class="page-heading">
+    <h2>Cambiar rol</h2>
+    <p>Actualice el perfil de acceso del usuario seleccionado.</p>
+</div>
+<div class="content-card">
+    <div class="mb-4 p-3 rounded bg-light">
+        <strong>@Model.NombreCompleto</strong><br />
+        <span>@Model.Correo</span>
+    </div>
+    <form asp-action="CambiarRol" method="post">
+        <input asp-for="IdUsuario" type="hidden" />
+        <input asp-for="RutPersonal" type="hidden" />
+        <input asp-for="NombreCompleto" type="hidden" />
+        <input asp-for="Correo" type="hidden" />
+        <div class="row g-3">
+            <div class="col-md-6"><label asp-for="IdRol" class="form-label">Rol</label><select asp-for="IdRol" asp-items="Model.Roles" class="form-select"></select><span asp-validation-for="IdRol" class="text-danger"></span></div>
+        </div>
+        <div class="mt-4 d-flex gap-2"><button class="btn btn-primary" type="submit">Guardar cambios</button><a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a></div>
+    </form>
+</div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

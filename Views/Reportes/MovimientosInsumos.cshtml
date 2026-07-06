@@ -1,0 +1,26 @@
+@model SistemaEscolarWeb.ViewModels.ReporteMovimientosInsumosViewModel
+@{
+    ViewData["Title"] = "Reporte Movimientos de Insumos";
+}
+<div class="page-heading"><div><h2>Movimientos de Insumos</h2><p>Entradas y salidas consolidadas en una sola lectura.</p></div><a asp-action="Index" class="btn btn-outline-secondary">Volver</a></div>
+<div class="content-card mb-3">
+    <form method="get" class="row g-2 align-items-end">
+        <div class="col-md-2"><label class="form-label">Fecha desde</label><input name="FechaDesde" value="@Model.Filtro.FechaDesde?.ToString("yyyy-MM-dd")" type="date" class="form-control" /></div>
+        <div class="col-md-2"><label class="form-label">Fecha hasta</label><input name="FechaHasta" value="@Model.Filtro.FechaHasta?.ToString("yyyy-MM-dd")" type="date" class="form-control" /></div>
+        <div class="col-md-2"><label class="form-label">Tipo insumo</label><select name="TipoInsumo" asp-for="Filtro.TipoInsumo" asp-items="Model.TiposInsumo" class="form-select"><option value="">Todos</option></select></div>
+        <div class="col-md-2"><label class="form-label">Proveedor</label><select name="Proveedor" asp-for="Filtro.Proveedor" asp-items="Model.Proveedores" class="form-select"><option value="">Todos</option></select></div>
+        <div class="col-md-2"><label class="form-label">Dependencia</label><select name="Dependencia" asp-for="Filtro.Dependencia" asp-items="Model.Dependencias" class="form-select"><option value="">Todas</option></select></div>
+        <div class="col-md-2 d-flex gap-2"><button class="btn btn-primary" type="submit">Filtrar</button><a asp-action="MovimientosInsumos" class="btn btn-outline-secondary">Limpiar</a></div>
+    </form>
+</div>
+<div class="row g-3 mb-3">
+    <partial name="~/Views/Dashboard/_Card.cshtml" model='new Tuple<string,string,string>("Total entradas", Model.TotalEntradas.ToString(), "bi-box-arrow-in-down")' />
+    <partial name="~/Views/Dashboard/_Card.cshtml" model='new Tuple<string,string,string>("Total salidas", Model.TotalSalidas.ToString(), "bi-box-arrow-up-right")' />
+    <partial name="~/Views/Dashboard/_Card.cshtml" model='new Tuple<string,string,string>("Stock actual", Model.StockActual.ToString(), "bi-box-seam")' />
+</div>
+<div class="content-card">
+    <div class="d-flex justify-content-end gap-2 mb-3"><a asp-action="ExportarPdf" asp-route-reporte="MovimientosInsumos" asp-route-FechaDesde="@Model.Filtro.FechaDesde?.ToString("yyyy-MM-dd")" asp-route-FechaHasta="@Model.Filtro.FechaHasta?.ToString("yyyy-MM-dd")" asp-route-TipoInsumo="@Model.Filtro.TipoInsumo" asp-route-Proveedor="@Model.Filtro.Proveedor" asp-route-Dependencia="@Model.Filtro.Dependencia" class="btn btn-outline-danger btn-sm">Exportar PDF</a><a asp-action="ExportarExcel" asp-route-reporte="MovimientosInsumos" asp-route-FechaDesde="@Model.Filtro.FechaDesde?.ToString("yyyy-MM-dd")" asp-route-FechaHasta="@Model.Filtro.FechaHasta?.ToString("yyyy-MM-dd")" asp-route-TipoInsumo="@Model.Filtro.TipoInsumo" asp-route-Proveedor="@Model.Filtro.Proveedor" asp-route-Dependencia="@Model.Filtro.Dependencia" class="btn btn-outline-success btn-sm">Exportar Excel</a></div>
+    <div class="table-responsive"><table class="table align-middle"><thead><tr><th>Fecha</th><th>Movimiento</th><th>Insumo</th><th>Cantidad</th><th>Proveedor</th><th>Funcionario</th><th>Dependencia</th></tr></thead><tbody>
+    @foreach (var item in Model.Filas) { <tr><td>@item.Fecha.ToString("dd/MM/yyyy")</td><td>@item.Movimiento</td><td><strong>@item.Insumo</strong></td><td>@item.Cantidad</td><td>@item.Proveedor</td><td>@item.Funcionario</td><td>@item.Dependencia</td></tr> }
+    </tbody></table></div>
+</div>

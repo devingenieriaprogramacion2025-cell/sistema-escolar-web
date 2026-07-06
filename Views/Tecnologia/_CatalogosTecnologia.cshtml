@@ -1,0 +1,121 @@
+<datalist id="marcasCatalogo">
+    <option value="Acer"></option>
+    <option value="Apple"></option>
+    <option value="Asus"></option>
+    <option value="BenQ"></option>
+    <option value="Brother"></option>
+    <option value="Canon"></option>
+    <option value="Cisco"></option>
+    <option value="Dell"></option>
+    <option value="D-Link"></option>
+    <option value="Dynabook"></option>
+    <option value="Epson"></option>
+    <option value="HP"></option>
+    <option value="Huawei"></option>
+    <option value="Kyocera"></option>
+    <option value="Lenovo"></option>
+    <option value="Lexmark"></option>
+    <option value="LG"></option>
+    <option value="Microsoft"></option>
+    <option value="MikroTik"></option>
+    <option value="MSI"></option>
+    <option value="NEC"></option>
+    <option value="Optoma"></option>
+    <option value="Panasonic"></option>
+    <option value="Ricoh"></option>
+    <option value="Samsung"></option>
+    <option value="Sony"></option>
+    <option value="TP-Link"></option>
+    <option value="Ubiquiti"></option>
+    <option value="ViewSonic"></option>
+    <option value="Xerox"></option>
+    <option value="Zebra"></option>
+</datalist>
+
+<datalist id="modelosCatalogo"></datalist>
+
+<datalist id="tiposTecnologiaCatalogo">
+    <option value="Notebook"></option>
+    <option value="Desktop"></option>
+    <option value="All-in-One"></option>
+    <option value="Tablet"></option>
+    <option value="Smartphone"></option>
+    <option value="Chromebook"></option>
+    <option value="Monitor"></option>
+    <option value="Proyector"></option>
+    <option value="Impresora"></option>
+    <option value="Multifuncional"></option>
+    <option value="Scanner"></option>
+    <option value="Servidor"></option>
+    <option value="NAS"></option>
+    <option value="Router"></option>
+    <option value="Switch"></option>
+    <option value="Access Point"></option>
+    <option value="Firewall"></option>
+    <option value="UPS"></option>
+    <option value="Camara IP"></option>
+    <option value="DVR/NVR"></option>
+    <option value="Pizarra interactiva"></option>
+    <option value="Parlante"></option>
+    <option value="Microfono"></option>
+    <option value="Teclado"></option>
+    <option value="Mouse"></option>
+    <option value="Lector codigo de barras"></option>
+</datalist>
+
+<script>
+    (() => {
+        const modelosPorMarca = {
+            Acer: ['Aspire 3', 'Aspire 5', 'TravelMate', 'Veriton', 'Chromebook Spin'],
+            Apple: ['MacBook Air', 'MacBook Pro', 'iMac', 'Mac mini', 'iPad', 'iPad Air', 'iPad Pro'],
+            Asus: ['VivoBook', 'ZenBook', 'ExpertBook', 'ROG Strix', 'TUF Gaming'],
+            BenQ: ['MS560', 'MX560', 'MW560', 'Board RP', 'Board RM'],
+            Brother: ['HL-L2360DW', 'HL-L6200DW', 'DCP-L2540DW', 'MFC-L2710DW', 'MFC-L8900CDW'],
+            Canon: ['imageCLASS', 'PIXMA', 'MAXIFY', 'CanoScan', 'i-SENSYS'],
+            Cisco: ['Catalyst 2960', 'Catalyst 9200', 'Meraki MR', 'Meraki MX', 'ISR 1100'],
+            Dell: ['Latitude 3420', 'Latitude 5430', 'OptiPlex 3000', 'OptiPlex 7000', 'Inspiron 15', 'PowerEdge'],
+            'D-Link': ['DIR-825', 'DGS-1008', 'DGS-1210', 'DAP-1610', 'DWR-921'],
+            Dynabook: ['Tecra', 'Portégé', 'Satellite Pro'],
+            Epson: ['EcoTank L3250', 'EcoTank L4260', 'WorkForce', 'PowerLite', 'Expression'],
+            HP: ['ProBook 440', 'ProBook 450', 'EliteBook 840', 'Pavilion', 'LaserJet Pro', 'OfficeJet Pro'],
+            Huawei: ['MateBook D14', 'MateBook D15', 'MatePad', 'WiFi AX3'],
+            Kyocera: ['ECOSYS P2040', 'ECOSYS M2040', 'TASKalfa'],
+            Lenovo: ['ThinkPad E14', 'ThinkPad T14', 'IdeaPad 3', 'ThinkCentre', 'Yoga', 'Tab M10'],
+            Lexmark: ['MS431', 'MX431', 'CS331', 'CX431'],
+            LG: ['Gram', 'UltraGear', 'UltraFine', 'CineBeam'],
+            Microsoft: ['Surface Go', 'Surface Pro', 'Surface Laptop', 'Surface Studio'],
+            MikroTik: ['hEX', 'hAP ac2', 'RB4011', 'CCR2004', 'CRS326'],
+            MSI: ['Modern 14', 'Prestige 14', 'Katana', 'Creator'],
+            NEC: ['ME Series', 'M Series', 'P Series'],
+            Optoma: ['S336', 'X400LVe', 'ZH403', 'UHZ50'],
+            Panasonic: ['Toughbook', 'PT-VZ580', 'PT-LB425'],
+            Ricoh: ['SP 3710', 'IM C3000', 'MP C4504', 'fi Series'],
+            Samsung: ['Galaxy Tab A', 'Galaxy Tab S', 'Smart Monitor', 'ViewFinity'],
+            Sony: ['Bravia', 'VPL Series', 'Alpha'],
+            'TP-Link': ['Archer C6', 'Archer AX10', 'TL-SG1008', 'EAP225', 'Omada ER605'],
+            Ubiquiti: ['UniFi AP AC Lite', 'UniFi U6 Lite', 'UniFi Switch', 'Dream Machine', 'EdgeRouter'],
+            ViewSonic: ['PA503', 'LS500W', 'ViewBoard', 'VG Series'],
+            Xerox: ['B230', 'B305', 'VersaLink', 'WorkCentre'],
+            Zebra: ['ZD220', 'ZD421', 'DS2208', 'TC21']
+        };
+
+        const marca = document.getElementById('Marca');
+        const modelo = document.getElementById('Modelo');
+        const modelos = document.getElementById('modelosCatalogo');
+        if (!marca || !modelo || !modelos) return;
+
+        function cargarModelos() {
+            const seleccion = marca.value.trim();
+            const lista = modelosPorMarca[seleccion] || [];
+            modelos.innerHTML = '';
+            lista.forEach(nombre => {
+                const option = document.createElement('option');
+                option.value = nombre;
+                modelos.appendChild(option);
+            });
+        }
+
+        marca.addEventListener('input', cargarModelos);
+        cargarModelos();
+    })();
+</script>

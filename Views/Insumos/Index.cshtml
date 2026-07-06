@@ -1,0 +1,109 @@
+@model SistemaEscolarWeb.ViewModels.ListadoPaginadoViewModel<SistemaEscolarWeb.Models.Insumo>
+@{
+    ViewData["Title"] = "Insumos";
+    var puedeCrear = User.HasPermission("insumos.gestionar", "Crear insumos");
+    var puedeEditar = User.HasPermission("insumos.gestionar", "Editar insumos");
+    var puedeEntrada = User.HasPermission("insumos.gestionar", "Crear insumos");
+    var puedeSalida = User.HasPermission("insumos.gestionar", "Editar insumos");
+    var tiposInsumo = ViewBag.TiposInsumo as Dictionary<int, string> ?? new();
+}
+
+<div class="page-heading">
+    <div>
+        <h2>Insumos</h2>
+        <p>Catalogo de insumos y stock disponible.</p>
+    </div>
+    @if (puedeCrear)
+    {
+        <a asp-action="Crear" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> Nuevo insumo</a>
+    }
+</div>
+
+<div class="content-card">
+    @if (!Model.Items.Any())
+    {
+        <div class="empty-state compact">
+            <i class="bi bi-box-seam"></i>
+            <h3>No hay insumos registrados</h3>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>
+                            <a class="table-sort-link" asp-action="Index" asp-route-ordenar="nombre" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "nombre")">
+                                Nombre insumo <i class="bi @ListadoVista.IconoOrden(Model, "nombre")"></i>
+                            </a>
+                        </th>
+                        <th>
+                            <a class="table-sort-link" asp-action="Index" asp-route-ordenar="tipo" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "tipo")">
+                                Tipo <i class="bi @ListadoVista.IconoOrden(Model, "tipo")"></i>
+                            </a>
+                        </th>
+                        <th>
+                            <a class="table-sort-link" asp-action="Index" asp-route-ordenar="unidad" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "unidad")">
+                                Unidad <i class="bi @ListadoVista.IconoOrden(Model, "unidad")"></i>
+                            </a>
+                        </th>
+                        <th>
+                            <a class="table-sort-link" asp-action="Index" asp-route-ordenar="toxicidad" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "toxicidad")">
+                                Toxicidad <i class="bi @ListadoVista.IconoOrden(Model, "toxicidad")"></i>
+                            </a>
+                        </th>
+                        <th>
+                            <a class="table-sort-link" asp-action="Index" asp-route-ordenar="stock" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "stock")">
+                                Stock actual <i class="bi @ListadoVista.IconoOrden(Model, "stock")"></i>
+                            </a>
+                        </th>
+                        <th>
+                            <a class="table-sort-link" asp-action="Index" asp-route-ordenar="estado" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "estado")">
+                                Estado <i class="bi @ListadoVista.IconoOrden(Model, "estado")"></i>
+                            </a>
+                        </th>
+                        <th>Descripcion</th>
+                        <th class="text-end">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    var tipoInsumo = tiposInsumo.GetValueOrDefault(item.IdTipoInsumo, $"Tipo {item.IdTipoInsumo}");
+                    <tr>
+                        <td><strong>@item.NombreInsumo</strong></td>
+                        <td>@tipoInsumo</td>
+                        <td>@item.UnidadMedida</td>
+                        <td>@(item.Toxicidad ?? "-")</td>
+                        <td><span class="badge text-bg-success">@item.StockActual</span></td>
+                        <td>@(item.Estado ? "Activo" : "Inactivo")</td>
+                        <td class="table-description">@(item.DescripcionInsumo ?? "-")</td>
+                        <td class="text-end">
+                            <div class="d-inline-flex flex-wrap gap-2 justify-content-end">
+                                <a asp-action="Detalle" asp-route-id="@item.IdInsumo" class="btn btn-outline-secondary btn-sm">Ver</a>
+                                @if (puedeEditar || puedeEntrada || puedeSalida)
+                                {
+                                    @if (puedeEditar)
+                                    {
+                                        <a asp-action="Editar" asp-route-id="@item.IdInsumo" class="btn btn-outline-primary btn-sm">Editar</a>
+                                    }
+                                    @if (puedeEntrada)
+                                    {
+                                        <a asp-controller="EntradasInsumo" asp-action="Crear" asp-route-idInsumo="@item.IdInsumo" class="btn btn-outline-success btn-sm">Nueva entrada</a>
+                                    }
+                                    @if (puedeSalida)
+                                    {
+                                        <a asp-controller="SalidasInsumo" asp-action="Crear" asp-route-idInsumo="@item.IdInsumo" class="btn btn-outline-warning btn-sm">Nueva salida</a>
+                                    }
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+        <partial name="_Paginacion" model="Model" />
+    }
+</div>

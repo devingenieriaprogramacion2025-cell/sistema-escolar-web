@@ -1,0 +1,743 @@
+{
+  "Version": 1,
+  "Hash": "Z2cJP0kQnWGlODjHUn0fx+lkNeYSKXJRkhaDKSOQXPo=",
+  "Source": "SistemaEscolarWeb",
+  "BasePath": "_content/SistemaEscolarWeb",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "SistemaEscolarWeb\\wwwroot",
+      "Source": "SistemaEscolarWeb",
+      "ContentRoot": "C:\\Users\\Andres\\Desktop\\SistemaEscolarWeb\\wwwroot\\",
+      "BasePath": "_content/SistemaEscolarWeb",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\Andres\\Desktop\\SistemaEscolarWeb\\wwwroot\\css\\site.css",
+      "SourceId": "SistemaEscolarWeb",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Andres\\Desktop\\SistemaEscolarWeb\\wwwroot\\",
+      "BasePath": "_content/SistemaEscolarWeb",
+      "RelativePath": "css/site#[.{fingerprint}]?.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "5yab511pxu",
+      "Integrity": "LSWv+lD3KURJI6ikPdnNadSFzAtsp8P9EoTkeqEdz8o=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\site.css"
+    },
+    {
+      "Identity": "C:\\Users\\Andres\\Desktop\\SistemaEscolarWeb\\wwwroot\\images\\logo-chroma.png",
+      "SourceId": "SistemaEscolarWeb",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Andres\\Desktop\\SistemaEscolarWeb\\wwwroot\\",
+      "BasePath": "_content/SistemaEscolarWeb",
+      "RelativePath": "images/logo-chroma#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "s4cax1vq83",
+      "Integrity": "FM8GDFY8NZvuTllTtFpUjGo5jATgO6a2wpO+RWs8wk8=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\logo-chroma.png"
+    },
+    {
+      "Identity": "C:\\Users\\Andres\\Desktop\\SistemaEscolarWeb\\wwwroot\\images\\logo-cutout.png",
+      "SourceId": "SistemaEscolarWeb",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Andres\\Desktop\\SistemaEscolarWeb\\wwwroot\\",
+      "BasePath": "_content/SistemaEscolarWeb",
+      "RelativePath": "images/logo-cutout#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "goguyg4x59",
+      "Integrity": "EC7NKRuPNH6dF6OI5Wze6oumAVlbGmUCd0QubmsxjV4=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\logo-cutout.png"
+    },
+    {
+      "Identity": "C:\\Users\\Andres\\Desktop\\SistemaEscolarWeb\\wwwroot\\images\\logo-original.png",
+      "SourceId": "SistemaEscolarWeb",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Andres\\Desktop\\SistemaEscolarWeb\\wwwroot\\",
+      "BasePath": "_content/SistemaEscolarWeb",
+      "RelativePath": "images/logo-original#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "fw4qotmcq8",
+      "Integrity": "sVgR++nH6O6fkkH10O+/ICjr3xoIMVTn75+j9fQoj2o=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\logo-original.png"
+    },
+    {
+      "Identity": "C:\\Users\\Andres\\Desktop\\SistemaEscolarWeb\\wwwroot\\images\\logo-transparent.png",
+      "SourceId": "SistemaEscolarWeb",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Andres\\Desktop\\SistemaEscolarWeb\\wwwroot\\",
+      "BasePath": "_content/SistemaEscolarWeb",
+      "RelativePath": "images/logo-transparent#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "dlq61pyzup",
+      "Integrity": "365CTpweiZCWMPgXZ30KJQHC3LLF8kD1KleIZGVVSJY=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\logo-transparent.png"
+    },
+    {
+      "Identity": "C:\\Users\\Andres\\Desktop\\SistemaEscolarWeb\\wwwroot\\images\\logo.png",
+      "SourceId": "SistemaEscolarWeb",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Andres\\Desktop\\SistemaEscolarWeb\\wwwroot\\",
+      "BasePath": "_content/SistemaEscolarWeb",
+      "RelativePath": "images/logo#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "6zt0qpihxu",
+      "Integrity": "PqrgcDN/fCD43qmqNF7UGOmY9uZXUR4AYMGS+6UPoEw=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\logo.png"
+    },
+    {
+      "Identity": "C:\\Users\\Andres\\Desktop\\SistemaEscolarWeb\\wwwroot\\js\\personal-form.js",
+      "SourceId": "SistemaEscolarWeb",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Andres\\Desktop\\SistemaEscolarWeb\\wwwroot\\",
+      "BasePath": "_content/SistemaEscolarWeb",
+      "RelativePath": "js/personal-form#[.{fingerprint}]?.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "cfhwyaeugb",
+      "Integrity": "yLW8OTyZQSu2rrcbdU3hyCInZqfRZPQvDmdcCI5jLTY=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\personal-form.js"
+    }
+  ],
+  "Endpoints": [
+    {
+      "Route": "css/site.5yab511pxu.css",
+      "AssetFile": "C:\\Users\\Andres\\Desktop\\SistemaEscolarWeb\\wwwroot\\css\\site.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "6555"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"LSWv+lD3KURJI6ikPdnNadSFzAtsp8P9EoTkeqEdz8o=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 04 Jul 2026 20:28:34 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "5yab511pxu"
+        },
+        {
+          "Name": "label",
+          "Value": "css/site.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-LSWv+lD3KURJI6ikPdnNadSFzAtsp8P9EoTkeqEdz8o="
+        }
+      ]
+    },
+    {
+      "Route": "css/site.css",
+      "AssetFile": "C:\\Users\\Andres\\Desktop\\SistemaEscolarWeb\\wwwroot\\css\\site.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "6555"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"LSWv+lD3KURJI6ikPdnNadSFzAtsp8P9EoTkeqEdz8o=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 04 Jul 2026 20:28:34 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-LSWv+lD3KURJI6ikPdnNadSFzAtsp8P9EoTkeqEdz8o="
+        }
+      ]
+    },
+    {
+      "Route": "images/logo-chroma.png",
+      "AssetFile": "C:\\Users\\Andres\\Desktop\\SistemaEscolarWeb\\wwwroot\\images\\logo-chroma.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1058247"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"FM8GDFY8NZvuTllTtFpUjGo5jATgO6a2wpO+RWs8wk8=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 04 Jul 2026 20:28:34 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-FM8GDFY8NZvuTllTtFpUjGo5jATgO6a2wpO+RWs8wk8="
+        }
+      ]
+    },
+    {
+      "Route": "images/logo-chroma.s4cax1vq83.png",
+      "AssetFile": "C:\\Users\\Andres\\Desktop\\SistemaEscolarWeb\\wwwroot\\images\\logo-chroma.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1058247"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"FM8GDFY8NZvuTllTtFpUjGo5jATgO6a2wpO+RWs8wk8=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 04 Jul 2026 20:28:34 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "s4cax1vq83"
+        },
+        {
+          "Name": "label",
+          "Value": "images/logo-chroma.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-FM8GDFY8NZvuTllTtFpUjGo5jATgO6a2wpO+RWs8wk8="
+        }
+      ]
+    },
+    {
+      "Route": "images/logo-cutout.goguyg4x59.png",
+      "AssetFile": "C:\\Users\\Andres\\Desktop\\SistemaEscolarWeb\\wwwroot\\images\\logo-cutout.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "136401"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"EC7NKRuPNH6dF6OI5Wze6oumAVlbGmUCd0QubmsxjV4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 04 Jul 2026 20:28:34 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "goguyg4x59"
+        },
+        {
+          "Name": "label",
+          "Value": "images/logo-cutout.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-EC7NKRuPNH6dF6OI5Wze6oumAVlbGmUCd0QubmsxjV4="
+        }
+      ]
+    },
+    {
+      "Route": "images/logo-cutout.png",
+      "AssetFile": "C:\\Users\\Andres\\Desktop\\SistemaEscolarWeb\\wwwroot\\images\\logo-cutout.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "136401"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"EC7NKRuPNH6dF6OI5Wze6oumAVlbGmUCd0QubmsxjV4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 04 Jul 2026 20:28:34 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-EC7NKRuPNH6dF6OI5Wze6oumAVlbGmUCd0QubmsxjV4="
+        }
+      ]
+    },
+    {
+      "Route": "images/logo-original.fw4qotmcq8.png",
+      "AssetFile": "C:\\Users\\Andres\\Desktop\\SistemaEscolarWeb\\wwwroot\\images\\logo-original.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "129887"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"sVgR++nH6O6fkkH10O+/ICjr3xoIMVTn75+j9fQoj2o=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 04 Jul 2026 20:28:34 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "fw4qotmcq8"
+        },
+        {
+          "Name": "label",
+          "Value": "images/logo-original.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-sVgR++nH6O6fkkH10O+/ICjr3xoIMVTn75+j9fQoj2o="
+        }
+      ]
+    },
+    {
+      "Route": "images/logo-original.png",
+      "AssetFile": "C:\\Users\\Andres\\Desktop\\SistemaEscolarWeb\\wwwroot\\images\\logo-original.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "129887"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"sVgR++nH6O6fkkH10O+/ICjr3xoIMVTn75+j9fQoj2o=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 04 Jul 2026 20:28:34 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-sVgR++nH6O6fkkH10O+/ICjr3xoIMVTn75+j9fQoj2o="
+        }
+      ]
+    },
+    {
+      "Route": "images/logo-transparent.dlq61pyzup.png",
+      "AssetFile": "C:\\Users\\Andres\\Desktop\\SistemaEscolarWeb\\wwwroot\\images\\logo-transparent.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "462006"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"365CTpweiZCWMPgXZ30KJQHC3LLF8kD1KleIZGVVSJY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 04 Jul 2026 20:28:34 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "dlq61pyzup"
+        },
+        {
+          "Name": "label",
+          "Value": "images/logo-transparent.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-365CTpweiZCWMPgXZ30KJQHC3LLF8kD1KleIZGVVSJY="
+        }
+      ]
+    },
+    {
+      "Route": "images/logo-transparent.png",
+      "AssetFile": "C:\\Users\\Andres\\Desktop\\SistemaEscolarWeb\\wwwroot\\images\\logo-transparent.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "462006"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"365CTpweiZCWMPgXZ30KJQHC3LLF8kD1KleIZGVVSJY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 04 Jul 2026 20:28:34 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-365CTpweiZCWMPgXZ30KJQHC3LLF8kD1KleIZGVVSJY="
+        }
+      ]
+    },
+    {
+      "Route": "images/logo.6zt0qpihxu.png",
+      "AssetFile": "C:\\Users\\Andres\\Desktop\\SistemaEscolarWeb\\wwwroot\\images\\logo.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "130437"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"PqrgcDN/fCD43qmqNF7UGOmY9uZXUR4AYMGS+6UPoEw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 04 Jul 2026 20:28:34 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "6zt0qpihxu"
+        },
+        {
+          "Name": "label",
+          "Value": "images/logo.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-PqrgcDN/fCD43qmqNF7UGOmY9uZXUR4AYMGS+6UPoEw="
+        }
+      ]
+    },
+    {
+      "Route": "images/logo.png",
+      "AssetFile": "C:\\Users\\Andres\\Desktop\\SistemaEscolarWeb\\wwwroot\\images\\logo.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "130437"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"PqrgcDN/fCD43qmqNF7UGOmY9uZXUR4AYMGS+6UPoEw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 04 Jul 2026 20:28:34 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-PqrgcDN/fCD43qmqNF7UGOmY9uZXUR4AYMGS+6UPoEw="
+        }
+      ]
+    },
+    {
+      "Route": "js/personal-form.cfhwyaeugb.js",
+      "AssetFile": "C:\\Users\\Andres\\Desktop\\SistemaEscolarWeb\\wwwroot\\js\\personal-form.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1356"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yLW8OTyZQSu2rrcbdU3hyCInZqfRZPQvDmdcCI5jLTY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 04 Jul 2026 21:03:48 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "cfhwyaeugb"
+        },
+        {
+          "Name": "label",
+          "Value": "js/personal-form.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-yLW8OTyZQSu2rrcbdU3hyCInZqfRZPQvDmdcCI5jLTY="
+        }
+      ]
+    },
+    {
+      "Route": "js/personal-form.js",
+      "AssetFile": "C:\\Users\\Andres\\Desktop\\SistemaEscolarWeb\\wwwroot\\js\\personal-form.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1356"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yLW8OTyZQSu2rrcbdU3hyCInZqfRZPQvDmdcCI5jLTY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 04 Jul 2026 21:03:48 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-yLW8OTyZQSu2rrcbdU3hyCInZqfRZPQvDmdcCI5jLTY="
+        }
+      ]
+    }
+  ]
+}

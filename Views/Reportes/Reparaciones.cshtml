@@ -1,0 +1,21 @@
+@model SistemaEscolarWeb.ViewModels.ReporteReparacionesViewModel
+@{
+    ViewData["Title"] = "Reporte Reparaciones";
+}
+<div class="page-heading"><div><h2>Reparaciones</h2><p>Seguimiento gerencial de reparaciones y retornos.</p></div><a asp-action="Index" class="btn btn-outline-secondary">Volver</a></div>
+<div class="content-card mb-3"><form method="get" class="row g-2 align-items-end">
+    <div class="col-md-4"><label class="form-label">Estado</label><select name="Estado" asp-for="Filtro.Estado" asp-items="Model.Estados" class="form-select"><option value="">Todos</option></select></div>
+    <div class="col-md-4"><label class="form-label">Fecha</label><input name="Fecha" value="@Model.Filtro.Fecha?.ToString("yyyy-MM-dd")" type="date" class="form-control" /></div>
+    <div class="col-md-4 d-flex gap-2"><button class="btn btn-primary" type="submit">Filtrar</button><a asp-action="Reparaciones" class="btn btn-outline-secondary">Limpiar</a></div>
+</form></div>
+<div class="row g-3 mb-3">
+    <partial name="~/Views/Dashboard/_Card.cshtml" model='new Tuple<string,string,string>("Pendientes", Model.Pendientes.ToString(), "bi-hourglass-split")' />
+    <partial name="~/Views/Dashboard/_Card.cshtml" model='new Tuple<string,string,string>("Finalizadas", Model.Finalizadas.ToString(), "bi-check-circle")' />
+    <partial name="~/Views/Dashboard/_Card.cshtml" model='new Tuple<string,string,string>("Promedio dias", Model.TiempoPromedioReparacion.ToString("0.0"), "bi-clock")' />
+</div>
+<div class="content-card">
+    <div class="d-flex justify-content-end gap-2 mb-3"><a asp-action="ExportarPdf" asp-route-reporte="Reparaciones" asp-route-Estado="@Model.Filtro.Estado" asp-route-Fecha="@Model.Filtro.Fecha?.ToString("yyyy-MM-dd")" class="btn btn-outline-danger btn-sm">Exportar PDF</a><a asp-action="ExportarExcel" asp-route-reporte="Reparaciones" asp-route-Estado="@Model.Filtro.Estado" asp-route-Fecha="@Model.Filtro.Fecha?.ToString("yyyy-MM-dd")" class="btn btn-outline-success btn-sm">Exportar Excel</a></div>
+    <div class="table-responsive"><table class="table align-middle"><thead><tr><th>SKU</th><th>Equipo</th><th>Destino reparacion</th><th>Fecha envio</th><th>Fecha retorno</th><th>Estado</th><th>Observaciones</th></tr></thead><tbody>
+    @foreach (var item in Model.Filas) { <tr><td><strong>@item.Sku</strong></td><td>@item.Equipo</td><td>@item.Destino</td><td>@item.FechaEnvio.ToString("dd/MM/yyyy")</td><td>@(item.FechaRetorno?.ToString("dd/MM/yyyy") ?? "-")</td><td>@item.Estado</td><td>@item.Observaciones</td></tr> }
+    </tbody></table></div>
+</div>

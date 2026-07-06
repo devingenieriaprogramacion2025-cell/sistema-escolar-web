@@ -1,0 +1,18 @@
+@model SistemaEscolarWeb.ViewModels.ReporteAsignacionesViewModel
+@{
+    ViewData["Title"] = "Reporte Asignaciones";
+}
+<div class="page-heading"><div><h2>Asignaciones</h2><p>Consulta solo lectura de asignaciones de equipamiento.</p></div><a asp-action="Index" class="btn btn-outline-secondary">Volver</a></div>
+<div class="content-card mb-3"><form method="get" class="row g-2 align-items-end">
+    <div class="col-md-3"><label class="form-label">Funcionario</label><select name="Funcionario" asp-for="Filtro.Funcionario" asp-items="Model.Funcionarios" class="form-select"><option value="">Todos</option></select></div>
+    <div class="col-md-3"><label class="form-label">Dependencia</label><select name="Dependencia" asp-for="Filtro.Dependencia" asp-items="Model.Dependencias" class="form-select"><option value="">Todas</option></select></div>
+    <div class="col-md-3"><label class="form-label">Tipo tecnologia</label><select name="TipoTecnologia" asp-for="Filtro.TipoTecnologia" asp-items="Model.TiposTecnologia" class="form-select"><option value="">Todos</option></select></div>
+    <div class="col-md-2"><label class="form-label">Estado</label><select name="Estado" asp-for="Filtro.Estado" asp-items="Model.Estados" class="form-select"><option value="">Todos</option></select></div>
+    <div class="col-md-1"><button class="btn btn-primary w-100" type="submit">Filtrar</button></div>
+</form></div>
+<div class="content-card">
+    <div class="d-flex justify-content-end gap-2 mb-3"><a asp-action="ExportarPdf" asp-route-reporte="Asignaciones" asp-route-Funcionario="@Model.Filtro.Funcionario" asp-route-Dependencia="@Model.Filtro.Dependencia" asp-route-TipoTecnologia="@Model.Filtro.TipoTecnologia" asp-route-Estado="@Model.Filtro.Estado" class="btn btn-outline-danger btn-sm">Exportar PDF</a><a asp-action="ExportarExcel" asp-route-reporte="Asignaciones" asp-route-Funcionario="@Model.Filtro.Funcionario" asp-route-Dependencia="@Model.Filtro.Dependencia" asp-route-TipoTecnologia="@Model.Filtro.TipoTecnologia" asp-route-Estado="@Model.Filtro.Estado" class="btn btn-outline-success btn-sm">Exportar Excel</a></div>
+    <div class="table-responsive"><table class="table align-middle"><thead><tr><th>SKU</th><th>Equipo</th><th>Funcionario</th><th>Dependencia</th><th>Fecha asignacion</th><th>Fecha devolucion</th><th>Estado</th></tr></thead><tbody>
+    @foreach (var item in Model.Filas) { <tr><td><strong>@item.Sku</strong></td><td>@item.Equipo</td><td>@item.Funcionario</td><td>@item.Dependencia</td><td>@item.FechaAsignacion.ToString("dd/MM/yyyy")</td><td>@(item.FechaDevolucion?.ToString("dd/MM/yyyy") ?? "-")</td><td>@item.Estado</td></tr> }
+    </tbody></table></div>
+</div>

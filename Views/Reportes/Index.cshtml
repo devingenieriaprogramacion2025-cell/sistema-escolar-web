@@ -1,0 +1,24 @@
+@model IEnumerable<SistemaEscolarWeb.ViewModels.ReporteHomeItem>
+@{
+    ViewData["Title"] = "Reportes";
+}
+
+<div class="page-heading">
+    <div>
+        <h2>Reportes</h2>
+        <p>Consultas gerenciales del funcionamiento institucional.</p>
+    </div>
+</div>
+
+<div class="row g-3">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-6 col-xl-3">
+            <a asp-action="@item.Accion" class="report-card">
+                <span class="report-card-icon"><i class="bi @item.Icono"></i></span>
+                <strong>@item.Titulo</strong>
+                <small>@item.Descripcion</small>
+            </a>
+        </div>
+    }
+</div>

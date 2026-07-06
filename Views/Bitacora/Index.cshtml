@@ -1,0 +1,50 @@
+@model SistemaEscolarWeb.ViewModels.ListadoPaginadoViewModel<SistemaEscolarWeb.Models.Bitacora>
+@{
+    ViewData["Title"] = "Bitacora";
+}
+
+<div class="page-heading">
+    <div>
+        <h2>Bitacora</h2>
+        <p>Ultimos movimientos registrados por el sistema.</p>
+    </div>
+    @if (Model.TienePaginaAnterior)
+    {
+        <a asp-action="Index"
+           asp-route-ordenar="@Model.Ordenar"
+           asp-route-direccion="@Model.Direccion"
+           asp-route-pagina="@(Model.PaginaActual - 1)"
+           class="btn btn-outline-secondary">
+            Volver
+        </a>
+    }
+</div>
+
+<div class="content-card">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th><a class="table-sort-link" asp-route-ordenar="fecha" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "fecha")">Fecha <i class="bi @ListadoVista.IconoOrden(Model, "fecha")"></i></a></th>
+                    <th><a class="table-sort-link" asp-route-ordenar="usuario" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "usuario")">Usuario <i class="bi @ListadoVista.IconoOrden(Model, "usuario")"></i></a></th>
+                    <th><a class="table-sort-link" asp-route-ordenar="rol" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "rol")">Rol <i class="bi @ListadoVista.IconoOrden(Model, "rol")"></i></a></th>
+                    <th><a class="table-sort-link" asp-route-ordenar="modulo" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "modulo")">Modulo <i class="bi @ListadoVista.IconoOrden(Model, "modulo")"></i></a></th>
+                    <th><a class="table-sort-link" asp-route-ordenar="accion" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "accion")">Accion <i class="bi @ListadoVista.IconoOrden(Model, "accion")"></i></a></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>@item.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@item.Usuario</td>
+                    <td>@item.Rol</td>
+                    <td>@item.Modulo</td>
+                    <td>@item.Accion</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    <partial name="_Paginacion" model="Model" />
+</div>

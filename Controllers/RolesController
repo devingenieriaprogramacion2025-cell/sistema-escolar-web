@@ -1,0 +1,14 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace SistemaEscolarWeb.Controllers;
+
+[Authorize(Roles = "Administrador")]
+public class RolesController : Controller
+{
+    public IActionResult Index()
+    {
+        ViewBag.Titulo = "Roles";
+        return View();
+    }
+}

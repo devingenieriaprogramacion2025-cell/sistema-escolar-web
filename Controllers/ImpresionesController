@@ -1,0 +1,14 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace SistemaEscolarWeb.Controllers;
+
+[Authorize(Roles = "Administrador,Directora,Encargada Librería,Docente")]
+public class ImpresionesController : Controller
+{
+    public IActionResult Index()
+    {
+        ViewBag.Titulo = "Impresiones";
+        return View();
+    }
+}

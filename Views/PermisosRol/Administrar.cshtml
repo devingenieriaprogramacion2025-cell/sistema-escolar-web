@@ -1,0 +1,75 @@
+@model SistemaEscolarWeb.ViewModels.AdministrarPermisosRolViewModel
+@{
+    ViewData["Title"] = $"Permisos del rol: {Model.NombreRol}";
+    var esAdministrador = Model.NombreRol == SistemaEscolarWeb.Permissions.RoleNames.Administrador;
+}
+
+<div class="page-heading">
+    <div>
+        <h2>Permisos del rol: @Model.NombreRol</h2>
+        <p>Marque los permisos activos para este rol.</p>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+</div>
+
+<div class="content-card">
+    @if (esAdministrador)
+    {
+        <div class="alert alert-info">El rol Administrador mantiene todos los permisos activos por defecto.</div>
+    }
+    <form asp-action="Administrar" method="post">
+        @Html.AntiForgeryToken()
+        <input asp-for="IdRol" type="hidden" />
+        <input asp-for="NombreRol" type="hidden" />
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+        @if (!esAdministrador)
+        {
+            <div class="d-flex justify-content-end gap-2 mb-3">
+                <button type="button" class="btn btn-outline-primary btn-sm" id="seleccionar-todos-permisos">
+                    <i class="bi bi-check2-square me-1"></i> Seleccionar todo
+                </button>
+                <button type="button" class="btn btn-outline-secondary btn-sm" id="limpiar-todos-permisos">
+                    <i class="bi bi-square me-1"></i> Limpiar todas
+                </button>
+            </div>
+        }
+
+        <div class="row g-2">
+            @for (var i = 0; i < Model.Permisos.Count; i++)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <div class="form-check border rounded p-3 ps-5 h-100">
+                        <input asp-for="Permisos[i].IdPermiso" type="hidden" />
+                        <input asp-for="Permisos[i].NombrePermiso" type="hidden" />
+                        <input asp-for="Permisos[i].Seleccionado" class="form-check-input" disabled="@esAdministrador" />
+                        @if (esAdministrador)
+                        {
+                            <input type="hidden" name="Permisos[@i].Seleccionado" value="true" />
+                        }
+                        <label asp-for="Permisos[i].Seleccionado" class="form-check-label">@Model.Permisos[i].NombrePermiso</label>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-primary"><i class="bi bi-save me-1"></i> Guardar permisos</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        (() => {
+            const checkboxes = () => document.querySelectorAll('input[name$=".Seleccionado"]:not(:disabled)');
+            document.getElementById('seleccionar-todos-permisos')?.addEventListener('click', () => {
+                checkboxes().forEach(checkbox => checkbox.checked = true);
+            });
+            document.getElementById('limpiar-todos-permisos')?.addEventListener('click', () => {
+                checkboxes().forEach(checkbox => checkbox.checked = false);
+            });
+        })();
+    </script>
+}

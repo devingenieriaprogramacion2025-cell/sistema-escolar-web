@@ -1,0 +1,31 @@
+@model SistemaEscolarWeb.Models.Insumo
+@{
+    ViewData["Title"] = "Detalle insumo";
+    var tiposInsumo = ViewBag.TiposInsumo as Dictionary<int, string> ?? new();
+    var tipo = tiposInsumo.GetValueOrDefault(Model.IdTipoInsumo, $"Tipo {Model.IdTipoInsumo}");
+}
+
+<div class="page-heading">
+    <div>
+        <h2>@Model.NombreInsumo</h2>
+        <p>Detalle del insumo registrado.</p>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+</div>
+
+<div class="content-card">
+    <dl class="row mb-0">
+        <dt class="col-md-3">Tipo</dt>
+        <dd class="col-md-9">@tipo</dd>
+        <dt class="col-md-3">Descripcion</dt>
+        <dd class="col-md-9">@(Model.DescripcionInsumo ?? "-")</dd>
+        <dt class="col-md-3">Toxicidad</dt>
+        <dd class="col-md-9">@Model.Toxicidad</dd>
+        <dt class="col-md-3">Unidad de medida</dt>
+        <dd class="col-md-9">@Model.UnidadMedida</dd>
+        <dt class="col-md-3">Stock actual</dt>
+        <dd class="col-md-9">@Model.StockActual</dd>
+        <dt class="col-md-3">Estado</dt>
+        <dd class="col-md-9">@(Model.Estado ? "Activo" : "Inactivo")</dd>
+    </dl>
+</div>

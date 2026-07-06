@@ -1,0 +1,21 @@
+@model SistemaEscolarWeb.ViewModels.ReporteInventarioTecnologicoViewModel
+@{
+    ViewData["Title"] = "Reporte Inventario Tecnologico";
+}
+<div class="page-heading"><div><h2>Inventario Tecnologico</h2><p>Equipos por estado, dependencia y responsable.</p></div><a asp-action="Index" class="btn btn-outline-secondary">Volver</a></div>
+<div class="content-card mb-3">
+    <form method="get" class="row g-2 align-items-end">
+        <div class="col-md-2"><label class="form-label">Tipo tecnologia</label><select name="TipoTecnologia" asp-for="Filtro.TipoTecnologia" asp-items="Model.Tipos" class="form-select"><option value="">Todos</option></select></div>
+        <div class="col-md-2"><label class="form-label">Marca</label><select name="Marca" asp-for="Filtro.Marca" asp-items="Model.Marcas" class="form-select"><option value="">Todas</option></select></div>
+        <div class="col-md-2"><label class="form-label">Modelo</label><select name="Modelo" asp-for="Filtro.Modelo" asp-items="Model.Modelos" class="form-select"><option value="">Todos</option></select></div>
+        <div class="col-md-2"><label class="form-label">Estado</label><select name="Estado" asp-for="Filtro.Estado" asp-items="Model.Estados" class="form-select"><option value="">Todos</option></select></div>
+        <div class="col-md-2"><label class="form-label">Dependencia</label><select name="Dependencia" asp-for="Filtro.Dependencia" asp-items="Model.Dependencias" class="form-select"><option value="">Todas</option></select></div>
+        <div class="col-md-2 d-flex gap-2"><button class="btn btn-primary" type="submit">Filtrar</button><a asp-action="InventarioTecnologico" class="btn btn-outline-secondary">Limpiar</a></div>
+    </form>
+</div>
+<div class="content-card">
+    <div class="d-flex justify-content-end gap-2 mb-3"><a asp-action="ExportarPdf" asp-route-reporte="InventarioTecnologico" asp-route-TipoTecnologia="@Model.Filtro.TipoTecnologia" asp-route-Marca="@Model.Filtro.Marca" asp-route-Modelo="@Model.Filtro.Modelo" asp-route-Estado="@Model.Filtro.Estado" asp-route-Dependencia="@Model.Filtro.Dependencia" class="btn btn-outline-danger btn-sm">Exportar PDF</a><a asp-action="ExportarExcel" asp-route-reporte="InventarioTecnologico" asp-route-TipoTecnologia="@Model.Filtro.TipoTecnologia" asp-route-Marca="@Model.Filtro.Marca" asp-route-Modelo="@Model.Filtro.Modelo" asp-route-Estado="@Model.Filtro.Estado" asp-route-Dependencia="@Model.Filtro.Dependencia" class="btn btn-outline-success btn-sm">Exportar Excel</a></div>
+    <div class="table-responsive"><table class="table align-middle"><thead><tr><th>SKU</th><th>Tipo</th><th>Marca</th><th>Modelo</th><th>Estado</th><th>Dependencia</th><th>Funcionario asignado</th><th>Fecha ingreso</th></tr></thead><tbody>
+    @foreach (var item in Model.Filas) { <tr><td><strong>@item.Sku</strong></td><td>@item.Tipo</td><td>@item.Marca</td><td>@item.Modelo</td><td>@item.Estado</td><td>@item.Dependencia</td><td>@item.FuncionarioAsignado</td><td>@(item.FechaIngreso?.ToString("dd/MM/yyyy") ?? "-")</td></tr> }
+    </tbody></table></div>
+</div>

@@ -1,0 +1,95 @@
+@model SistemaEscolarWeb.ViewModels.ListadoPaginadoViewModel<SistemaEscolarWeb.DTOs.ReparacionDto>
+@{
+    ViewData["Title"] = "Reparaciones";
+    var busqueda = ViewBag.Busqueda as string;
+    var puedeCrear = User.HasPermission("reparaciones.solicitar", "Crear reparaciones");
+    var puedeAprobar = User.HasPermission("reparaciones.aprobar", "Aprobar reparaciones");
+}
+@functions {
+    string BadgeClass(string estado) => estado switch
+    {
+        "Pendiente" => "text-bg-warning",
+        "Solicitada" => "text-bg-warning",
+        "En ReparaciÃ³n" => "text-bg-primary",
+        "En Proceso" => "text-bg-primary",
+        "Reparada" => "text-bg-success",
+        "Rechazada" => "text-bg-danger",
+        _ => "text-bg-secondary"
+    };
+}
+
+<div class="page-heading">
+    <div>
+        <h2>Reparaciones</h2>
+        <p>Registre salidas a servicio tecnico y retornos de equipos.</p>
+    </div>
+    @if (puedeCrear)
+    {
+        <a asp-action="Crear" class="btn btn-primary"><i class="bi bi-plus-circle me-1"></i> Nueva reparacion</a>
+    }
+</div>
+
+<div class="content-card mb-3">
+    <form asp-action="Index" method="get" class="row g-2 align-items-end">
+        <div class="col-md-8">
+            <label class="form-label">Buscar</label>
+            <input name="busqueda" value="@busqueda" class="form-control" placeholder="Equipo, destino o estado..." />
+        </div>
+        <div class="col-md-4 d-flex gap-2">
+            <button class="btn btn-primary" type="submit"><i class="bi bi-search me-1"></i> Buscar</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Limpiar</a>
+        </div>
+    </form>
+</div>
+
+<div class="content-card">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th><a class="table-sort-link" asp-route-busqueda="@busqueda" asp-route-ordenar="equipo" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "equipo")">Equipo <i class="bi @ListadoVista.IconoOrden(Model, "equipo")"></i></a></th>
+                    <th><a class="table-sort-link" asp-route-busqueda="@busqueda" asp-route-ordenar="destino" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "destino")">Destino <i class="bi @ListadoVista.IconoOrden(Model, "destino")"></i></a></th>
+                    <th><a class="table-sort-link" asp-route-busqueda="@busqueda" asp-route-ordenar="salida" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "salida")">Salida <i class="bi @ListadoVista.IconoOrden(Model, "salida")"></i></a></th>
+                    <th><a class="table-sort-link" asp-route-busqueda="@busqueda" asp-route-ordenar="retorno" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "retorno")">Retorno <i class="bi @ListadoVista.IconoOrden(Model, "retorno")"></i></a></th>
+                    <th><a class="table-sort-link" asp-route-busqueda="@busqueda" asp-route-ordenar="estado" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "estado")">Estado <i class="bi @ListadoVista.IconoOrden(Model, "estado")"></i></a></th>
+                    <th class="text-end">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td><strong>@item.CodigoEquipo</strong><div class="small text-muted">@item.Detalle</div></td>
+                    <td>@item.Destino</td>
+                    <td>@item.FechaEnvio.ToString("dd/MM/yyyy")</td>
+                    <td>@(item.FechaRetorno?.ToString("dd/MM/yyyy") ?? "Pendiente")</td>
+                    <td><span class="badge @BadgeClass(item.EstadoReparacion)">@item.EstadoReparacion</span></td>
+                    <td class="text-end">
+                        <div class="actions-cell">
+                            @if (puedeAprobar && (item.EstadoReparacion == "Pendiente" || item.EstadoReparacion == "Solicitada"))
+                            {
+                                <form asp-action="Aprobar" asp-route-id="@item.IdReparacion" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <button class="btn btn-sm btn-outline-primary" type="submit">Aprobar</button>
+                                </form>
+                                <form asp-action="Rechazar" asp-route-id="@item.IdReparacion" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <button class="btn btn-sm btn-outline-danger" type="submit">Rechazar</button>
+                                </form>
+                            }
+                            @if (puedeCrear && item.EstadoReparacion != "Reparada" && item.EstadoReparacion != "Rechazada")
+                            {
+                                <form asp-action="RegistrarRetorno" asp-route-id="@item.IdReparacion" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <button class="btn btn-sm btn-outline-success" type="submit">Retorno</button>
+                                </form>
+                            }
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    <partial name="_Paginacion" model="Model" />
+</div>

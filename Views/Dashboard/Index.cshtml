@@ -1,0 +1,138 @@
+@model DashboardResumenDto
+@using System.Text.Json
+@{
+    ViewData["Title"] = "Dashboard";
+    var rol = ViewBag.Rol as string ?? "";
+    var nombre = ViewBag.Nombre as string ?? "Usuario";
+    var chartOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+    var equiposJson = JsonSerializer.Serialize(Model.EquiposPorEstado, chartOptions);
+    var impresionesJson = JsonSerializer.Serialize(Model.ImpresionesPorEstado, chartOptions);
+    var personalJson = JsonSerializer.Serialize(Model.PersonalPorRol, chartOptions);
+    var movimientosJson = JsonSerializer.Serialize(Model.MovimientosMensuales, chartOptions);
+}
+
+<div class="page-heading">
+    <div>
+        <h2>Bienvenido/a, @nombre</h2>
+        <p>Rol activo: <strong>@rol</strong></p>
+    </div>
+</div>
+
+<div class="row g-3">
+    <partial name="_Card" model='new Tuple<string,string,string>("Usuarios activos", Model.UsuariosActivos.ToString(), "bi-person-check")' />
+    <partial name="_Card" model='new Tuple<string,string,string>("Personal activo", Model.TotalPersonal.ToString(), "bi-people")' />
+    <partial name="_Card" model='new Tuple<string,string,string>("Equipos registrados", Model.TotalEquipos.ToString(), "bi-pc-display")' />
+    <partial name="_Card" model='new Tuple<string,string,string>("Equipos asignados", Model.EquiposAsignados.ToString(), "bi-clipboard-check")' />
+    <partial name="_Card" model='new Tuple<string,string,string>("Reparaciones pendientes", Model.ReparacionesPendientes.ToString(), "bi-tools")' />
+    <partial name="_Card" model='new Tuple<string,string,string>("Bajas pendientes", Model.BajasPendientes.ToString(), "bi-archive")' />
+    <partial name="_Card" model='new Tuple<string,string,string>("Impresiones pendientes", Model.ImpresionesPendientes.ToString(), "bi-printer")' />
+    <partial name="_Card" model='new Tuple<string,string,string>("Impresiones en proceso", Model.ImpresionesEnProceso.ToString(), "bi-hourglass-split")' />
+    <partial name="_Card" model='new Tuple<string,string,string>("Impresiones entregadas", Model.ImpresionesEntregadas.ToString(), "bi-check2-square")' />
+    <partial name="_Card" model='new Tuple<string,string,string>("Impresiones rechazadas", Model.ImpresionesRechazadas.ToString(), "bi-x-circle")' />
+</div>
+
+<div class="row g-3 mt-1">
+    <div class="col-xl-6">
+        <div class="content-card chart-card">
+            <div class="section-title">
+                <h3>Equipos por estado</h3>
+                <span>Grafico circular</span>
+            </div>
+            <canvas id="equiposChart"></canvas>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="content-card chart-card">
+            <div class="section-title">
+                <h3>Impresiones por estado</h3>
+                <span>Grafico circular</span>
+            </div>
+            <canvas id="impresionesChart"></canvas>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="content-card chart-card">
+            <div class="section-title">
+                <h3>Personal</h3>
+                <span>Grafico de barras</span>
+            </div>
+            <canvas id="personalChart"></canvas>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="content-card chart-card">
+            <div class="section-title">
+                <h3>Movimientos mensuales</h3>
+                <span>Total Impresiones</span>
+            </div>
+            <canvas id="movimientosChart"></canvas>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <script>
+        const palette = ['#0B3D91', '#D4AF37', '#22A06B', '#E55353', '#6B7280', '#5B8DEF'];
+        const impresionColors = {
+            'Pendiente': '#D4AF37',
+            'En Proceso': '#0B3D91',
+            'Entregada': '#22A06B',
+            'Rechazada': '#E55353'
+        };
+        const equipos = @Html.Raw(equiposJson);
+        const impresiones = @Html.Raw(impresionesJson);
+        const personal = @Html.Raw(personalJson);
+        const movimientos = @Html.Raw(movimientosJson);
+
+        function labels(data) { return data.map(x => x.label); }
+        function values(data) { return data.map(x => x.value); }
+        function colors(data) { return data.map(x => impresionColors[x.label] || '#6B7280'); }
+
+        new Chart(document.getElementById('equiposChart'), {
+            type: 'doughnut',
+            data: { labels: labels(equipos), datasets: [{ data: values(equipos), backgroundColor: palette }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+        });
+
+        const impresionesChart = new Chart(document.getElementById('impresionesChart'), {
+            type: 'doughnut',
+            data: { labels: labels(impresiones), datasets: [{ data: values(impresiones), backgroundColor: colors(impresiones) }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+        });
+
+        async function actualizarImpresionesChart() {
+            try {
+                const response = await fetch('@Url.Action("ImpresionesPorEstado", "Dashboard")', {
+                    cache: 'no-store',
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (!response.ok) return;
+
+                const data = await response.json();
+                impresionesChart.data.labels = labels(data);
+                impresionesChart.data.datasets[0].data = values(data);
+                impresionesChart.data.datasets[0].backgroundColor = colors(data);
+                impresionesChart.update();
+            } catch {
+                // Si la sesion expira o la red falla, el dashboard conserva el ultimo dato visible.
+            }
+        }
+
+        actualizarImpresionesChart();
+        setInterval(actualizarImpresionesChart, 5000);
+
+        new Chart(document.getElementById('personalChart'), {
+            type: 'bar',
+            data: { labels: labels(personal), datasets: [{ label: 'Personas', data: values(personal), backgroundColor: '#0B3D91' }] },
+            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }, plugins: { legend: { display: false } } }
+        });
+
+        new Chart(document.getElementById('movimientosChart'), {
+            type: 'bar',
+            data: { labels: labels(movimientos), datasets: [{ label: 'Movimientos', data: values(movimientos), backgroundColor: '#D4AF37' }] },
+            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }, plugins: { legend: { display: false } } }
+        });
+    </script>
+}

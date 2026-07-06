@@ -1,0 +1,38 @@
+@model LoginViewModel
+@{
+    ViewData["Title"] = "Iniciar sesión";
+}
+<div class="login-page">
+    <section class="login-brand-panel">
+        <div class="login-overlay"></div>
+        <div class="login-brand-content">
+            <img class="school-seal" src="~/images/logo.png" asp-append-version="true" alt="Logo del Colegio Santo Tomás de Aquino" />
+            <h1>Sistema Escolar Web</h1>
+            <p>Colegio Santo Tomás de Aquino</p>
+        </div>
+    </section>
+    <section class="login-form-panel">
+        <div class="login-card">
+            <h2>Iniciar sesión</h2>
+            <p class="text-muted">Ingrese sus credenciales para acceder al sistema.</p>
+            <form asp-action="Login" method="post" novalidate>
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                <div class="mb-3">
+                    <label asp-for="Correo" class="form-label">Correo electrónico</label>
+                    <input asp-for="Correo" class="form-control" autocomplete="username" />
+                    <span asp-validation-for="Correo" class="text-danger small"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label">Contraseña</label>
+                    <input asp-for="Password" class="form-control" autocomplete="current-password" />
+                    <span asp-validation-for="Password" class="text-danger small"></span>
+                </div>
+                <button class="btn btn-primary w-100" type="submit">Ingresar</button>
+            </form>
+            <div class="login-version">Sistema Escolar Web v1.0</div>
+        </div>
+    </section>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,30 @@
+@model SistemaEscolarWeb.ViewModels.IListadoPaginado
+@{
+    var desde = Model.TotalRegistros == 0 ? 0 : ((Model.PaginaActual - 1) * Model.RegistrosPorPagina) + 1;
+    var hasta = Math.Min(Model.PaginaActual * Model.RegistrosPorPagina, Model.TotalRegistros);
+    var inicioPaginas = Math.Max(1, Model.PaginaActual - 2);
+    var finPaginas = Math.Min(Model.TotalPaginas, Model.PaginaActual + 2);
+}
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mt-3">
+    <span class="text-muted small">Mostrando @desde-@hasta de @Model.TotalRegistros registros</span>
+    @if (Model.TotalPaginas > 1)
+    {
+        <nav aria-label="Paginacion">
+            <ul class="pagination pagination-sm mb-0">
+                <li class="page-item @(Model.TienePaginaAnterior ? "" : "disabled")">
+                    <a class="page-link" asp-route-busqueda="@Model.Busqueda" asp-route-ordenar="@Model.Ordenar" asp-route-direccion="@Model.Direccion" asp-route-pagina="@(Model.PaginaActual - 1)">Anterior</a>
+                </li>
+                @for (var pagina = inicioPaginas; pagina <= finPaginas; pagina++)
+                {
+                    <li class="page-item @(pagina == Model.PaginaActual ? "active" : "")">
+                        <a class="page-link" asp-route-busqueda="@Model.Busqueda" asp-route-ordenar="@Model.Ordenar" asp-route-direccion="@Model.Direccion" asp-route-pagina="@pagina">@pagina</a>
+                    </li>
+                }
+                <li class="page-item @(Model.TienePaginaSiguiente ? "" : "disabled")">
+                    <a class="page-link" asp-route-busqueda="@Model.Busqueda" asp-route-ordenar="@Model.Ordenar" asp-route-direccion="@Model.Direccion" asp-route-pagina="@(Model.PaginaActual + 1)">Siguiente</a>
+                </li>
+            </ul>
+        </nav>
+    }
+</div>

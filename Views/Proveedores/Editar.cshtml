@@ -1,0 +1,19 @@
+@model SistemaEscolarWeb.ViewModels.CrearProveedorViewModel
+@{
+    ViewData["Title"] = "Editar proveedor";
+}
+
+<div class="page-heading">
+    <div>
+        <h2>Editar proveedor</h2>
+        <p>Actualice los datos registrados del proveedor.</p>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+</div>
+
+<partial name="_FormularioProveedor" model="Model" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/personal-form.js" asp-append-version="true"></script>
+}

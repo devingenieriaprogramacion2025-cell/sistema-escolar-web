@@ -1,0 +1,124 @@
+@model SistemaEscolarWeb.ViewModels.ListadoPaginadoViewModel<SistemaEscolarWeb.DTOs.ImpresionDto>
+@{
+    ViewData["Title"] = "Impresiones";
+    var busqueda = ViewBag.Busqueda as string;
+    var puedeSolicitar = User.HasPermission("impresiones.solicitar", "Solicitar impresiones");
+    var puedeGestionar = User.HasPermission("impresiones.gestionar", "Aprobar impresiones");
+}
+@functions {
+    string BadgeClass(string estado) => estado switch
+    {
+        "Pendiente" => "text-bg-warning",
+        "En Proceso" => "text-bg-primary",
+        "Entregada" => "text-bg-success",
+        "Rechazada" => "text-bg-danger",
+        _ => "text-bg-secondary"
+    };
+
+    bool EsArchivoCargado(string? archivo) =>
+        !string.IsNullOrWhiteSpace(archivo) &&
+        archivo.StartsWith("uploads/impresiones/", StringComparison.OrdinalIgnoreCase);
+
+    string NombreArchivo(string archivo)
+    {
+        var nombre = System.IO.Path.GetFileName(archivo);
+        var partes = nombre.Split('-', 3);
+        return partes.Length == 3 ? partes[2] : nombre;
+    }
+}
+
+<div class="page-heading">
+    <div>
+        <h2>Impresiones</h2>
+        <p>Solicitudes de entrada, proceso y entrega de material impreso.</p>
+    </div>
+    @if (puedeSolicitar)
+    {
+        <a asp-action="Crear" class="btn btn-primary"><i class="bi bi-plus-circle me-1"></i> Nueva solicitud</a>
+    }
+</div>
+
+<div class="content-card mb-3">
+    <form asp-action="Index" method="get" class="row g-2 align-items-end">
+        <div class="col-md-8">
+            <label class="form-label">Buscar</label>
+            <input name="busqueda" value="@busqueda" class="form-control" placeholder="Solicitante, archivo o estado..." />
+        </div>
+        <div class="col-md-4 d-flex gap-2">
+            <button class="btn btn-primary" type="submit"><i class="bi bi-search me-1"></i> Buscar</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Limpiar</a>
+        </div>
+    </form>
+</div>
+
+<div class="content-card">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th><a class="table-sort-link" asp-route-busqueda="@busqueda" asp-route-ordenar="solicitante" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "solicitante")">Solicitante <i class="bi @ListadoVista.IconoOrden(Model, "solicitante")"></i></a></th>
+                    <th><a class="table-sort-link" asp-route-busqueda="@busqueda" asp-route-ordenar="archivo" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "archivo")">Archivo <i class="bi @ListadoVista.IconoOrden(Model, "archivo")"></i></a></th>
+                    <th><a class="table-sort-link" asp-route-busqueda="@busqueda" asp-route-ordenar="paginas" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "paginas")">Paginas <i class="bi @ListadoVista.IconoOrden(Model, "paginas")"></i></a></th>
+                    <th><a class="table-sort-link" asp-route-busqueda="@busqueda" asp-route-ordenar="copias" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "copias")">Copias <i class="bi @ListadoVista.IconoOrden(Model, "copias")"></i></a></th>
+                    <th><a class="table-sort-link" asp-route-busqueda="@busqueda" asp-route-ordenar="total" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "total")">Total <i class="bi @ListadoVista.IconoOrden(Model, "total")"></i></a></th>
+                    <th><a class="table-sort-link" asp-route-busqueda="@busqueda" asp-route-ordenar="opciones" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "opciones")">Opciones <i class="bi @ListadoVista.IconoOrden(Model, "opciones")"></i></a></th>
+                    <th><a class="table-sort-link" asp-route-busqueda="@busqueda" asp-route-ordenar="solicitud" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "solicitud")">Solicitud <i class="bi @ListadoVista.IconoOrden(Model, "solicitud")"></i></a></th>
+                    <th><a class="table-sort-link" asp-route-busqueda="@busqueda" asp-route-ordenar="entrega" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "entrega")">Entrega <i class="bi @ListadoVista.IconoOrden(Model, "entrega")"></i></a></th>
+                    <th><a class="table-sort-link" asp-route-busqueda="@busqueda" asp-route-ordenar="estado" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "estado")">Estado <i class="bi @ListadoVista.IconoOrden(Model, "estado")"></i></a></th>
+                    <th class="text-end">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td><strong>@item.NombrePersonal</strong><div class="small text-muted">@item.RutPersonal</div></td>
+                    <td>
+                        @if (EsArchivoCargado(item.Archivo))
+                        {
+                            <a asp-action="Archivo" asp-route-id="@item.IdSolicitudImpresion" class="link-primary text-decoration-none">
+                                <i class="bi bi-paperclip me-1"></i>@NombreArchivo(item.Archivo!)
+                            </a>
+                        }
+                        else
+                        {
+                            @(item.Archivo ?? "Sin archivo")
+                        }
+                        <div class="small text-muted">@item.Detalle</div>
+                    </td>
+                    <td>@item.CantidadPaginas</td>
+                    <td>@item.CantidadCopias</td>
+                    <td>@item.TotalImpresiones</td>
+                    <td>@item.Color / @(item.DobleCara ? "Doble cara" : "Una cara")</td>
+                    <td>@item.FechaSolicitud.ToString("dd/MM/yyyy")</td>
+                    <td>@(item.FechaEntrega?.ToString("dd/MM/yyyy") ?? "Pendiente")</td>
+                    <td><span class="badge @BadgeClass(item.Estado)">@item.Estado</span></td>
+                    <td class="text-end">
+                        <div class="actions-cell">
+                            @if (puedeGestionar && item.Estado == "Pendiente")
+                            {
+                                <form asp-action="EnProceso" asp-route-id="@item.IdSolicitudImpresion" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <button class="btn btn-sm btn-outline-primary" type="submit">Aceptar</button>
+                                </form>
+                                <form asp-action="Rechazar" asp-route-id="@item.IdSolicitudImpresion" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <button class="btn btn-sm btn-outline-danger" type="submit">Rechazar</button>
+                                </form>
+                            }
+                            @if (puedeGestionar && item.Estado != "Entregada" && item.Estado != "Rechazada")
+                            {
+                                <form asp-action="Entregar" asp-route-id="@item.IdSolicitudImpresion" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <button class="btn btn-sm btn-outline-success" type="submit">Entregar</button>
+                                </form>
+                            }
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    <partial name="_Paginacion" model="Model" />
+</div>

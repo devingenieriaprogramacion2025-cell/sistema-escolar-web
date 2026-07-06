@@ -1,0 +1,26 @@
+@model SistemaEscolarWeb.ViewModels.ReporteImpresionesViewModel
+@{
+    ViewData["Title"] = "Reporte Impresiones";
+}
+<div class="page-heading"><div><h2>Impresiones</h2><p>Solicitudes, paginas, copias y estados del servicio de impresion.</p></div><a asp-action="Index" class="btn btn-outline-secondary">Volver</a></div>
+<div class="content-card mb-3"><form method="get" class="row g-2 align-items-end">
+    <div class="col-md-3"><label class="form-label">Fecha</label><input name="Fecha" value="@Model.Filtro.Fecha?.ToString("yyyy-MM-dd")" type="date" class="form-control" /></div>
+    <div class="col-md-3"><label class="form-label">Funcionario</label><select name="Funcionario" asp-for="Filtro.Funcionario" asp-items="Model.Funcionarios" class="form-select"><option value="">Todos</option></select></div>
+    <div class="col-md-2"><label class="form-label">Estado</label><select name="Estado" asp-for="Filtro.Estado" asp-items="Model.Estados" class="form-select"><option value="">Todos</option></select></div>
+    <div class="col-md-2"><label class="form-label">Dependencia</label><select name="Dependencia" asp-for="Filtro.Dependencia" asp-items="Model.Dependencias" class="form-select"><option value="">Todas</option></select></div>
+    <div class="col-md-2 d-flex gap-2"><button class="btn btn-primary" type="submit">Filtrar</button><a asp-action="Impresiones" class="btn btn-outline-secondary">Limpiar</a></div>
+</form></div>
+<div class="row g-3 mb-3">
+    <partial name="~/Views/Dashboard/_Card.cshtml" model='new Tuple<string,string,string>("Solicitudes", Model.TotalSolicitudes.ToString(), "bi-printer")' />
+    <partial name="~/Views/Dashboard/_Card.cshtml" model='new Tuple<string,string,string>("Total paginas", Model.TotalPaginas.ToString(), "bi-file-earmark-text")' />
+    <partial name="~/Views/Dashboard/_Card.cshtml" model='new Tuple<string,string,string>("Total copias", Model.TotalCopias.ToString(), "bi-files")' />
+    <partial name="~/Views/Dashboard/_Card.cshtml" model='new Tuple<string,string,string>("Total impresiones", Model.TotalImpresiones.ToString(), "bi-stack")' />
+    <partial name="~/Views/Dashboard/_Card.cshtml" model='new Tuple<string,string,string>("Color", Model.TotalColor.ToString(), "bi-palette")' />
+    <partial name="~/Views/Dashboard/_Card.cshtml" model='new Tuple<string,string,string>("Blanco y negro", Model.TotalBlancoNegro.ToString(), "bi-circle-half")' />
+</div>
+<div class="content-card">
+    <div class="d-flex justify-content-end gap-2 mb-3"><a asp-action="ExportarPdf" asp-route-reporte="Impresiones" asp-route-Fecha="@Model.Filtro.Fecha?.ToString("yyyy-MM-dd")" asp-route-Funcionario="@Model.Filtro.Funcionario" asp-route-Estado="@Model.Filtro.Estado" asp-route-Dependencia="@Model.Filtro.Dependencia" class="btn btn-outline-danger btn-sm">Exportar PDF</a><a asp-action="ExportarExcel" asp-route-reporte="Impresiones" asp-route-Fecha="@Model.Filtro.Fecha?.ToString("yyyy-MM-dd")" asp-route-Funcionario="@Model.Filtro.Funcionario" asp-route-Estado="@Model.Filtro.Estado" asp-route-Dependencia="@Model.Filtro.Dependencia" class="btn btn-outline-success btn-sm">Exportar Excel</a></div>
+    <div class="table-responsive"><table class="table align-middle"><thead><tr><th>Solicitante</th><th>Paginas</th><th>Copias</th><th>Total</th><th>Color</th><th>Doble cara</th><th>Estado</th><th>Fecha solicitud</th><th>Fecha entrega</th></tr></thead><tbody>
+    @foreach (var item in Model.Filas) { <tr><td><strong>@item.Solicitante</strong></td><td>@item.CantidadPaginas</td><td>@item.CantidadCopias</td><td>@item.TotalImpresiones</td><td>@item.Color</td><td>@(item.DobleCara ? "Si" : "No")</td><td>@item.Estado</td><td>@item.FechaSolicitud.ToString("dd/MM/yyyy")</td><td>@(item.FechaEntrega?.ToString("dd/MM/yyyy") ?? "-")</td></tr> }
+    </tbody></table></div>
+</div>

@@ -1,0 +1,65 @@
+@model SistemaEscolarWeb.ViewModels.CrearEntradaInsumoViewModel
+@{
+    ViewData["Title"] = "Registrar entrada de insumo";
+}
+
+<div class="page-heading">
+    <div>
+        <h2>Registrar entrada de insumo</h2>
+        <p>La cantidad ingresada aumenta el stock actual del insumo.</p>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+</div>
+
+<div class="content-card">
+    <form asp-action="Crear" method="post">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="IdInsumo" class="form-label">Insumo</label>
+                <select asp-for="IdInsumo" asp-items="Model.Insumos" class="form-select">
+                    <option value="">Seleccione un insumo</option>
+                </select>
+                <span asp-validation-for="IdInsumo" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="IdProveedor" class="form-label">Proveedor</label>
+                <div class="input-group">
+                    <select asp-for="IdProveedor" asp-items="Model.Proveedores" id="IdProveedor" class="form-select">
+                        <option value="">Seleccione un proveedor</option>
+                    </select>
+                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#proveedorRapidoModal">
+                        <i class="bi bi-plus-lg me-1"></i> Nuevo proveedor
+                    </button>
+                </div>
+                <span asp-validation-for="IdProveedor" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="NumeroFactura" class="form-label">Numero de factura</label>
+                <input asp-for="NumeroFactura" class="form-control" maxlength="80" />
+                <span asp-validation-for="NumeroFactura" class="text-danger small"></span>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="FechaEntrega" class="form-label">Fecha de entrega</label>
+                <input asp-for="FechaEntrega" type="date" class="form-control" />
+                <span asp-validation-for="FechaEntrega" class="text-danger small"></span>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="Cantidad" class="form-label">Cantidad</label>
+                <input asp-for="Cantidad" type="number" min="1" max="100000" class="form-control" />
+                <span asp-validation-for="Cantidad" class="text-danger small"></span>
+            </div>
+        </div>
+        <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-primary"><i class="bi bi-save me-1"></i> Guardar entrada</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+<partial name="_ProveedorRapidoModal" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/personal-form.js" asp-append-version="true"></script>
+}

@@ -1,0 +1,14 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace SistemaEscolarWeb.Controllers;
+
+[Authorize(Roles = "Administrador,Directora,Inspector,Encargada Tecnología")]
+public class ReparacionesController : Controller
+{
+    public IActionResult Index()
+    {
+        ViewBag.Titulo = "Reparaciones";
+        return View();
+    }
+}

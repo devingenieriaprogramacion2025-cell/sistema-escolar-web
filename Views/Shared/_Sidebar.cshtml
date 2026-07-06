@@ -1,0 +1,126 @@
+@{
+    var puedeDashboard = User.HasPermission("dashboard.ver");
+    var puedeInsumos = User.HasPermission("insumos.gestionar", "Ver insumos");
+    var puedeEntradasInsumo = User.HasPermission("insumos.gestionar", "Crear insumos");
+    var puedeSalidasInsumo = User.HasPermission("insumos.gestionar", "Editar insumos");
+    var puedeProveedores = User.HasPermission("insumos.gestionar", "tecnologia.gestionar");
+    var puedeTecnologia = User.HasPermission("tecnologia.gestionar", "Ver tecnología", "Ver tecnologÃ­a");
+    var puedeEntradasTecnologia = User.HasPermission("tecnologia.gestionar", "Crear tecnología", "Crear tecnologÃ­a");
+    var puedeAsignaciones = User.HasPermission("tecnologia.asignar", "Ver asignaciones");
+    var puedeReparaciones = User.HasPermission("reparaciones.solicitar", "reparaciones.aprobar", "Ver reparaciones");
+    var puedeBajas = User.HasPermission("bajas.solicitar", "bajas.aprobar", "Ver bajas");
+    var puedeImpresiones = User.HasPermission("impresiones.solicitar", "impresiones.gestionar", "Ver impresiones");
+    var puedePersonal = User.HasPermission("personas.ver");
+    var puedeDependencias = User.HasPermission("dependencias.ver");
+    var puedeVerUsuarios = User.HasPermission("usuarios.gestionar", "Ver usuarios");
+    var puedeGestionarUsuarios = User.HasPermission("usuarios.gestionar");
+    var puedeBitacora = User.HasPermission("Ver bitácora", "Ver bitÃ¡cora");
+    var puedeReportes = User.HasPermission("Ver reportes");
+}
+<aside class="app-sidebar">
+    <div class="sidebar-brand">
+        <img class="brand-logo" src="~/images/logo.png" asp-append-version="true" alt="Logo del Colegio Santo Tomás de Aquino" />
+        <div>
+            <strong>Sistema Escolar Web</strong>
+            <small>Gestion institucional</small>
+        </div>
+    </div>
+
+    <nav class="sidebar-nav">
+        @if (puedeDashboard)
+        {
+            <a asp-controller="Dashboard" asp-action="Index"><i class="bi bi-house"></i> Dashboard</a>
+        }
+
+        @if (puedeInsumos || puedeEntradasInsumo || puedeSalidasInsumo || puedeProveedores)
+        {
+            <div class="nav-title">Inventario</div>
+            <div class="sidebar-menu">
+                @if (puedeInsumos)
+                {
+                    <a asp-controller="Insumos" asp-action="Index"><i class="bi bi-box-seam"></i> Insumo</a>
+                }
+                @if (puedeEntradasInsumo)
+                {
+                    <a asp-controller="EntradasInsumo" asp-action="Index"><i class="bi bi-box-arrow-in-down"></i> Entradas de insumos</a>
+                }
+                @if (puedeSalidasInsumo)
+                {
+                    <a asp-controller="SalidasInsumo" asp-action="Index"><i class="bi bi-box-arrow-up-right"></i> Salidas de insumos</a>
+                }
+                @if (puedeProveedores)
+                {
+                    <a asp-controller="Proveedores" asp-action="Index"><i class="bi bi-truck"></i> Proveedores</a>
+                }
+            </div>
+        }
+
+        @if (puedeTecnologia || puedeEntradasTecnologia || puedeAsignaciones || puedeReparaciones || puedeBajas)
+        {
+            <div class="nav-title">Gestion Tecnologica</div>
+            @if (puedeTecnologia)
+            {
+                <a asp-controller="Tecnologia" asp-action="Index"><i class="bi bi-pc-display"></i> Tecnologia</a>
+            }
+            @if (puedeEntradasTecnologia)
+            {
+                <a asp-controller="EntradasTecnologia" asp-action="Index"><i class="bi bi-box-arrow-in-down"></i> Entradas tecnologia</a>
+            }
+            @if (puedeAsignaciones)
+            {
+                <a asp-controller="Asignaciones" asp-action="Index"><i class="bi bi-clipboard-check"></i> Asignaciones</a>
+            }
+            @if (puedeReparaciones)
+            {
+                <a asp-controller="Reparaciones" asp-action="Index"><i class="bi bi-tools"></i> Reparaciones</a>
+            }
+            @if (puedeBajas)
+            {
+                <a asp-controller="Bajas" asp-action="Index"><i class="bi bi-archive"></i> Bajas</a>
+            }
+        }
+
+        @if (puedeImpresiones)
+        {
+            <div class="nav-title">Servicios</div>
+            <a asp-controller="Impresiones" asp-action="Index"><i class="bi bi-printer"></i> Impresiones</a>
+        }
+
+        @if (puedePersonal || puedeDependencias)
+        {
+            <div class="nav-title">Institucional</div>
+            @if (puedePersonal)
+            {
+                <a asp-controller="Personal" asp-action="Index"><i class="bi bi-people"></i> Personal</a>
+            }
+            @if (puedeDependencias)
+            {
+                <a asp-controller="Dependencias" asp-action="Index"><i class="bi bi-building"></i> Dependencias</a>
+            }
+        }
+
+        @if (puedeVerUsuarios || puedeGestionarUsuarios || puedeBitacora)
+        {
+            <div class="nav-title">Administracion</div>
+            @if (puedeVerUsuarios)
+            {
+                <a asp-controller="Usuarios" asp-action="Index"><i class="bi bi-person-gear"></i> Usuarios</a>
+            }
+            @if (puedeGestionarUsuarios)
+            {
+                <a asp-controller="Roles" asp-action="Index"><i class="bi bi-shield-lock"></i> Roles</a>
+                <a asp-controller="PermisosRol" asp-action="Index"><i class="bi bi-ui-checks"></i> Permisos por rol</a>
+            }
+            @if (puedeBitacora)
+            {
+                <a asp-controller="Bitacora" asp-action="Index"><i class="bi bi-journal-text"></i> Bitacora</a>
+            }
+        }
+
+        @if (puedeReportes)
+        {
+            <div class="nav-title">Analisis</div>
+            <a asp-controller="Reportes" asp-action="Index"><i class="bi bi-bar-chart"></i> Reportes</a>
+        }
+    </nav>
+</aside>

@@ -1,0 +1,56 @@
+@model SistemaEscolarWeb.ViewModels.ListadoPaginadoViewModel<SistemaEscolarWeb.ViewModels.RolPermisosViewModel>
+@{
+    ViewData["Title"] = "Roles";
+}
+
+<div class="page-heading">
+    <div>
+        <h2>Roles</h2>
+        <p>Perfiles institucionales y permisos activos asignados.</p>
+    </div>
+</div>
+
+<div class="content-card">
+    <div class="table-responsive">
+        <table class="table align-middle mb-0">
+            <thead>
+                <tr>
+                    <th><a class="table-sort-link" asp-route-ordenar="rol" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "rol")">Rol <i class="bi @ListadoVista.IconoOrden(Model, "rol")"></i></a></th>
+                    <th><a class="table-sort-link" asp-route-ordenar="permisos" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "permisos")">Permisos asignados <i class="bi @ListadoVista.IconoOrden(Model, "permisos")"></i></a></th>
+                    <th><a class="table-sort-link" asp-route-ordenar="estado" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "estado")">Estado <i class="bi @ListadoVista.IconoOrden(Model, "estado")"></i></a></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td><strong>@item.NombreRol</strong></td>
+                    <td>
+                        @if (item.Permisos.Any())
+                        {
+                            <div class="d-flex flex-wrap gap-1">
+                                @foreach (var permiso in item.Permisos)
+                                {
+                                    <span class="badge bg-primary-subtle text-primary border">
+                                        @permiso
+                                    </span>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Sin permisos asignados</span>
+                        }
+                    </td>
+                    <td>
+                        <span class="badge @(item.Activo ? "text-bg-success" : "text-bg-secondary")">
+                            @(item.Activo ? "Activo" : "Inactivo")
+                        </span>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    <partial name="_Paginacion" model="Model" />
+</div>

@@ -1,0 +1,27 @@
+@model SistemaEscolarWeb.DTOs.SalidaInsumoDto
+@{
+    ViewData["Title"] = "Detalle salida de insumo";
+}
+
+<div class="page-heading">
+    <div>
+        <h2>Detalle salida</h2>
+        <p>Movimiento de entrega o salida de stock.</p>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+</div>
+
+<div class="content-card">
+    <dl class="row mb-0">
+        <dt class="col-md-3">Insumo</dt>
+        <dd class="col-md-9">@Model.Insumo</dd>
+        <dt class="col-md-3">Dependencia</dt>
+        <dd class="col-md-9">@Model.Dependencia</dd>
+        <dt class="col-md-3">Personal responsable</dt>
+        <dd class="col-md-9">@Model.Responsable</dd>
+        <dt class="col-md-3">Fecha salida</dt>
+        <dd class="col-md-9">@Model.FechaSalida.ToString("dd/MM/yyyy")</dd>
+        <dt class="col-md-3">Cantidad</dt>
+        <dd class="col-md-9">@Model.Cantidad</dd>
+    </dl>
+</div>

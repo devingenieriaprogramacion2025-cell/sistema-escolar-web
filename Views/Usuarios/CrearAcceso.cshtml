@@ -1,0 +1,30 @@
+@model SistemaEscolarWeb.ViewModels.CrearUsuarioViewModel
+@{
+    ViewData["Title"] = "Crear Acceso";
+}
+<div class="page-heading">
+    <h2>Crear acceso de usuario</h2>
+    <p>Asigne credenciales de acceso a una persona ya registrada en el sistema.</p>
+</div>
+<div class="content-card">
+    <div class="mb-4 p-3 rounded bg-light">
+        <strong>@Model.NombreCompleto</strong><br />
+        <span>@Model.Correo</span><br />
+        <small class="text-muted">@Model.Cargo</small>
+    </div>
+    <form asp-action="CrearAcceso" method="post">
+        <input asp-for="RutPersonal" type="hidden" />
+        <input asp-for="NombreCompleto" type="hidden" />
+        <input asp-for="Correo" type="hidden" />
+        <input asp-for="Cargo" type="hidden" />
+        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+        <h5>Configuración de acceso</h5>
+        <div class="row g-3">
+            <div class="col-md-6"><label asp-for="IdRol" class="form-label"></label><select asp-for="IdRol" asp-items="Model.Roles" class="form-select"></select><span asp-validation-for="IdRol" class="text-danger"></span></div>
+            <div class="col-md-6"><label asp-for="PasswordTemporal" class="form-label"></label><input asp-for="PasswordTemporal" class="form-control" /><span asp-validation-for="PasswordTemporal" class="text-danger"></span></div>
+            <div class="col-md-6"><div class="form-check mt-2"><input asp-for="Activo" class="form-check-input" /><label asp-for="Activo" class="form-check-label">Usuario activo</label></div></div>
+        </div>
+        <div class="mt-4 d-flex gap-2"><button class="btn btn-primary" type="submit">Crear acceso</button><a asp-controller="Personal" asp-action="Detalle" asp-route-id="@Model.RutPersonal" class="btn btn-outline-secondary">Cancelar</a></div>
+    </form>
+</div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

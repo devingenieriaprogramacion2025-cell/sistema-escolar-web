@@ -1,0 +1,56 @@
+@model SistemaEscolarWeb.ViewModels.ListadoPaginadoViewModel<SistemaEscolarWeb.Models.Proveedor>
+@{
+    ViewData["Title"] = "Proveedores";
+}
+
+<div class="page-heading">
+    <div>
+        <h2>Proveedores</h2>
+        <p>Mantenedor de proveedores reutilizables para insumos y tecnologia.</p>
+    </div>
+    <a asp-action="Crear" class="btn btn-primary"><i class="bi bi-plus-circle me-1"></i> Nuevo proveedor</a>
+</div>
+
+<div class="content-card">
+    @if (!Model.Items.Any())
+    {
+        <div class="empty-state compact">
+            <i class="bi bi-truck"></i>
+            <h3>No hay proveedores registrados</h3>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th><a class="table-sort-link" asp-route-ordenar="nombre" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "nombre")">Nombre proveedor <i class="bi @ListadoVista.IconoOrden(Model, "nombre")"></i></a></th>
+                        <th><a class="table-sort-link" asp-route-ordenar="rut" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "rut")">RUT proveedor <i class="bi @ListadoVista.IconoOrden(Model, "rut")"></i></a></th>
+                        <th><a class="table-sort-link" asp-route-ordenar="correo" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "correo")">Correo <i class="bi @ListadoVista.IconoOrden(Model, "correo")"></i></a></th>
+                        <th><a class="table-sort-link" asp-route-ordenar="telefono" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "telefono")">Telefono <i class="bi @ListadoVista.IconoOrden(Model, "telefono")"></i></a></th>
+                        <th class="text-end">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td><strong>@item.NombreProveedor</strong></td>
+                        <td>@item.RutProveedor</td>
+                        <td>@(item.Correo ?? "-")</td>
+                        <td>@(item.Telefono ?? "-")</td>
+                        <td class="text-end">
+                            <div class="actions-cell">
+                                <a asp-action="Detalle" asp-route-id="@item.IdProveedor" class="btn btn-sm btn-outline-primary">Ver</a>
+                                <a asp-action="Editar" asp-route-id="@item.IdProveedor" class="btn btn-sm btn-outline-secondary">Editar</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+        <partial name="_Paginacion" model="Model" />
+    }
+</div>

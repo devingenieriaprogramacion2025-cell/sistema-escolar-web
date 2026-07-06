@@ -1,0 +1,75 @@
+@model SistemaEscolarWeb.ViewModels.ListadoPaginadoViewModel<SistemaEscolarWeb.Models.Usuario>
+@{
+    ViewData["Title"] = "Usuarios";
+    var busqueda = ViewBag.Busqueda as string;
+}
+<div class="page-heading">
+    <h2>Usuarios</h2>
+    <p>Administre los accesos, roles y estados de los usuarios del sistema.</p>
+</div>
+
+<div class="content-card mb-3">
+    <form asp-action="Index" method="get" class="row g-2 align-items-end">
+        <div class="col-md-8">
+            <label class="form-label">Buscar</label>
+            <input name="busqueda" value="@busqueda" class="form-control" placeholder="Persona, correo, rol o estado..." />
+        </div>
+        <div class="col-md-4 d-flex gap-2">
+            <button class="btn btn-primary" type="submit"><i class="bi bi-search me-1"></i> Buscar</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Limpiar</a>
+        </div>
+    </form>
+</div>
+
+<div class="content-card">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th><a class="table-sort-link" asp-route-busqueda="@busqueda" asp-route-ordenar="persona" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "persona")">Persona <i class="bi @ListadoVista.IconoOrden(Model, "persona")"></i></a></th>
+                    <th><a class="table-sort-link" asp-route-busqueda="@busqueda" asp-route-ordenar="correo" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "correo")">Correo <i class="bi @ListadoVista.IconoOrden(Model, "correo")"></i></a></th>
+                    <th><a class="table-sort-link" asp-route-busqueda="@busqueda" asp-route-ordenar="rol" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "rol")">Rol <i class="bi @ListadoVista.IconoOrden(Model, "rol")"></i></a></th>
+                    <th><a class="table-sort-link" asp-route-busqueda="@busqueda" asp-route-ordenar="acceso" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "acceso")">Ultimo acceso <i class="bi @ListadoVista.IconoOrden(Model, "acceso")"></i></a></th>
+                    <th><a class="table-sort-link" asp-route-busqueda="@busqueda" asp-route-ordenar="estado" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "estado")">Estado <i class="bi @ListadoVista.IconoOrden(Model, "estado")"></i></a></th>
+                    <th class="text-end">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>@item.Personal?.Nombre @item.Personal?.Apellido</td>
+                    <td>@item.Personal?.Correo</td>
+                    <td>@item.Rol?.NombreRol</td>
+                    <td>@(item.UltimoAcceso?.ToString("dd-MM-yyyy HH:mm") ?? "Sin acceso")</td>
+                    <td>
+                        @if (item.Activo)
+                        { <span class="badge text-bg-success">Activo</span> }
+                        else
+                        { <span class="badge text-bg-secondary">Inactivo</span> }
+                    </td>
+                    <td class="text-end">
+                        <div class="actions-cell">
+                            <a asp-action="CambiarRol" asp-route-id="@item.IdUsuario" class="btn btn-sm btn-outline-primary">Cambiar rol</a>
+                            <a asp-action="ResetPassword" asp-route-id="@item.IdUsuario" class="btn btn-sm btn-outline-warning">Reset clave</a>
+                            @if (item.Activo)
+                            {
+                                <form asp-action="Desactivar" asp-route-id="@item.IdUsuario" method="post" class="d-inline" onsubmit="return confirm('Desea desactivar este usuario? El usuario no podra acceder al sistema.');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Desactivar</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form asp-action="Reactivar" asp-route-id="@item.IdUsuario" method="post" class="d-inline" onsubmit="return confirm('Desea reactivar este usuario?');">
+                                    <button type="submit" class="btn btn-sm btn-outline-success">Reactivar</button>
+                                </form>
+                            }
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    <partial name="_Paginacion" model="Model" />
+</div>

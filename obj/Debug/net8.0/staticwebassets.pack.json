@@ -1,0 +1,53 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\Andres\\Desktop\\SistemaEscolarWeb\\wwwroot\\css\\site.css",
+      "PackagePath": "staticwebassets\\css\\site.css"
+    },
+    {
+      "Id": "C:\\Users\\Andres\\Desktop\\SistemaEscolarWeb\\wwwroot\\images\\logo-chroma.png",
+      "PackagePath": "staticwebassets\\images\\logo-chroma.png"
+    },
+    {
+      "Id": "C:\\Users\\Andres\\Desktop\\SistemaEscolarWeb\\wwwroot\\images\\logo-cutout.png",
+      "PackagePath": "staticwebassets\\images\\logo-cutout.png"
+    },
+    {
+      "Id": "C:\\Users\\Andres\\Desktop\\SistemaEscolarWeb\\wwwroot\\images\\logo-original.png",
+      "PackagePath": "staticwebassets\\images\\logo-original.png"
+    },
+    {
+      "Id": "C:\\Users\\Andres\\Desktop\\SistemaEscolarWeb\\wwwroot\\images\\logo-transparent.png",
+      "PackagePath": "staticwebassets\\images\\logo-transparent.png"
+    },
+    {
+      "Id": "C:\\Users\\Andres\\Desktop\\SistemaEscolarWeb\\wwwroot\\images\\logo.png",
+      "PackagePath": "staticwebassets\\images\\logo.png"
+    },
+    {
+      "Id": "C:\\Users\\Andres\\Desktop\\SistemaEscolarWeb\\wwwroot\\js\\personal-form.js",
+      "PackagePath": "staticwebassets\\js\\personal-form.js"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.SistemaEscolarWeb.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.SistemaEscolarWeb.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.SistemaEscolarWeb.props",
+      "PackagePath": "build\\SistemaEscolarWeb.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.SistemaEscolarWeb.props",
+      "PackagePath": "buildMultiTargeting\\SistemaEscolarWeb.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.SistemaEscolarWeb.props",
+      "PackagePath": "buildTransitive\\SistemaEscolarWeb.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

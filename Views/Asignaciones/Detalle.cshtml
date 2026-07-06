@@ -1,0 +1,88 @@
+@model SistemaEscolarWeb.DTOs.AsignacionDto
+@{
+    ViewData["Title"] = "Detalle asignacion";
+    var puedeGestionar = User.HasPermission("tecnologia.asignar", "Crear asignaciones", "Aprobar asignaciones");
+    var estadoTecnologia = Model.EstadoAsignacion == "Finalizada" ? "Disponible" : Model.EstadoAsignacion;
+}
+
+@functions {
+    string BadgeClass(string estado) => estado switch
+    {
+        "Activa" => "text-bg-primary",
+        "Vigente" => "text-bg-primary",
+        "Finalizada" => "text-bg-success",
+        "Dado de Baja" => "text-bg-danger",
+        _ => "text-bg-secondary"
+    };
+}
+
+<div class="page-heading">
+    <div>
+        <h2>Asignacion @Model.IdAsignaciones</h2>
+        <p>Ficha de consulta de la asignacion tecnologica.</p>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-8">
+        <div class="content-card">
+            <h5 class="mb-3">Informacion general</h5>
+            <dl class="row mb-0">
+                <dt class="col-sm-4">Equipo</dt>
+                <dd class="col-sm-8"><strong>@Model.CodigoEquipo</strong> - @Model.TipoTecnologia</dd>
+
+                <dt class="col-sm-4">Marca</dt>
+                <dd class="col-sm-8">@Model.MarcaEquipo</dd>
+
+                <dt class="col-sm-4">Modelo</dt>
+                <dd class="col-sm-8">@Model.ModeloEquipo</dd>
+
+                <dt class="col-sm-4">Tipo destinatario</dt>
+                <dd class="col-sm-8">@Model.TipoDestinatario</dd>
+
+                <dt class="col-sm-4">Asignado a</dt>
+                <dd class="col-sm-8">@Model.AsignadoA</dd>
+
+                @if (Model.TipoDestinatario == "Persona")
+                {
+                    <dt class="col-sm-4">RUT</dt>
+                    <dd class="col-sm-8">@Model.RutPersonal</dd>
+                }
+
+                <dt class="col-sm-4">Tipo asignacion</dt>
+                <dd class="col-sm-8">@Model.TipoAsignacion</dd>
+
+                <dt class="col-sm-4">Observacion</dt>
+                <dd class="col-sm-8">@(string.IsNullOrWhiteSpace(Model.Observacion) ? "-" : Model.Observacion)</dd>
+
+                <dt class="col-sm-4">Fecha asignacion</dt>
+                <dd class="col-sm-8">@Model.FechaAsignacion.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                <dt class="col-sm-4">Fecha devolucion</dt>
+                <dd class="col-sm-8">@(Model.FechaDevolucion?.ToString("dd/MM/yyyy HH:mm") ?? "Pendiente")</dd>
+
+                <dt class="col-sm-4">Estado asignacion</dt>
+                <dd class="col-sm-8"><span class="badge @BadgeClass(Model.EstadoAsignacion)">@Model.EstadoAsignacion</span></dd>
+
+                <dt class="col-sm-4">Estado tecnologia</dt>
+                <dd class="col-sm-8">@estadoTecnologia</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="content-card">
+            <h5 class="mb-3">Acciones disponibles</h5>
+            @if (puedeGestionar && Model.EstaActiva)
+            {
+                <form asp-action="RegistrarDevolucion" asp-route-id="@Model.IdAsignaciones" method="post" onsubmit="return confirm('Confirma la devolucion del equipo?');">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-primary w-100 mb-2"><i class="bi bi-arrow-return-left me-1"></i> Registrar devolucion</button>
+                </form>
+            }
+            <a asp-controller="Tecnologia" asp-action="Detalle" asp-route-id="@Model.IdTecnologia" class="btn btn-outline-primary w-100 mb-2">Ver equipo</a>
+            <a asp-action="Index" class="btn btn-outline-secondary w-100">Volver al listado</a>
+        </div>
+    </div>
+</div>

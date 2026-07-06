@@ -1,0 +1,16 @@
+@model SistemaEscolarWeb.ViewModels.ReportePersonalViewModel
+@{
+    ViewData["Title"] = "Reporte Personal";
+}
+<div class="page-heading"><div><h2>Personal</h2><p>Consulta gerencial de funcionarios y accesos.</p></div><a asp-action="Index" class="btn btn-outline-secondary">Volver</a></div>
+<div class="content-card mb-3"><form method="get" class="row g-2 align-items-end">
+    <div class="col-md-4"><label class="form-label">Cargo</label><select name="Cargo" asp-for="Filtro.Cargo" asp-items="Model.Cargos" class="form-select"><option value="">Todos</option></select></div>
+    <div class="col-md-4"><label class="form-label">Estado</label><select name="Estado" asp-for="Filtro.Estado" asp-items="Model.Estados" class="form-select"><option value="">Todos</option></select></div>
+    <div class="col-md-4 d-flex gap-2"><button class="btn btn-primary" type="submit">Filtrar</button><a asp-action="Personal" class="btn btn-outline-secondary">Limpiar</a></div>
+</form></div>
+<div class="content-card">
+    <div class="d-flex justify-content-end gap-2 mb-3"><a asp-action="ExportarPdf" asp-route-reporte="Personal" asp-route-Cargo="@Model.Filtro.Cargo" asp-route-Estado="@Model.Filtro.Estado" class="btn btn-outline-danger btn-sm">Exportar PDF</a><a asp-action="ExportarExcel" asp-route-reporte="Personal" asp-route-Cargo="@Model.Filtro.Cargo" asp-route-Estado="@Model.Filtro.Estado" class="btn btn-outline-success btn-sm">Exportar Excel</a></div>
+    <div class="table-responsive"><table class="table align-middle"><thead><tr><th>Funcionario</th><th>Cargo</th><th>Correo</th><th>Usuario</th><th>Estado</th><th>Ultimo acceso</th></tr></thead><tbody>
+    @foreach (var item in Model.Filas) { <tr><td><strong>@item.Funcionario</strong></td><td>@item.Cargo</td><td>@item.Correo</td><td>@item.Usuario</td><td>@item.Estado</td><td>@(item.UltimoAcceso?.ToString("dd/MM/yyyy HH:mm") ?? "-")</td></tr> }
+    </tbody></table></div>
+</div>

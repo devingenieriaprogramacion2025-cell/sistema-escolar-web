@@ -1,0 +1,94 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [6 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Length 3101 >>
+stream
+BT 0 0 0 rg /F2 17 Tf 28 567 Td (Inventario Tecnologico) Tj ET
+BT 0 0 0 rg /F1 9 Tf 28 551 Td (Equipos por estado, dependencia y responsable.) Tj ET
+BT 0 0 0 rg /F1 8 Tf 28 539 Td (Generado: 04-07-2026 19:06) Tj ET
+BT 0 0 0 rg /F1 8 Tf 28 523 Td (Filtros aplicados: Estado: Asignado) Tj ET
+BT 0 0 0 rg /F1 8 Tf 28 511 Td (Resumen: Total equipos: 2 | Disponibles: 0 | Asignados: 2 | En reparacion: 0 | Dados de baja: 0) Tj ET
+0.04 0.22 0.52 rg 28 479 786 22 re f
+BT 1 1 1 rg /F2 7 Tf 32 487 Td (SKU) Tj ET
+0.82 0.84 0.88 RG 0.5 w 28 501 m 28 479 l S
+BT 1 1 1 rg /F2 7 Tf 130.25 487 Td (Tipo) Tj ET
+0.82 0.84 0.88 RG 0.5 w 126.25 501 m 126.25 479 l S
+BT 1 1 1 rg /F2 7 Tf 228.5 487 Td (Marca) Tj ET
+0.82 0.84 0.88 RG 0.5 w 224.5 501 m 224.5 479 l S
+BT 1 1 1 rg /F2 7 Tf 326.75 487 Td (Modelo) Tj ET
+0.82 0.84 0.88 RG 0.5 w 322.75 501 m 322.75 479 l S
+BT 1 1 1 rg /F2 7 Tf 425 487 Td (Estado) Tj ET
+0.82 0.84 0.88 RG 0.5 w 421 501 m 421 479 l S
+BT 1 1 1 rg /F2 7 Tf 523.25 487 Td (Dependencia) Tj ET
+0.82 0.84 0.88 RG 0.5 w 519.25 501 m 519.25 479 l S
+BT 1 1 1 rg /F2 7 Tf 621.5 487 Td (Funcionario asignado) Tj ET
+0.82 0.84 0.88 RG 0.5 w 617.5 501 m 617.5 479 l S
+BT 1 1 1 rg /F2 7 Tf 719.75 487 Td (Fecha ingreso) Tj ET
+0.82 0.84 0.88 RG 0.5 w 715.75 501 m 715.75 479 l S
+0.82 0.84 0.88 RG 0.5 w 814 501 m 814 479 l S
+0.82 0.84 0.88 RG 28 457 786 18 re S
+0.82 0.84 0.88 RG 0.5 w 28 475 m 28 457 l S
+BT 0 0 0 rg /F1 7 Tf 32 465 Td (NB-001) Tj ET
+0.82 0.84 0.88 RG 0.5 w 126.25 475 m 126.25 457 l S
+BT 0 0 0 rg /F1 7 Tf 130.25 465 Td (Notebook) Tj ET
+0.82 0.84 0.88 RG 0.5 w 224.5 475 m 224.5 457 l S
+BT 0 0 0 rg /F1 7 Tf 228.5 465 Td (HP) Tj ET
+0.82 0.84 0.88 RG 0.5 w 322.75 475 m 322.75 457 l S
+BT 0 0 0 rg /F1 7 Tf 326.75 465 Td (ProBook) Tj ET
+0.82 0.84 0.88 RG 0.5 w 421 475 m 421 457 l S
+BT 0 0 0 rg /F1 7 Tf 425 465 Td (Asignado) Tj ET
+0.82 0.84 0.88 RG 0.5 w 519.25 475 m 519.25 457 l S
+BT 0 0 0 rg /F1 7 Tf 523.25 465 Td (Sala 1 Basico) Tj ET
+0.82 0.84 0.88 RG 0.5 w 617.5 475 m 617.5 457 l S
+BT 0 0 0 rg /F1 7 Tf 621.5 465 Td (Ana Fuentes) Tj ET
+0.82 0.84 0.88 RG 0.5 w 715.75 475 m 715.75 457 l S
+BT 0 0 0 rg /F1 7 Tf 719.75 465 Td (12-06-2026) Tj ET
+0.82 0.84 0.88 RG 0.5 w 814 475 m 814 457 l S
+0.82 0.84 0.88 RG 28 439 786 18 re S
+0.82 0.84 0.88 RG 0.5 w 28 457 m 28 439 l S
+BT 0 0 0 rg /F1 7 Tf 32 447 Td (NOT-01-001) Tj ET
+0.82 0.84 0.88 RG 0.5 w 126.25 457 m 126.25 439 l S
+BT 0 0 0 rg /F1 7 Tf 130.25 447 Td (Notebook) Tj ET
+0.82 0.84 0.88 RG 0.5 w 224.5 457 m 224.5 439 l S
+BT 0 0 0 rg /F1 7 Tf 228.5 447 Td (Lenovo) Tj ET
+0.82 0.84 0.88 RG 0.5 w 322.75 457 m 322.75 439 l S
+BT 0 0 0 rg /F1 7 Tf 326.75 447 Td (Yoga) Tj ET
+0.82 0.84 0.88 RG 0.5 w 421 457 m 421 439 l S
+BT 0 0 0 rg /F1 7 Tf 425 447 Td (Asignado) Tj ET
+0.82 0.84 0.88 RG 0.5 w 519.25 457 m 519.25 439 l S
+BT 0 0 0 rg /F1 7 Tf 523.25 447 Td (Direcci\363n) Tj ET
+0.82 0.84 0.88 RG 0.5 w 617.5 457 m 617.5 439 l S
+BT 0 0 0 rg /F1 7 Tf 621.5 447 Td (Mariela Rojas) Tj ET
+0.82 0.84 0.88 RG 0.5 w 715.75 457 m 715.75 439 l S
+BT 0 0 0 rg /F1 7 Tf 719.75 447 Td (29-06-2026) Tj ET
+0.82 0.84 0.88 RG 0.5 w 814 457 m 814 439 l S
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 842 595] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 5 0 R >>
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000212 00000 n 
+0000000314 00000 n 
+0000003466 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R >>
+startxref
+3602
+%%EOF

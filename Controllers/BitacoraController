@@ -1,0 +1,14 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace SistemaEscolarWeb.Controllers;
+
+[Authorize(Roles = "Administrador")]
+public class BitacoraController : Controller
+{
+    public IActionResult Index()
+    {
+        ViewBag.Titulo = "Bitacora";
+        return View();
+    }
+}

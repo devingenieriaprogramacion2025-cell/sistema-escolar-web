@@ -1,0 +1,27 @@
+@model SistemaEscolarWeb.ViewModels.EliminarRolViewModel
+@{
+    ViewData["Title"] = "Eliminar rol";
+}
+
+<div class="page-heading">
+    <div>
+        <h2>Eliminar rol</h2>
+        <p>Confirme la eliminacion del rol seleccionado.</p>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+</div>
+
+<div class="content-card">
+    <div class="alert alert-warning">
+        Esta accion eliminara el rol <strong>@Model.NombreRol</strong>. No se podra eliminar si tiene usuarios o personal asociados.
+    </div>
+
+    <form asp-action="Eliminar" method="post" class="d-flex gap-2">
+        @Html.AntiForgeryToken()
+        <input asp-for="IdRol" type="hidden" name="idRol" />
+        <button type="submit" class="btn btn-danger">
+            <i class="bi bi-trash me-1"></i> Eliminar
+        </button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+    </form>
+</div>

@@ -1,0 +1,90 @@
+<div class="modal fade" id="proveedorRapidoModal" tabindex="-1" aria-labelledby="proveedorRapidoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="proveedorRapidoModalLabel">Nuevo proveedor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div id="proveedorRapidoMensaje" class="alert d-none"></div>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label" for="ProveedorRapidoNombreProveedor">Nombre proveedor</label>
+                        <input id="ProveedorRapidoNombreProveedor" class="form-control" maxlength="160" />
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="ProveedorRapidoRutProveedor">RUT proveedor</label>
+                        <input id="ProveedorRapidoRutProveedor" class="form-control" maxlength="12" inputmode="text" autocomplete="off" placeholder="12.345.678-5" data-rut-chileno />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="ProveedorRapidoCorreo">Correo</label>
+                        <input id="ProveedorRapidoCorreo" class="form-control" maxlength="160" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="ProveedorRapidoTelefono">Telefono</label>
+                        <input id="ProveedorRapidoTelefono" type="tel" class="form-control" maxlength="12" inputmode="tel" autocomplete="tel" placeholder="+56935315783" data-telefono-chileno />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="guardarProveedorRapido">Guardar proveedor</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(() => {
+    const modalEl = document.getElementById('proveedorRapidoModal');
+    const guardar = document.getElementById('guardarProveedorRapido');
+    const mensaje = document.getElementById('proveedorRapidoMensaje');
+    const select = document.getElementById('IdProveedor');
+    if (!modalEl || !guardar || !mensaje || !select) return;
+
+    const mostrarMensaje = (texto, tipo) => {
+        mensaje.textContent = texto;
+        mensaje.className = `alert alert-${tipo}`;
+    };
+
+    modalEl.addEventListener('show.bs.modal', () => {
+        mensaje.className = 'alert d-none';
+        mensaje.textContent = '';
+    });
+
+    guardar.addEventListener('click', async () => {
+        const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? '';
+        const data = new FormData();
+        data.append('__RequestVerificationToken', token);
+        data.append('NombreProveedor', document.getElementById('ProveedorRapidoNombreProveedor').value);
+        data.append('RutProveedor', document.getElementById('ProveedorRapidoRutProveedor').value);
+        data.append('Correo', document.getElementById('ProveedorRapidoCorreo').value);
+        data.append('Telefono', document.getElementById('ProveedorRapidoTelefono').value);
+
+        guardar.disabled = true;
+        try {
+            const response = await fetch('/Proveedores/CrearRapido', {
+                method: 'POST',
+                body: data,
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            });
+            const result = await response.json();
+
+            if (!result.success) {
+                mostrarMensaje(result.mensaje || 'No se pudo registrar el proveedor.', 'danger');
+                return;
+            }
+
+            const option = new Option(`${result.nombreProveedor}`, result.idProveedor, true, true);
+            select.add(option);
+            select.value = result.idProveedor;
+            mostrarMensaje(result.mensaje || 'Proveedor registrado correctamente.', 'success');
+            bootstrap.Modal.getOrCreateInstance(modalEl).hide();
+        } catch {
+            mostrarMensaje('No se pudo registrar el proveedor. Intente nuevamente.', 'danger');
+        } finally {
+            guardar.disabled = false;
+        }
+    });
+})();
+</script>

@@ -1,0 +1,56 @@
+@model SistemaEscolarWeb.ViewModels.ListadoPaginadoViewModel<SistemaEscolarWeb.Models.Dependencia>
+@{
+    ViewData["Title"] = "Dependencias";
+    var puedeCrear = User.HasPermission("dependencias.ver");
+}
+
+<div class="page-heading">
+    <div>
+        <h2>Dependencias</h2>
+        <p>Espacios institucionales donde se asignan equipos y responsables.</p>
+    </div>
+</div>
+
+@if (puedeCrear)
+{
+    <div class="content-card mb-3">
+        <form asp-action="Crear" method="post" class="row g-3 align-items-end">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="IdTipoDependencia" value="1" />
+            <div class="col-md-5">
+                <label class="form-label">Nombre</label>
+                <input name="NombreDependencia" class="form-control" required />
+            </div>
+            <div class="col-md-5">
+                <label class="form-label">Responsable</label>
+                <input name="ResponsableDependencia" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary w-100" type="submit">Agregar</button>
+            </div>
+        </form>
+    </div>
+}
+
+<div class="content-card">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th><a class="table-sort-link" asp-route-ordenar="nombre" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "nombre")">Nombre <i class="bi @ListadoVista.IconoOrden(Model, "nombre")"></i></a></th>
+                    <th><a class="table-sort-link" asp-route-ordenar="responsable" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "responsable")">Responsable <i class="bi @ListadoVista.IconoOrden(Model, "responsable")"></i></a></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td><strong>@item.NombreDependencia</strong></td>
+                    <td>@item.ResponsableDependencia</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    <partial name="_Paginacion" model="Model" />
+</div>

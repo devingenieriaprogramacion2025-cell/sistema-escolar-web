@@ -1,0 +1,14 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace SistemaEscolarWeb.Controllers;
+
+[Authorize(Policy = "PuedeGestionarUsuarios")]
+public class UsuariosController : Controller
+{
+    public IActionResult Index()
+    {
+        ViewBag.Titulo = "Usuarios";
+        return View();
+    }
+}
