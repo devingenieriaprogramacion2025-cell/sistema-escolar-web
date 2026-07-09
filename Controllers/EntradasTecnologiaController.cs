@@ -53,10 +53,13 @@ public class EntradasTecnologiaController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Crear(EntradaTecnologiaFormViewModel model)
+    public async Task<IActionResult> Crear([Bind(Prefix = "Formulario")] EntradaTecnologiaFormViewModel model)
     {
         if (!ModelState.IsValid)
-            return RedirectToAction(nameof(Index));
+        {
+            ViewData["EditandoEntradaTecnologia"] = false;
+            return View(nameof(Index), await CrearGestionViewModelAsync(model));
+        }
 
         await _tecnologiaService.CrearEntradaTecnologiaAsync(model);
         TempData["Success"] = "Entrada tecnologica registrada correctamente.";
@@ -70,12 +73,15 @@ public class EntradasTecnologiaController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Editar(EntradaTecnologiaFormViewModel model)
+    public async Task<IActionResult> Editar([Bind(Prefix = "Formulario")] EntradaTecnologiaFormViewModel model)
     {
         if (!model.IdEntradaTecnologia.HasValue) return BadRequest();
 
         if (!ModelState.IsValid)
-            return RedirectToAction(nameof(Index), new { editarId = model.IdEntradaTecnologia });
+        {
+            ViewData["EditandoEntradaTecnologia"] = true;
+            return View(nameof(Index), await CrearGestionViewModelAsync(model));
+        }
 
         try
         {
@@ -88,5 +94,24 @@ public class EntradasTecnologiaController : Controller
         }
 
         return RedirectToAction(nameof(Index));
+    }
+
+    private async Task<GestionEntradasTecnologiaViewModel> CrearGestionViewModelAsync(EntradaTecnologiaFormViewModel formulario)
+    {
+        formulario.Proveedores = await _tecnologiaService.ObtenerProveedoresSelectAsync(formulario.IdProveedor);
+        var entradas = await _tecnologiaService.ListarEntradasTecnologiaAsync();
+        var listado = ListadoPaginado.Crear(entradas, "fecha", "desc", 1);
+
+        return new GestionEntradasTecnologiaViewModel
+        {
+            Formulario = formulario,
+            Entradas = listado.Items,
+            PaginaActual = listado.PaginaActual,
+            TotalPaginas = listado.TotalPaginas,
+            TotalRegistros = listado.TotalRegistros,
+            RegistrosPorPagina = listado.RegistrosPorPagina,
+            Ordenar = listado.Ordenar,
+            Direccion = listado.Direccion
+        };
     }
 }

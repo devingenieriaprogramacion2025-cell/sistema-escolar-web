@@ -16,7 +16,6 @@ public class CrearAsignacionViewModel : IValidatableObject
     public string TipoDestinatario { get; set; } = "Persona";
 
     [Display(Name = "Persona")]
-    [RegularExpression(@"^[0-9]{7,8}-[0-9Kk]$", ErrorMessage = "Debe seleccionar un RUT valido.")]
     public string? RutPersonal { get; set; }
 
     [Display(Name = "Dependencia")]

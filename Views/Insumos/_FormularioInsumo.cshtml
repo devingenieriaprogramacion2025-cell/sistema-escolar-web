@@ -25,7 +25,7 @@
             </div>
             <div class="col-md-6">
                 <label asp-for="IdTipoInsumo" class="form-label">Tipo insumo</label>
-                <select asp-for="IdTipoInsumo" asp-items="tipos" class="form-select">
+                <select asp-for="IdTipoInsumo" asp-items="tipos" class="form-select" data-val-required="El tipo de insumo es obligatorio.">
                     <option value="">Seleccione un tipo</option>
                 </select>
                 <span asp-validation-for="IdTipoInsumo" class="text-danger small"></span>

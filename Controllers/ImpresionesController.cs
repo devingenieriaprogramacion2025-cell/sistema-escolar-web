@@ -92,30 +92,39 @@ public class ImpresionesController : Controller
     [Authorize]
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> EnProceso(int id)
+    public async Task<IActionResult> EnProceso(int id, string? comentario)
     {
-        await _impresionService.CambiarEstadoAsync(id, Estado.EnProceso);
-        TempData["Success"] = "Solicitud aceptada y marcada en proceso.";
-        return RedirectToAction(nameof(Index));
+        return await CambiarEstadoAsync(id, Estado.EnProceso, comentario, "Solicitud aceptada y marcada en proceso.");
     }
 
     [Authorize]
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Entregar(int id)
+    public async Task<IActionResult> Entregar(int id, string? comentario)
     {
-        await _impresionService.CambiarEstadoAsync(id, Estado.Entregada);
-        TempData["Success"] = "Solicitud entregada correctamente.";
-        return RedirectToAction(nameof(Index));
+        return await CambiarEstadoAsync(id, Estado.Entregada, comentario, "Solicitud entregada correctamente.");
     }
 
     [Authorize]
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Rechazar(int id)
+    public async Task<IActionResult> Rechazar(int id, string? comentario)
     {
-        await _impresionService.CambiarEstadoAsync(id, Estado.Rechazada);
-        TempData["Success"] = "Solicitud rechazada.";
+        return await CambiarEstadoAsync(id, Estado.Rechazada, comentario, "Solicitud rechazada.");
+    }
+
+    private async Task<IActionResult> CambiarEstadoAsync(int id, string estado, string? comentario, string mensajeExito)
+    {
+        try
+        {
+            await _impresionService.CambiarEstadoAsync(id, estado, comentario, User.Identity?.Name ?? "Sistema");
+            TempData["Success"] = mensajeExito;
+        }
+        catch (InvalidOperationException ex)
+        {
+            TempData["Error"] = ex.Message;
+        }
+
         return RedirectToAction(nameof(Index));
     }
 

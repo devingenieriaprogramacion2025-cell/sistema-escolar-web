@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SistemaEscolarWeb.Data;
 using SistemaEscolarWeb.DTOs;
+using SistemaEscolarWeb.Helpers;
 using SistemaEscolarWeb.Models;
 using SistemaEscolarWeb.ViewModels;
 
@@ -102,8 +103,11 @@ public class BajaService
         await _context.SaveChangesAsync();
     }
 
-    public async Task CambiarEstadoAsync(int id, string estado, string usuario)
+    public async Task CambiarEstadoAsync(int id, string estado, string? comentario, string usuario)
     {
+        if (!InputValidationHelper.IsSafeText(comentario, 500, required: true))
+            throw new InvalidOperationException("Debe ingresar un comentario valido de hasta 500 caracteres.");
+
         var baja = await _context.Bajas.FirstOrDefaultAsync(b => b.IdDeBaja == id);
         if (baja == null)
             throw new InvalidOperationException("La baja seleccionada no existe.");
@@ -113,6 +117,7 @@ public class BajaService
 
         baja.Estado = estado;
         baja.UsuarioAutorizaBaja = usuario;
+        baja.Detalle = AnexarComentarioGestion(baja.Detalle, estado, comentario!, usuario);
 
         if (estado == Estado.Aprobada)
         {
@@ -122,6 +127,14 @@ public class BajaService
         }
 
         await _context.SaveChangesAsync();
+    }
+
+    private static string AnexarComentarioGestion(string? detalleActual, string estado, string comentario, string usuario)
+    {
+        var lineaComentario = $"[{DateTime.Now:dd/MM/yyyy HH:mm}] {usuario} - {estado}: {comentario.Trim()}";
+        return string.IsNullOrWhiteSpace(detalleActual)
+            ? lineaComentario
+            : $"{detalleActual.Trim()}{Environment.NewLine}{lineaComentario}";
     }
 
     private async Task<BajaDto> MapearDtoAsync(Baja baja)

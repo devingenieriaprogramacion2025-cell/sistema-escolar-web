@@ -110,6 +110,12 @@ public class ImpresionService
             throw new InvalidOperationException("La cantidad de paginas debe ser mayor a cero.");
         if (model.CantidadCopias <= 0)
             throw new InvalidOperationException("La cantidad de copias debe ser mayor a cero.");
+        if (!model.FechaEntregaRequerida.HasValue)
+            throw new InvalidOperationException("Debe indicar el dia de entrega requerido.");
+
+        var fechaMinimaEntrega = DateTime.Today.AddDays(3);
+        if (model.FechaEntregaRequerida.Value.Date < fechaMinimaEntrega)
+            throw new InvalidOperationException($"La fecha de entrega debe tener al menos 3 dias de anticipacion. Seleccione desde el {fechaMinimaEntrega:dd/MM/yyyy}.");
 
         var existePersona = await _context.Personal.AnyAsync(p => p.RutPersonal == model.RutPersonal && p.Activo);
         if (!existePersona)
@@ -125,6 +131,7 @@ public class ImpresionService
             RutPersonal = model.RutPersonal,
             IdEstadoImpresion = pendiente.IdEstadoImpresion,
             FechaSolicitud = DateTime.Now,
+            FechaEntrega = model.FechaEntregaRequerida.Value.Date,
             Archivo = rutaArchivo,
             CantidadPaginas = model.CantidadPaginas,
             CantidadCopias = model.CantidadCopias,
@@ -146,8 +153,11 @@ public class ImpresionService
         }
     }
 
-    public async Task CambiarEstadoAsync(int id, string estado)
+    public async Task CambiarEstadoAsync(int id, string estado, string? comentario, string usuario)
     {
+        if (!InputValidationHelper.IsSafeText(comentario, 500, required: true))
+            throw new InvalidOperationException("Debe ingresar un comentario valido de hasta 500 caracteres.");
+
         var solicitud = await _context.SolicitudesImpresion.FirstOrDefaultAsync(s => s.IdSolicitudImpresion == id);
         if (solicitud == null)
             throw new InvalidOperationException("La solicitud seleccionada no existe.");
@@ -158,6 +168,7 @@ public class ImpresionService
 
         solicitud.IdEstadoImpresion = estadoEntidad.IdEstadoImpresion;
         solicitud.FechaEntrega = estado == Estado.Entregada ? DateTime.Now : solicitud.FechaEntrega;
+        solicitud.Detalle = AnexarComentarioGestion(solicitud.Detalle, estado, comentario!, usuario);
         await _context.SaveChangesAsync();
     }
 
@@ -217,6 +228,14 @@ public class ImpresionService
             "RECHAZADA" => Estado.Rechazada,
             _ => estado?.Trim()
         };
+    }
+
+    private static string AnexarComentarioGestion(string? detalleActual, string estado, string comentario, string usuario)
+    {
+        var lineaComentario = $"[{DateTime.Now:dd/MM/yyyy HH:mm}] {usuario} - {estado}: {comentario.Trim()}";
+        return string.IsNullOrWhiteSpace(detalleActual)
+            ? lineaComentario
+            : $"{detalleActual.Trim()}{Environment.NewLine}{lineaComentario}";
     }
 
     private async Task<string?> GuardarArchivoAsync(IFormFile? archivo)

@@ -18,12 +18,12 @@
         @Html.AntiForgeryToken()
         @if (editando)
         {
-            <input type="hidden" name="IdEntradaTecnologia" value="@Model.Formulario.IdEntradaTecnologia" />
+            <input asp-for="Formulario.IdEntradaTecnologia" type="hidden" />
         }
         <div class="col-md-3">
             <label asp-for="Formulario.IdProveedor" class="form-label"></label>
             <div class="input-group">
-                <select asp-for="Formulario.IdProveedor" asp-items="Model.Formulario.Proveedores" id="IdProveedor" name="IdProveedor" class="form-select">
+                <select asp-for="Formulario.IdProveedor" asp-items="Model.Formulario.Proveedores" id="IdProveedor" class="form-select">
                     <option value="">Seleccione un proveedor</option>
                 </select>
                 <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#proveedorRapidoModal">
@@ -34,35 +34,43 @@
         </div>
         <div class="col-md-3">
             <label asp-for="Formulario.Marca" class="form-label"></label>
-            <input asp-for="Formulario.Marca" name="Marca" id="Marca" class="form-control" list="marcasCatalogo" autocomplete="off" />
+            <input asp-for="Formulario.Marca" id="Marca" class="form-control" list="marcasCatalogo" autocomplete="off" />
+            <span asp-validation-for="Formulario.Marca" class="text-danger small"></span>
         </div>
         <div class="col-md-3">
             <label asp-for="Formulario.Modelo" class="form-label"></label>
-            <input asp-for="Formulario.Modelo" name="Modelo" id="Modelo" class="form-control" list="modelosCatalogo" autocomplete="off" />
+            <input asp-for="Formulario.Modelo" id="Modelo" class="form-control" list="modelosCatalogo" autocomplete="off" />
+            <span asp-validation-for="Formulario.Modelo" class="text-danger small"></span>
         </div>
         <div class="col-md-3">
             <label asp-for="Formulario.TipoTecnologia" class="form-label"></label>
-            <input asp-for="Formulario.TipoTecnologia" name="TipoTecnologia" class="form-control" list="tiposTecnologiaCatalogo" autocomplete="off" />
+            <input asp-for="Formulario.TipoTecnologia" class="form-control" list="tiposTecnologiaCatalogo" autocomplete="off" />
+            <span asp-validation-for="Formulario.TipoTecnologia" class="text-danger small"></span>
         </div>
         <div class="col-md-6">
             <label asp-for="Formulario.Descripcion" class="form-label"></label>
-            <input asp-for="Formulario.Descripcion" name="Descripcion" class="form-control" />
+            <input asp-for="Formulario.Descripcion" class="form-control" />
+            <span asp-validation-for="Formulario.Descripcion" class="text-danger small"></span>
         </div>
         <div class="col-md-3">
             <label asp-for="Formulario.PrefijoSku" class="form-label"></label>
-            <input asp-for="Formulario.PrefijoSku" name="PrefijoSku" class="form-control" autocomplete="off" />
+            <input asp-for="Formulario.PrefijoSku" class="form-control" autocomplete="off" />
+            <span asp-validation-for="Formulario.PrefijoSku" class="text-danger small"></span>
         </div>
         <div class="col-md-3">
             <label asp-for="Formulario.FechaEntrada" class="form-label"></label>
-            <input asp-for="Formulario.FechaEntrada" name="FechaEntrada" type="date" class="form-control" />
+            <input asp-for="Formulario.FechaEntrada" type="date" class="form-control" />
+            <span asp-validation-for="Formulario.FechaEntrada" class="text-danger small"></span>
         </div>
         <div class="col-md-2">
             <label asp-for="Formulario.Cantidad" class="form-label"></label>
-            <input asp-for="Formulario.Cantidad" name="Cantidad" type="number" min="1" class="form-control" />
+            <input asp-for="Formulario.Cantidad" type="number" min="1" class="form-control" />
+            <span asp-validation-for="Formulario.Cantidad" class="text-danger small"></span>
         </div>
         <div class="col-md-3">
             <label asp-for="Formulario.NumeroFactura" class="form-label"></label>
-            <input asp-for="Formulario.NumeroFactura" name="NumeroFactura" class="form-control" />
+            <input asp-for="Formulario.NumeroFactura" class="form-control" />
+            <span asp-validation-for="Formulario.NumeroFactura" class="text-danger small"></span>
         </div>
         <div class="col-12 d-flex gap-2">
             <button type="submit" class="btn btn-primary"><i class="bi bi-save me-1"></i> @(editando ? "Guardar cambios" : "Guardar entrada")</button>
@@ -128,6 +136,7 @@
 <partial name="_ProveedorRapidoModal" />
 
 @section Scripts {
+    <partial name="_ValidationScriptsPartial" />
     <partial name="~/Views/Tecnologia/_CatalogosTecnologia.cshtml" />
     <script src="~/js/personal-form.js" asp-append-version="true"></script>
 }

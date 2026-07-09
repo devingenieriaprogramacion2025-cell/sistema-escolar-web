@@ -20,6 +20,9 @@ public static class DbInitializer
             await EnsureOptionalTablesAsync(context);
             await EnsureAuditUserColumnLengthsAsync(context);
             await EnsureAsignacionesNullableDestinatariosAsync(context);
+            await EnsureAsignacionesTipoAsignacionLengthAsync(context);
+            await EnsureReparacionDetalleLengthAsync(context);
+            await EnsureBajaDetalleLengthAsync(context);
             await EnsureSolicitudImpresionCantidadPaginasAsync(context);
             await SeedCatalogosTecnologiaAsync(context);
             await SeedRolesAsync(context);
@@ -256,6 +259,57 @@ BEGIN
     BEGIN
         ALTER TABLE [Asignaciones] ALTER COLUMN [rut_personal] nvarchar(20) NULL;
     END
+END
+""");
+    }
+
+    private static async Task EnsureAsignacionesTipoAsignacionLengthAsync(ApplicationDbContext context)
+    {
+        await context.Database.ExecuteSqlRawAsync("""
+IF OBJECT_ID(N'[Asignaciones]', N'U') IS NOT NULL
+   AND EXISTS (
+        SELECT 1
+        FROM sys.columns
+        WHERE object_id = OBJECT_ID(N'[Asignaciones]')
+          AND name = N'tipo_asignacion'
+          AND max_length > 0
+   )
+BEGIN
+    ALTER TABLE [Asignaciones] ALTER COLUMN [tipo_asignacion] nvarchar(max) NOT NULL;
+END
+""");
+    }
+
+    private static async Task EnsureReparacionDetalleLengthAsync(ApplicationDbContext context)
+    {
+        await context.Database.ExecuteSqlRawAsync("""
+IF OBJECT_ID(N'[Reparacion]', N'U') IS NOT NULL
+   AND EXISTS (
+        SELECT 1
+        FROM sys.columns
+        WHERE object_id = OBJECT_ID(N'[Reparacion]')
+          AND name = N'detalle'
+          AND max_length > 0
+   )
+BEGIN
+    ALTER TABLE [Reparacion] ALTER COLUMN [detalle] nvarchar(max) NULL;
+END
+""");
+    }
+
+    private static async Task EnsureBajaDetalleLengthAsync(ApplicationDbContext context)
+    {
+        await context.Database.ExecuteSqlRawAsync("""
+IF OBJECT_ID(N'[De_baja]', N'U') IS NOT NULL
+   AND EXISTS (
+        SELECT 1
+        FROM sys.columns
+        WHERE object_id = OBJECT_ID(N'[De_baja]')
+          AND name = N'detalle'
+          AND max_length > 0
+   )
+BEGIN
+    ALTER TABLE [De_baja] ALTER COLUMN [detalle] nvarchar(max) NULL;
 END
 """);
     }

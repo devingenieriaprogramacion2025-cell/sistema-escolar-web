@@ -17,6 +17,8 @@ public class EquipoDto
     public string? NumeroFactura { get; set; }
     public bool Activo { get; set; }
     public string EstadoOperativo { get; set; } = "Disponible";
+    public DateTime? UltimaFechaMovimiento { get; set; }
+    public string? UltimoComentario { get; set; }
     public bool PuedeEditar => EstadoOperativo != "Dado de Baja";
     public bool PuedeAsignar => EstadoOperativo == "Disponible";
 }

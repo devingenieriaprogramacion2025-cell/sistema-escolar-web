@@ -27,6 +27,8 @@ public class TecnologiaController : Controller
             "tipo" => asc ? equipos.OrderBy(e => e.TipoTecnologia).ToList() : equipos.OrderByDescending(e => e.TipoTecnologia).ToList(),
             "descripcion" => asc ? equipos.OrderBy(e => e.Descripcion).ToList() : equipos.OrderByDescending(e => e.Descripcion).ToList(),
             "estado" => asc ? equipos.OrderBy(e => e.EstadoOperativo).ToList() : equipos.OrderByDescending(e => e.EstadoOperativo).ToList(),
+            "ultimo-movimiento" => asc ? equipos.OrderBy(e => e.UltimaFechaMovimiento).ToList() : equipos.OrderByDescending(e => e.UltimaFechaMovimiento).ToList(),
+            "comentario" => asc ? equipos.OrderBy(e => e.UltimoComentario).ToList() : equipos.OrderByDescending(e => e.UltimoComentario).ToList(),
             _ => asc ? equipos.OrderBy(e => e.CodigoInventario).ToList() : equipos.OrderByDescending(e => e.CodigoInventario).ToList()
         };
         var totalRegistros = equipos.Count;

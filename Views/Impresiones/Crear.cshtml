@@ -1,6 +1,7 @@
 @model SistemaEscolarWeb.ViewModels.CrearImpresionViewModel
 @{
     ViewData["Title"] = "Nueva impresion";
+    var fechaMinimaEntrega = DateTime.Today.AddDays(3).ToString("yyyy-MM-dd");
 }
 
 <div class="page-heading">
@@ -32,6 +33,12 @@
                 <label asp-for="CantidadCopias" class="form-label"></label>
                 <input asp-for="CantidadCopias" type="number" class="form-control" min="1" max="9999" />
                 <span asp-validation-for="CantidadCopias" class="text-danger small"></span>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="FechaEntregaRequerida" class="form-label"></label>
+                <input asp-for="FechaEntregaRequerida" type="date" class="form-control" min="@fechaMinimaEntrega" />
+                <div class="form-text">Debe solicitarse con minimo 3 dias de anticipacion.</div>
+                <span asp-validation-for="FechaEntregaRequerida" class="text-danger small"></span>
             </div>
             <div class="col-md-3">
                 <label asp-for="Color" class="form-label"></label>
@@ -75,6 +82,7 @@
             const paginas = document.getElementById('CantidadPaginas');
             const copias = document.getElementById('CantidadCopias');
             const dobleCara = document.getElementById('DobleCara');
+            const fechaEntrega = document.getElementById('FechaEntregaRequerida');
             const total = document.getElementById('totalImpresiones');
             const ayuda = document.getElementById('dobleCaraTexto');
 
@@ -94,6 +102,9 @@
             paginas.addEventListener('input', actualizarTotal);
             copias.addEventListener('input', actualizarTotal);
             dobleCara.addEventListener('change', actualizarTotal);
+            if (fechaEntrega && !fechaEntrega.value) {
+                fechaEntrega.value = '@fechaMinimaEntrega';
+            }
             actualizarTotal();
         })();
     </script>

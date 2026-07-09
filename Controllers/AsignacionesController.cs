@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using SistemaEscolarWeb.Helpers;
 using SistemaEscolarWeb.Services;
@@ -77,16 +78,20 @@ public class AsignacionesController : Controller
     [Authorize]
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> RegistrarDevolucion(int id)
+    public async Task<IActionResult> RegistrarDevolucion(int id, string? comentario)
     {
         try
         {
-            await _asignacionService.RegistrarDevolucionAsync(id);
+            await _asignacionService.RegistrarDevolucionAsync(id, comentario, User.Identity?.Name ?? "Sistema");
             TempData["Success"] = "Devolución registrada correctamente.";
         }
         catch (InvalidOperationException ex)
         {
             TempData["Error"] = ex.Message;
+        }
+        catch (DbUpdateException ex)
+        {
+            TempData["Error"] = $"No se pudo registrar la devolucion: {ex.GetBaseException().Message}";
         }
 
         return RedirectToAction(nameof(Detalle), new { id });

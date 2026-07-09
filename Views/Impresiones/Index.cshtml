@@ -63,7 +63,7 @@
                     <th><a class="table-sort-link" asp-route-busqueda="@busqueda" asp-route-ordenar="total" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "total")">Total <i class="bi @ListadoVista.IconoOrden(Model, "total")"></i></a></th>
                     <th><a class="table-sort-link" asp-route-busqueda="@busqueda" asp-route-ordenar="opciones" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "opciones")">Opciones <i class="bi @ListadoVista.IconoOrden(Model, "opciones")"></i></a></th>
                     <th><a class="table-sort-link" asp-route-busqueda="@busqueda" asp-route-ordenar="solicitud" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "solicitud")">Solicitud <i class="bi @ListadoVista.IconoOrden(Model, "solicitud")"></i></a></th>
-                    <th><a class="table-sort-link" asp-route-busqueda="@busqueda" asp-route-ordenar="entrega" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "entrega")">Entrega <i class="bi @ListadoVista.IconoOrden(Model, "entrega")"></i></a></th>
+                    <th><a class="table-sort-link" asp-route-busqueda="@busqueda" asp-route-ordenar="entrega" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "entrega")">Entrega requerida <i class="bi @ListadoVista.IconoOrden(Model, "entrega")"></i></a></th>
                     <th><a class="table-sort-link" asp-route-busqueda="@busqueda" asp-route-ordenar="estado" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "estado")">Estado <i class="bi @ListadoVista.IconoOrden(Model, "estado")"></i></a></th>
                     <th class="text-end">Acciones</th>
                 </tr>
@@ -84,34 +84,52 @@
                         {
                             @(item.Archivo ?? "Sin archivo")
                         }
-                        <div class="small text-muted">@item.Detalle</div>
+                        <div class="small text-muted" style="white-space: pre-line">@item.Detalle</div>
                     </td>
                     <td>@item.CantidadPaginas</td>
                     <td>@item.CantidadCopias</td>
                     <td>@item.TotalImpresiones</td>
                     <td>@item.Color / @(item.DobleCara ? "Doble cara" : "Una cara")</td>
                     <td>@item.FechaSolicitud.ToString("dd/MM/yyyy")</td>
-                    <td>@(item.FechaEntrega?.ToString("dd/MM/yyyy") ?? "Pendiente")</td>
+                    <td>@(item.FechaEntrega?.ToString("dd/MM/yyyy") ?? "Sin fecha")</td>
                     <td><span class="badge @BadgeClass(item.Estado)">@item.Estado</span></td>
                     <td class="text-end">
                         <div class="actions-cell">
                             @if (puedeGestionar && item.Estado == "Pendiente")
                             {
-                                <form asp-action="EnProceso" asp-route-id="@item.IdSolicitudImpresion" method="post">
-                                    @Html.AntiForgeryToken()
-                                    <button class="btn btn-sm btn-outline-primary" type="submit">Aceptar</button>
-                                </form>
-                                <form asp-action="Rechazar" asp-route-id="@item.IdSolicitudImpresion" method="post">
-                                    @Html.AntiForgeryToken()
-                                    <button class="btn btn-sm btn-outline-danger" type="submit">Rechazar</button>
-                                </form>
+                                <button class="btn btn-sm btn-outline-primary"
+                                        type="button"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#comentarioAccionModal"
+                                        data-action-url="@Url.Action("EnProceso", "Impresiones", new { id = item.IdSolicitudImpresion })"
+                                        data-action-title="Aceptar solicitud"
+                                        data-action-button="Aceptar"
+                                        data-action-button-class="btn-primary">
+                                    Aceptar
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger"
+                                        type="button"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#comentarioAccionModal"
+                                        data-action-url="@Url.Action("Rechazar", "Impresiones", new { id = item.IdSolicitudImpresion })"
+                                        data-action-title="Rechazar solicitud"
+                                        data-action-button="Rechazar"
+                                        data-action-button-class="btn-danger">
+                                    Rechazar
+                                </button>
                             }
                             @if (puedeGestionar && item.Estado != "Entregada" && item.Estado != "Rechazada")
                             {
-                                <form asp-action="Entregar" asp-route-id="@item.IdSolicitudImpresion" method="post">
-                                    @Html.AntiForgeryToken()
-                                    <button class="btn btn-sm btn-outline-success" type="submit">Entregar</button>
-                                </form>
+                                <button class="btn btn-sm btn-outline-success"
+                                        type="button"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#comentarioAccionModal"
+                                        data-action-url="@Url.Action("Entregar", "Impresiones", new { id = item.IdSolicitudImpresion })"
+                                        data-action-title="Entregar solicitud"
+                                        data-action-button="Entregar"
+                                        data-action-button-class="btn-success">
+                                    Entregar
+                                </button>
                             }
                         </div>
                     </td>
@@ -122,3 +140,54 @@
     </div>
     <partial name="_Paginacion" model="Model" />
 </div>
+
+<div class="modal fade" id="comentarioAccionModal" tabindex="-1" aria-labelledby="comentarioAccionTitulo" aria-hidden="true">
+    <div class="modal-dialog">
+        <form id="comentarioAccionForm" method="post" class="modal-content">
+            @Html.AntiForgeryToken()
+            <div class="modal-header">
+                <h5 class="modal-title" id="comentarioAccionTitulo">Registrar accion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <label for="comentarioAccion" class="form-label">Comentario</label>
+                <textarea id="comentarioAccion"
+                          name="comentario"
+                          class="form-control"
+                          rows="4"
+                          maxlength="500"
+                          required
+                          placeholder="Ingrese el comentario de la accion realizada"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" id="comentarioAccionSubmit" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (() => {
+            const modal = document.getElementById('comentarioAccionModal');
+            const form = document.getElementById('comentarioAccionForm');
+            const title = document.getElementById('comentarioAccionTitulo');
+            const submit = document.getElementById('comentarioAccionSubmit');
+            const comentario = document.getElementById('comentarioAccion');
+
+            modal?.addEventListener('show.bs.modal', (event) => {
+                const button = event.relatedTarget;
+                if (!button) return;
+
+                form.action = button.dataset.actionUrl ?? '';
+                title.textContent = button.dataset.actionTitle ?? 'Registrar accion';
+                submit.textContent = button.dataset.actionButton ?? 'Guardar';
+                submit.className = `btn ${button.dataset.actionButtonClass ?? 'btn-primary'}`;
+                comentario.value = '';
+            });
+
+            modal?.addEventListener('shown.bs.modal', () => comentario.focus());
+        })();
+    </script>
+}

@@ -39,7 +39,7 @@
     <form asp-action="Index" method="get" class="row g-2 align-items-end">
         <div class="col-md-8">
             <label class="form-label">Buscar</label>
-            <input name="busqueda" value="@busqueda" class="form-control" placeholder="Codigo, marca, modelo o tipo..." />
+            <input name="busqueda" value="@busqueda" class="form-control" placeholder="Codigo, marca, modelo, tipo, estado o comentario..." />
         </div>
         <div class="col-md-4 d-flex gap-2">
             <button class="btn btn-primary" type="submit"><i class="bi bi-search me-1"></i> Buscar</button>
@@ -70,6 +70,8 @@
                         <th><a class="table-sort-link" asp-route-busqueda="@busqueda" asp-route-ordenar="tipo" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "tipo")">Tipo <i class="bi @ListadoVista.IconoOrden(Model, "tipo")"></i></a></th>
                         <th><a class="table-sort-link" asp-route-busqueda="@busqueda" asp-route-ordenar="descripcion" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "descripcion")">Descripcion <i class="bi @ListadoVista.IconoOrden(Model, "descripcion")"></i></a></th>
                         <th><a class="table-sort-link" asp-route-busqueda="@busqueda" asp-route-ordenar="estado" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "estado")">Estado <i class="bi @ListadoVista.IconoOrden(Model, "estado")"></i></a></th>
+                        <th><a class="table-sort-link" asp-route-busqueda="@busqueda" asp-route-ordenar="ultimo-movimiento" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "ultimo-movimiento")">Ultimo movimiento <i class="bi @ListadoVista.IconoOrden(Model, "ultimo-movimiento")"></i></a></th>
+                        <th><a class="table-sort-link" asp-route-busqueda="@busqueda" asp-route-ordenar="comentario" asp-route-direccion="@ListadoVista.ProximaDireccion(Model, "comentario")">Comentarios <i class="bi @ListadoVista.IconoOrden(Model, "comentario")"></i></a></th>
                         <th class="text-end">Acciones</th>
                     </tr>
                 </thead>
@@ -83,6 +85,8 @@
                         <td>@item.TipoTecnologia</td>
                         <td>@item.Descripcion</td>
                         <td><span class="badge @BadgeClass(item.EstadoOperativo)">@item.EstadoOperativo</span></td>
+                        <td>@(item.UltimaFechaMovimiento?.ToString("dd/MM/yyyy HH:mm") ?? "-")</td>
+                        <td class="table-description small text-muted" style="white-space: pre-line">@(string.IsNullOrWhiteSpace(item.UltimoComentario) ? "-" : item.UltimoComentario)</td>
                         <td class="text-end actions-cell">
                             <a asp-action="Detalle" asp-route-id="@item.IdTecnologia" class="btn btn-sm btn-outline-primary">Ver</a>
                             @if ((puedeEditar || puedeSolicitarBaja) && item.PuedeEditar)

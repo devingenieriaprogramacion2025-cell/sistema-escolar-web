@@ -35,4 +35,19 @@ Usuario inicial:
 
 admin@colegio.com
 Admin123*
+
+	profesor@colegio.cl
+    Admin123*
+
+    inspector@colegio.cl
+    Admin123*
+
+    biblioteca@colegio.cl
+    Admin123*
+
+    directora@colegio.cl
+    Admin123*
+
+    secretaria@colegio.cl
+    Admin123*
 ```

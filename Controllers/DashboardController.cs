@@ -14,14 +14,14 @@ public class DashboardController : Controller
         _dashboardService = dashboardService;
     }
 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int? mes, int? anio, int? idTipoInsumo, int? idDependencia)
     {
         var rol = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value ?? string.Empty;
         var rut = User.FindFirst("RutPersonal")?.Value;
-        var resumen = await _dashboardService.ObtenerResumenAsync(rol, rut);
+        var dashboard = await _dashboardService.ObtenerDashboardAsync(rol, rut, mes, anio, idTipoInsumo, idDependencia);
         ViewBag.Rol = rol;
         ViewBag.Nombre = User.Identity?.Name ?? "Usuario";
-        return View(resumen);
+        return View(dashboard);
     }
 
     [HttpGet]

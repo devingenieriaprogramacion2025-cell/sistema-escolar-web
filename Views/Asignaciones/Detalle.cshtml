@@ -54,7 +54,7 @@
                 <dd class="col-sm-8">@Model.TipoAsignacion</dd>
 
                 <dt class="col-sm-4">Observacion</dt>
-                <dd class="col-sm-8">@(string.IsNullOrWhiteSpace(Model.Observacion) ? "-" : Model.Observacion)</dd>
+                <dd class="col-sm-8" style="white-space: pre-line">@(string.IsNullOrWhiteSpace(Model.Observacion) ? "-" : Model.Observacion)</dd>
 
                 <dt class="col-sm-4">Fecha asignacion</dt>
                 <dd class="col-sm-8">@Model.FechaAsignacion.ToString("dd/MM/yyyy HH:mm")</dd>
@@ -76,13 +76,56 @@
             <h5 class="mb-3">Acciones disponibles</h5>
             @if (puedeGestionar && Model.EstaActiva)
             {
-                <form asp-action="RegistrarDevolucion" asp-route-id="@Model.IdAsignaciones" method="post" onsubmit="return confirm('Confirma la devolucion del equipo?');">
-                    @Html.AntiForgeryToken()
-                    <button type="submit" class="btn btn-primary w-100 mb-2"><i class="bi bi-arrow-return-left me-1"></i> Registrar devolucion</button>
-                </form>
+                <button type="button"
+                        class="btn btn-primary w-100 mb-2"
+                        data-bs-toggle="modal"
+                        data-bs-target="#motivoDevolucionModal">
+                    <i class="bi bi-arrow-return-left me-1"></i> Registrar devolucion
+                </button>
             }
             <a asp-controller="Tecnologia" asp-action="Detalle" asp-route-id="@Model.IdTecnologia" class="btn btn-outline-primary w-100 mb-2">Ver equipo</a>
             <a asp-action="Index" class="btn btn-outline-secondary w-100">Volver al listado</a>
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="motivoDevolucionModal" tabindex="-1" aria-labelledby="motivoDevolucionTitulo" aria-hidden="true">
+    <div class="modal-dialog">
+        <form asp-action="RegistrarDevolucion" asp-route-id="@Model.IdAsignaciones" method="post" class="modal-content">
+            @Html.AntiForgeryToken()
+            <div class="modal-header">
+                <h5 class="modal-title" id="motivoDevolucionTitulo">Registrar devolucion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <label for="comentarioDevolucion" class="form-label">Motivo de devolucion</label>
+                <textarea id="comentarioDevolucion"
+                          name="comentario"
+                          class="form-control"
+                          rows="4"
+                          maxlength="500"
+                          required
+                          placeholder="Ingrese el motivo de la devolucion"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Registrar devolucion</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (() => {
+            const modal = document.getElementById('motivoDevolucionModal');
+            const comentario = document.getElementById('comentarioDevolucion');
+
+            modal?.addEventListener('show.bs.modal', () => {
+                comentario.value = '';
+            });
+
+            modal?.addEventListener('shown.bs.modal', () => comentario.focus());
+        })();
+    </script>
+}

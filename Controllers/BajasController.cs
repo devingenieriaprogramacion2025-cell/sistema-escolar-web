@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using SistemaEscolarWeb.Models;
 using SistemaEscolarWeb.Services;
@@ -83,57 +84,40 @@ public class BajasController : Controller
     [Authorize]
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Aprobar(int id)
+    public async Task<IActionResult> Aprobar(int id, string? comentario)
     {
-        try
-        {
-            await _bajaService.CambiarEstadoAsync(id, Estado.Aprobada, User.Identity?.Name ?? "Sistema");
-            TempData["Success"] = "Baja aprobada. El equipo quedo inactivo.";
-        }
-        catch (InvalidOperationException ex)
-        {
-            TempData["Error"] = ex.Message;
-            return RedirectToAction(nameof(Index));
-        }
-        catch
-        {
-            TempData["Error"] = "No se pudo aprobar la baja. Revise que el equipo no tenga movimientos activos.";
-            return RedirectToAction(nameof(Index));
-        }
-
-        try
-        {
-            await _bitacoraService.RegistrarAsync(User.Identity?.Name ?? "Sistema", User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value ?? "", "Bajas", $"Baja #{id} aprobada");
-        }
-        catch { }
-
-        return RedirectToAction(nameof(Index));
+        return await CambiarEstadoAsync(id, Estado.Aprobada, comentario, "Baja aprobada. El equipo quedo inactivo.", $"Baja #{id} aprobada");
     }
 
     [Authorize]
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Rechazar(int id)
+    public async Task<IActionResult> Rechazar(int id, string? comentario)
+    {
+        return await CambiarEstadoAsync(id, Estado.Rechazada, comentario, "Baja rechazada.", $"Baja #{id} rechazada");
+    }
+
+    private async Task<IActionResult> CambiarEstadoAsync(int id, string estado, string? comentario, string mensajeExito, string accionBitacora)
     {
         try
         {
-            await _bajaService.CambiarEstadoAsync(id, Estado.Rechazada, User.Identity?.Name ?? "Sistema");
-            TempData["Success"] = "Baja rechazada.";
+            await _bajaService.CambiarEstadoAsync(id, estado, comentario, User.Identity?.Name ?? "Sistema");
+            TempData["Success"] = mensajeExito;
         }
         catch (InvalidOperationException ex)
         {
             TempData["Error"] = ex.Message;
             return RedirectToAction(nameof(Index));
         }
-        catch
+        catch (DbUpdateException ex)
         {
-            TempData["Error"] = "No se pudo rechazar la baja. Intente nuevamente o revise el registro.";
+            TempData["Error"] = $"No se pudo registrar la accion: {ex.GetBaseException().Message}";
             return RedirectToAction(nameof(Index));
         }
 
         try
         {
-            await _bitacoraService.RegistrarAsync(User.Identity?.Name ?? "Sistema", User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value ?? "", "Bajas", $"Baja #{id} rechazada");
+            await _bitacoraService.RegistrarAsync(User.Identity?.Name ?? "Sistema", User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value ?? "", "Bajas", accionBitacora);
         }
         catch { }
 

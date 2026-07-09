@@ -38,6 +38,10 @@ public class TecnologiaService
                 t.Modelo.ToLower().Contains(termino) ||
                 t.Proveedor.ToLower().Contains(termino) ||
                 t.TipoTecnologia.ToLower().Contains(termino) ||
+                t.EstadoOperativo.ToLower().Contains(termino) ||
+                (t.UltimoComentario ?? "").ToLower().Contains(termino) ||
+                (t.UltimaFechaMovimiento?.ToString("dd/MM/yyyy HH:mm") ?? "").Contains(termino) ||
+                (t.UltimaFechaMovimiento?.ToString("dd-MM-yyyy HH:mm") ?? "").Contains(termino) ||
                 (t.NumeroFactura ?? "").ToLower().Contains(termino) ||
                 (t.Descripcion ?? "").ToLower().Contains(termino)).ToList();
         }
@@ -295,6 +299,8 @@ public class TecnologiaService
 
     private async Task<EquipoDto> MapearDtoAsync(Tecnologia equipo)
     {
+        var ultimoMovimiento = await ObtenerUltimoMovimientoAsync(equipo);
+
         return new EquipoDto
         {
             IdTecnologia = equipo.IdTecnologia,
@@ -311,7 +317,9 @@ public class TecnologiaService
             Cantidad = await ObtenerCantidadEntradaAsync(equipo.IdEntradaTecnologia),
             NumeroFactura = await ObtenerFacturaEntradaAsync(equipo.IdEntradaTecnologia),
             Activo = equipo.Estado,
-            EstadoOperativo = await ObtenerEstadoOperativoAsync(equipo)
+            EstadoOperativo = await ObtenerEstadoOperativoAsync(equipo),
+            UltimaFechaMovimiento = ultimoMovimiento.Fecha,
+            UltimoComentario = ultimoMovimiento.Comentario
         };
     }
 
@@ -605,6 +613,86 @@ public class TecnologiaService
             ? await _context.EntradasTecnologia.FirstOrDefaultAsync(e => e.IdEntradaTecnologia == idEntrada.Value)
             : null;
         return entrada?.NumeroFactura ?? string.Empty;
+    }
+
+    private async Task<(DateTime? Fecha, string? Comentario)> ObtenerUltimoMovimientoAsync(Tecnologia equipo)
+    {
+        var fechas = new List<DateTime>();
+        var comentarios = new List<(DateTime Fecha, string Comentario)>();
+
+        if (equipo.IdEntradaTecnologia.HasValue)
+        {
+            var entrada = await _context.EntradasTecnologia.AsNoTracking()
+                .FirstOrDefaultAsync(e => e.IdEntradaTecnologia == equipo.IdEntradaTecnologia.Value);
+            if (entrada != null)
+                fechas.Add(entrada.FechaEntrada);
+        }
+
+        var asignaciones = await _context.Asignaciones.AsNoTracking()
+            .Where(a => a.IdTecnologia == equipo.IdTecnologia)
+            .ToListAsync();
+        foreach (var asignacion in asignaciones)
+        {
+            fechas.Add(asignacion.FechaAsignacion);
+            AgregarComentario(comentarios, asignacion.FechaAsignacion, ObtenerUltimaLineaComentario(SepararTipoYObservacion(asignacion.TipoAsignacion).Observacion));
+
+            if (asignacion.FechaDevolucion.HasValue)
+            {
+                fechas.Add(asignacion.FechaDevolucion.Value);
+                AgregarComentario(comentarios, asignacion.FechaDevolucion.Value, ObtenerUltimaLineaComentario(SepararTipoYObservacion(asignacion.TipoAsignacion).Observacion));
+            }
+        }
+
+        var reparaciones = await _context.Reparaciones.AsNoTracking()
+            .Where(r => r.IdTecnologia == equipo.IdTecnologia)
+            .ToListAsync();
+        foreach (var reparacion in reparaciones)
+        {
+            fechas.Add(reparacion.FechaEnvio);
+            AgregarComentario(comentarios, reparacion.FechaEnvio, ObtenerUltimaLineaComentario(reparacion.Detalle));
+
+            if (reparacion.FechaRetorno.HasValue)
+            {
+                fechas.Add(reparacion.FechaRetorno.Value);
+                AgregarComentario(comentarios, reparacion.FechaRetorno.Value, ObtenerUltimaLineaComentario(reparacion.Detalle));
+            }
+        }
+
+        var bajas = await _context.Bajas.AsNoTracking()
+            .Where(b => b.IdTecnologia == equipo.IdTecnologia)
+            .ToListAsync();
+        foreach (var baja in bajas)
+        {
+            fechas.Add(baja.FechaBaja);
+            AgregarComentario(comentarios, baja.FechaBaja, ObtenerUltimaLineaComentario(baja.Detalle));
+        }
+
+        return (
+            fechas.Count == 0 ? null : fechas.Max(),
+            comentarios.OrderByDescending(c => c.Fecha).Select(c => c.Comentario).FirstOrDefault()
+        );
+    }
+
+    private static (string Tipo, string? Observacion) SepararTipoYObservacion(string valor)
+    {
+        var partes = valor.Split(" | ", 2, StringSplitOptions.None);
+        return partes.Length == 2 ? (partes[0], partes[1]) : (valor, null);
+    }
+
+    private static string? ObtenerUltimaLineaComentario(string? comentario)
+    {
+        if (string.IsNullOrWhiteSpace(comentario))
+            return null;
+
+        return comentario
+            .Split(new[] { Environment.NewLine, "\n" }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .LastOrDefault();
+    }
+
+    private static void AgregarComentario(List<(DateTime Fecha, string Comentario)> comentarios, DateTime fecha, string? comentario)
+    {
+        if (!string.IsNullOrWhiteSpace(comentario))
+            comentarios.Add((fecha, comentario));
     }
 
     private async Task<string> ObtenerEstadoOperativoAsync(Tecnologia equipo)

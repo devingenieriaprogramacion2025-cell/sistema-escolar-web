@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using SistemaEscolarWeb.Models;
 using SistemaEscolarWeb.Services;
@@ -85,30 +86,43 @@ public class ReparacionesController : Controller
     [Authorize]
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Aprobar(int id)
+    public async Task<IActionResult> Aprobar(int id, string? comentario)
     {
-        await _reparacionService.CambiarEstadoAsync(id, Estado.EnReparacion, User.Identity?.Name ?? "Sistema");
-        TempData["Success"] = "Reparacion aprobada y enviada a proceso.";
-        return RedirectToAction(nameof(Index));
+        return await CambiarEstadoAsync(id, Estado.EnReparacion, comentario, "Reparacion aprobada y enviada a proceso.");
     }
 
     [Authorize]
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Rechazar(int id)
+    public async Task<IActionResult> Rechazar(int id, string? comentario)
     {
-        await _reparacionService.CambiarEstadoAsync(id, Estado.Rechazada, User.Identity?.Name ?? "Sistema");
-        TempData["Success"] = "Reparacion rechazada.";
-        return RedirectToAction(nameof(Index));
+        return await CambiarEstadoAsync(id, Estado.Rechazada, comentario, "Reparacion rechazada.");
     }
 
     [Authorize]
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> RegistrarRetorno(int id)
+    public async Task<IActionResult> RegistrarRetorno(int id, string? comentario)
     {
-        await _reparacionService.CambiarEstadoAsync(id, Estado.Reparada, User.Identity?.Name ?? "Sistema");
-        TempData["Success"] = "Retorno de equipo registrado correctamente.";
+        return await CambiarEstadoAsync(id, Estado.Reparada, comentario, "Retorno de equipo registrado correctamente.");
+    }
+
+    private async Task<IActionResult> CambiarEstadoAsync(int id, string estado, string? comentario, string mensajeExito)
+    {
+        try
+        {
+            await _reparacionService.CambiarEstadoAsync(id, estado, comentario, User.Identity?.Name ?? "Sistema");
+            TempData["Success"] = mensajeExito;
+        }
+        catch (InvalidOperationException ex)
+        {
+            TempData["Error"] = ex.Message;
+        }
+        catch (DbUpdateException ex)
+        {
+            TempData["Error"] = $"No se pudo registrar la accion: {ex.GetBaseException().Message}";
+        }
+
         return RedirectToAction(nameof(Index));
     }
 }

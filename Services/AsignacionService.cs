@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SistemaEscolarWeb.Data;
 using SistemaEscolarWeb.DTOs;
+using SistemaEscolarWeb.Helpers;
 using SistemaEscolarWeb.Models;
 using SistemaEscolarWeb.Repositories;
 using SistemaEscolarWeb.ViewModels;
@@ -155,8 +156,11 @@ public class AsignacionService
         await _repository.AgregarAsync(asignacion);
     }
 
-    public async Task RegistrarDevolucionAsync(int id)
+    public async Task RegistrarDevolucionAsync(int id, string? comentario, string usuario)
     {
+        if (!InputValidationHelper.IsSafeText(comentario, 500, required: true))
+            throw new InvalidOperationException("Debe ingresar un motivo de devolucion valido de hasta 500 caracteres.");
+
         var asignacion = await _repository.ObtenerAsync(id);
         if (asignacion == null)
             throw new InvalidOperationException("La asignación seleccionada no existe.");
@@ -166,6 +170,7 @@ public class AsignacionService
 
         asignacion.FechaDevolucion = DateTime.Now;
         asignacion.EstadoAsignacion = "Finalizada";
+        asignacion.TipoAsignacion = AnexarComentarioDevolucion(asignacion.TipoAsignacion, comentario!, usuario);
         await _repository.GuardarAsync();
     }
 
@@ -227,5 +232,16 @@ public class AsignacionService
     {
         var partes = valor.Split(" | ", 2, StringSplitOptions.None);
         return partes.Length == 2 ? (partes[0], partes[1]) : (valor, null);
+    }
+
+    private static string AnexarComentarioDevolucion(string valor, string comentario, string usuario)
+    {
+        var partes = SepararTipoYObservacion(valor);
+        var lineaComentario = $"[{DateTime.Now:dd/MM/yyyy HH:mm}] {usuario} - Devolucion: {comentario.Trim()}";
+        var observacion = string.IsNullOrWhiteSpace(partes.Observacion)
+            ? lineaComentario
+            : $"{partes.Observacion.Trim()}{Environment.NewLine}{lineaComentario}";
+
+        return $"{partes.Tipo.Trim()} | {observacion}";
     }
 }

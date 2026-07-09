@@ -8,7 +8,6 @@ public class CrearImpresionViewModel
 {
     [Required(ErrorMessage = "Debe seleccionar una persona.")]
     [Display(Name = "Solicitante")]
-    [RegularExpression(@"^[0-9]{7,8}-[0-9Kk]$", ErrorMessage = "Debe seleccionar un RUT valido.")]
     public string RutPersonal { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Debe indicar la cantidad de paginas.")]
@@ -20,6 +19,11 @@ public class CrearImpresionViewModel
     [Range(1, 9999, ErrorMessage = "La cantidad de copias debe estar entre 1 y 9999.")]
     [Display(Name = "Cantidad de copias solicitadas")]
     public int CantidadCopias { get; set; } = 1;
+
+    [Required(ErrorMessage = "Debe indicar el dia de entrega requerido.")]
+    [DataType(DataType.Date)]
+    [Display(Name = "Dia de entrega requerido")]
+    public DateTime? FechaEntregaRequerida { get; set; } = DateTime.Today.AddDays(3);
 
     public int TotalImpresiones => CantidadPaginas * CantidadCopias;
 

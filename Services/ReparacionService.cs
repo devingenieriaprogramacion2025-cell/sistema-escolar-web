@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SistemaEscolarWeb.Data;
 using SistemaEscolarWeb.DTOs;
+using SistemaEscolarWeb.Helpers;
 using SistemaEscolarWeb.Models;
 using SistemaEscolarWeb.ViewModels;
 
@@ -31,6 +32,7 @@ public class ReparacionService
             resultado = resultado.Where(r =>
                 r.CodigoEquipo.ToLower().Contains(termino) ||
                 (r.Destino ?? "").ToLower().Contains(termino) ||
+                (r.Detalle ?? "").ToLower().Contains(termino) ||
                 r.EstadoReparacion.ToLower().Contains(termino)).ToList();
         }
 
@@ -84,8 +86,11 @@ public class ReparacionService
         await _context.SaveChangesAsync();
     }
 
-    public async Task CambiarEstadoAsync(int id, string estado, string usuario)
+    public async Task CambiarEstadoAsync(int id, string estado, string? comentario, string usuario)
     {
+        if (!InputValidationHelper.IsSafeText(comentario, 500, required: true))
+            throw new InvalidOperationException("Debe ingresar un comentario valido de hasta 500 caracteres.");
+
         var reparacion = await _context.Reparaciones.FirstOrDefaultAsync(r => r.IdReparacion == id);
         if (reparacion == null)
             throw new InvalidOperationException("La reparacion seleccionada no existe.");
@@ -95,8 +100,17 @@ public class ReparacionService
             reparacion.UsuarioAprueba = usuario;
         if (estado == Estado.Reparada)
             reparacion.FechaRetorno = DateTime.Now;
+        reparacion.Detalle = AnexarComentarioGestion(reparacion.Detalle, estado, comentario!, usuario);
 
         await _context.SaveChangesAsync();
+    }
+
+    private static string AnexarComentarioGestion(string? detalleActual, string estado, string comentario, string usuario)
+    {
+        var lineaComentario = $"[{DateTime.Now:dd/MM/yyyy HH:mm}] {usuario} - {estado}: {comentario.Trim()}";
+        return string.IsNullOrWhiteSpace(detalleActual)
+            ? lineaComentario
+            : $"{detalleActual.Trim()}{Environment.NewLine}{lineaComentario}";
     }
 
     private async Task<ReparacionDto> MapearDtoAsync(Reparacion reparacion)

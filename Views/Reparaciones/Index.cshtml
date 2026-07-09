@@ -33,7 +33,7 @@
     <form asp-action="Index" method="get" class="row g-2 align-items-end">
         <div class="col-md-8">
             <label class="form-label">Buscar</label>
-            <input name="busqueda" value="@busqueda" class="form-control" placeholder="Equipo, destino o estado..." />
+            <input name="busqueda" value="@busqueda" class="form-control" placeholder="Equipo, destino, comentario o estado..." />
         </div>
         <div class="col-md-4 d-flex gap-2">
             <button class="btn btn-primary" type="submit"><i class="bi bi-search me-1"></i> Buscar</button>
@@ -59,7 +59,7 @@
             @foreach (var item in Model.Items)
             {
                 <tr>
-                    <td><strong>@item.CodigoEquipo</strong><div class="small text-muted">@item.Detalle</div></td>
+                    <td><strong>@item.CodigoEquipo</strong><div class="small text-muted" style="white-space: pre-line">@item.Detalle</div></td>
                     <td>@item.Destino</td>
                     <td>@item.FechaEnvio.ToString("dd/MM/yyyy")</td>
                     <td>@(item.FechaRetorno?.ToString("dd/MM/yyyy") ?? "Pendiente")</td>
@@ -68,21 +68,39 @@
                         <div class="actions-cell">
                             @if (puedeAprobar && (item.EstadoReparacion == "Pendiente" || item.EstadoReparacion == "Solicitada"))
                             {
-                                <form asp-action="Aprobar" asp-route-id="@item.IdReparacion" method="post">
-                                    @Html.AntiForgeryToken()
-                                    <button class="btn btn-sm btn-outline-primary" type="submit">Aprobar</button>
-                                </form>
-                                <form asp-action="Rechazar" asp-route-id="@item.IdReparacion" method="post">
-                                    @Html.AntiForgeryToken()
-                                    <button class="btn btn-sm btn-outline-danger" type="submit">Rechazar</button>
-                                </form>
+                                <button class="btn btn-sm btn-outline-primary"
+                                        type="button"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#comentarioAccionModal"
+                                        data-action-url="@Url.Action("Aprobar", "Reparaciones", new { id = item.IdReparacion })"
+                                        data-action-title="Aprobar reparacion"
+                                        data-action-button="Aprobar"
+                                        data-action-button-class="btn-primary">
+                                    Aprobar
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger"
+                                        type="button"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#comentarioAccionModal"
+                                        data-action-url="@Url.Action("Rechazar", "Reparaciones", new { id = item.IdReparacion })"
+                                        data-action-title="Rechazar reparacion"
+                                        data-action-button="Rechazar"
+                                        data-action-button-class="btn-danger">
+                                    Rechazar
+                                </button>
                             }
                             @if (puedeCrear && item.EstadoReparacion != "Reparada" && item.EstadoReparacion != "Rechazada")
                             {
-                                <form asp-action="RegistrarRetorno" asp-route-id="@item.IdReparacion" method="post">
-                                    @Html.AntiForgeryToken()
-                                    <button class="btn btn-sm btn-outline-success" type="submit">Retorno</button>
-                                </form>
+                                <button class="btn btn-sm btn-outline-success"
+                                        type="button"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#comentarioAccionModal"
+                                        data-action-url="@Url.Action("RegistrarRetorno", "Reparaciones", new { id = item.IdReparacion })"
+                                        data-action-title="Registrar retorno"
+                                        data-action-button="Registrar retorno"
+                                        data-action-button-class="btn-success">
+                                    Retorno
+                                </button>
                             }
                         </div>
                     </td>
@@ -93,3 +111,54 @@
     </div>
     <partial name="_Paginacion" model="Model" />
 </div>
+
+<div class="modal fade" id="comentarioAccionModal" tabindex="-1" aria-labelledby="comentarioAccionTitulo" aria-hidden="true">
+    <div class="modal-dialog">
+        <form id="comentarioAccionForm" method="post" class="modal-content">
+            @Html.AntiForgeryToken()
+            <div class="modal-header">
+                <h5 class="modal-title" id="comentarioAccionTitulo">Registrar accion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <label for="comentarioAccion" class="form-label">Comentario</label>
+                <textarea id="comentarioAccion"
+                          name="comentario"
+                          class="form-control"
+                          rows="4"
+                          maxlength="500"
+                          required
+                          placeholder="Ingrese el comentario de la accion realizada"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" id="comentarioAccionSubmit" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (() => {
+            const modal = document.getElementById('comentarioAccionModal');
+            const form = document.getElementById('comentarioAccionForm');
+            const title = document.getElementById('comentarioAccionTitulo');
+            const submit = document.getElementById('comentarioAccionSubmit');
+            const comentario = document.getElementById('comentarioAccion');
+
+            modal?.addEventListener('show.bs.modal', (event) => {
+                const button = event.relatedTarget;
+                if (!button) return;
+
+                form.action = button.dataset.actionUrl ?? '';
+                title.textContent = button.dataset.actionTitle ?? 'Registrar accion';
+                submit.textContent = button.dataset.actionButton ?? 'Guardar';
+                submit.className = `btn ${button.dataset.actionButtonClass ?? 'btn-primary'}`;
+                comentario.value = '';
+            });
+
+            modal?.addEventListener('shown.bs.modal', () => comentario.focus());
+        })();
+    </script>
+}

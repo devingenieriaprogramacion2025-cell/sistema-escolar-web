@@ -1,16 +1,16 @@
 ﻿<Project>
   <ItemGroup>
-    <StaticWebAssetEndpoint Include="_content/SistemaEscolarWeb/css/site.5yab511pxu.css">
-      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\site.css'))</AssetFile>
-      <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"5yab511pxu"},{"Name":"integrity","Value":"sha256-LSWv\u002BlD3KURJI6ikPdnNadSFzAtsp8P9EoTkeqEdz8o="},{"Name":"label","Value":"_content/SistemaEscolarWeb/css/site.css"}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"6555"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022LSWv\u002BlD3KURJI6ikPdnNadSFzAtsp8P9EoTkeqEdz8o=\u0022"},{"Name":"Last-Modified","Value":"Sat, 04 Jul 2026 20:28:34 GMT"}]]]></ResponseHeaders>
-    </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/SistemaEscolarWeb/css/site.css">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\site.css'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-LSWv\u002BlD3KURJI6ikPdnNadSFzAtsp8P9EoTkeqEdz8o="}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"6555"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022LSWv\u002BlD3KURJI6ikPdnNadSFzAtsp8P9EoTkeqEdz8o=\u0022"},{"Name":"Last-Modified","Value":"Sat, 04 Jul 2026 20:28:34 GMT"}]]]></ResponseHeaders>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-WJfmh/rDiELNehDaZc8XtRFFgvv07M1MKjMAo0Nq3/w="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"7810"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022WJfmh/rDiELNehDaZc8XtRFFgvv07M1MKjMAo0Nq3/w=\u0022"},{"Name":"Last-Modified","Value":"Thu, 09 Jul 2026 22:51:43 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/SistemaEscolarWeb/css/site.oovtzsbyvk.css">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\site.css'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"oovtzsbyvk"},{"Name":"integrity","Value":"sha256-WJfmh/rDiELNehDaZc8XtRFFgvv07M1MKjMAo0Nq3/w="},{"Name":"label","Value":"_content/SistemaEscolarWeb/css/site.css"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"7810"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022WJfmh/rDiELNehDaZc8XtRFFgvv07M1MKjMAo0Nq3/w=\u0022"},{"Name":"Last-Modified","Value":"Thu, 09 Jul 2026 22:51:43 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/SistemaEscolarWeb/images/logo-chroma.png">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\logo-chroma.png'))</AssetFile>

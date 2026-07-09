@@ -1,138 +1,358 @@
-@model DashboardResumenDto
+@model DashboardViewModel
 @using System.Text.Json
 @{
     ViewData["Title"] = "Dashboard";
     var rol = ViewBag.Rol as string ?? "";
     var nombre = ViewBag.Nombre as string ?? "Usuario";
+    var puedeInsumos = User.HasPermission("insumos.gestionar", "Ver insumos");
+    var puedeTecnologia = User.HasPermission("tecnologia.gestionar", "Ver tecnologÃ­a", "Ver tecnologÃƒÂ­a");
+    var puedeAsignaciones = User.HasPermission("tecnologia.asignar", "Ver asignaciones");
+    var puedeReparaciones = User.HasPermission("reparaciones.solicitar", "reparaciones.aprobar", "Ver reparaciones");
+    var puedeBajas = User.HasPermission("bajas.solicitar", "bajas.aprobar", "Ver bajas");
+    var puedeImpresiones = User.HasPermission("impresiones.solicitar", "impresiones.gestionar", "Ver impresiones");
     var chartOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
-    var equiposJson = JsonSerializer.Serialize(Model.EquiposPorEstado, chartOptions);
-    var impresionesJson = JsonSerializer.Serialize(Model.ImpresionesPorEstado, chartOptions);
-    var personalJson = JsonSerializer.Serialize(Model.PersonalPorRol, chartOptions);
-    var movimientosJson = JsonSerializer.Serialize(Model.MovimientosMensuales, chartOptions);
+    var impresionesEstadoJson = JsonSerializer.Serialize(new[]
+    {
+        new { label = "Pendientes", value = Model.Impresiones.Pendientes },
+        new { label = "En proceso", value = Model.Impresiones.EnProceso },
+        new { label = "Entregadas", value = Model.Impresiones.Entregadas },
+        new { label = "Rechazadas", value = Model.Impresiones.Rechazadas }
+    }, chartOptions);
+    var tecnologiaEstadoJson = JsonSerializer.Serialize(new[]
+    {
+        new { label = "Disponibles", value = Model.GestionTecnologica.Tecnologias.Disponibles },
+        new { label = "Asignadas", value = Model.GestionTecnologica.Tecnologias.Asignadas },
+        new { label = "En reparacion", value = Model.GestionTecnologica.Tecnologias.EnReparacion },
+        new { label = "Dadas de baja", value = Model.GestionTecnologica.Tecnologias.DadasDeBaja }
+    }, chartOptions);
+}
+
+@functions {
+    string AlertClass(string severidad) => severidad switch
+    {
+        "Alta" => "dashboard-alert-high",
+        "Media" => "dashboard-alert-medium",
+        _ => "dashboard-alert-low"
+    };
+
+    string BadgeClass(string estado) => estado switch
+    {
+        "Pendiente" => "text-bg-warning",
+        "En Proceso" => "text-bg-primary",
+        "Entregada" => "text-bg-success",
+        "Rechazada" => "text-bg-danger",
+        "Aprobada" => "text-bg-success",
+        "Activa" => "text-bg-primary",
+        "Finalizada" => "text-bg-success",
+        "Reparada" => "text-bg-success",
+        _ => "text-bg-secondary"
+    };
 }
 
 <div class="page-heading">
     <div>
-        <h2>Bienvenido/a, @nombre</h2>
-        <p>Rol activo: <strong>@rol</strong></p>
+        <h2>Dashboard de gestion</h2>
+        <p>@nombre · @rol · Periodo @Model.Filtros.Periodo</p>
     </div>
 </div>
 
-<div class="row g-3">
-    <partial name="_Card" model='new Tuple<string,string,string>("Usuarios activos", Model.UsuariosActivos.ToString(), "bi-person-check")' />
-    <partial name="_Card" model='new Tuple<string,string,string>("Personal activo", Model.TotalPersonal.ToString(), "bi-people")' />
-    <partial name="_Card" model='new Tuple<string,string,string>("Equipos registrados", Model.TotalEquipos.ToString(), "bi-pc-display")' />
-    <partial name="_Card" model='new Tuple<string,string,string>("Equipos asignados", Model.EquiposAsignados.ToString(), "bi-clipboard-check")' />
-    <partial name="_Card" model='new Tuple<string,string,string>("Reparaciones pendientes", Model.ReparacionesPendientes.ToString(), "bi-tools")' />
-    <partial name="_Card" model='new Tuple<string,string,string>("Bajas pendientes", Model.BajasPendientes.ToString(), "bi-archive")' />
-    <partial name="_Card" model='new Tuple<string,string,string>("Impresiones pendientes", Model.ImpresionesPendientes.ToString(), "bi-printer")' />
-    <partial name="_Card" model='new Tuple<string,string,string>("Impresiones en proceso", Model.ImpresionesEnProceso.ToString(), "bi-hourglass-split")' />
-    <partial name="_Card" model='new Tuple<string,string,string>("Impresiones entregadas", Model.ImpresionesEntregadas.ToString(), "bi-check2-square")' />
-    <partial name="_Card" model='new Tuple<string,string,string>("Impresiones rechazadas", Model.ImpresionesRechazadas.ToString(), "bi-x-circle")' />
+<div class="content-card mb-3">
+    <form asp-action="Index" method="get" class="row g-2 align-items-end">
+        <div class="col-sm-6 col-lg-2">
+            <label class="form-label">Mes</label>
+            <select name="mes" asp-items="Model.Filtros.Meses" class="form-select"></select>
+        </div>
+        <div class="col-sm-6 col-lg-2">
+            <label class="form-label">Año</label>
+            <select name="anio" asp-items="Model.Filtros.Anios" class="form-select"></select>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <label class="form-label">Tipo de insumo</label>
+            <select name="idTipoInsumo" asp-items="Model.Filtros.TiposInsumo" class="form-select">
+                <option value="">Todos</option>
+            </select>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <label class="form-label">Dependencia</label>
+            <select name="idDependencia" asp-items="Model.Filtros.Dependencias" class="form-select">
+                <option value="">Todas</option>
+            </select>
+        </div>
+        <div class="col-lg-2 d-flex gap-2">
+            <button class="btn btn-primary w-100" type="submit"><i class="bi bi-funnel me-1"></i> Filtrar</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Limpiar</a>
+        </div>
+    </form>
 </div>
 
-<div class="row g-3 mt-1">
-    <div class="col-xl-6">
-        <div class="content-card chart-card">
-            <div class="section-title">
-                <h3>Equipos por estado</h3>
-                <span>Grafico circular</span>
-            </div>
-            <canvas id="equiposChart"></canvas>
-        </div>
+<section class="dashboard-section">
+    <h3 class="dashboard-section-heading">Resumen General</h3>
+    <div class="row g-3">
+        <partial name="_Card" model='new Tuple<string,string,string>("Tecnologias registradas", Model.ResumenGeneral.TotalTecnologias.ToString(), "bi-pc-display")' />
+        <partial name="_Card" model='new Tuple<string,string,string>("Disponibles", Model.ResumenGeneral.TecnologiasDisponibles.ToString(), "bi-check2-circle")' />
+        <partial name="_Card" model='new Tuple<string,string,string>("Asignadas", Model.ResumenGeneral.TecnologiasAsignadas.ToString(), "bi-clipboard-check")' />
+        <partial name="_Card" model='new Tuple<string,string,string>("En reparacion", Model.ResumenGeneral.TecnologiasEnReparacion.ToString(), "bi-tools")' />
+        <partial name="_Card" model='new Tuple<string,string,string>("Dadas de baja", Model.ResumenGeneral.TecnologiasDadasDeBaja.ToString(), "bi-archive")' />
+        <partial name="_Card" model='new Tuple<string,string,string>("Insumos activos", Model.ResumenGeneral.TotalInsumos.ToString(), "bi-box-seam")' />
+        <partial name="_Card" model='new Tuple<string,string,string>("Impresiones pendientes", Model.ResumenGeneral.ImpresionesPendientes.ToString(), "bi-printer")' />
+        <partial name="_Card" model='new Tuple<string,string,string>("Bajo stock", Model.ResumenGeneral.AlertasBajoStock.ToString(), "bi-exclamation-triangle")' />
     </div>
-    <div class="col-xl-6">
-        <div class="content-card chart-card">
-            <div class="section-title">
-                <h3>Impresiones por estado</h3>
-                <span>Grafico circular</span>
+</section>
+
+@if (puedeImpresiones)
+{
+    <section class="dashboard-section">
+        <h3 class="dashboard-section-heading">Servicios de Impresion</h3>
+        <div class="row g-3">
+            <div class="col-lg-4">
+                <div class="content-card dashboard-mini-chart">
+                    <div class="section-title">
+                        <h3>Estados del servicio</h3>
+                        <span>@Model.Impresiones.PorcentajeResueltas% resueltas</span>
+                    </div>
+                    <canvas id="impresionesEstadoChart"></canvas>
+                </div>
             </div>
-            <canvas id="impresionesChart"></canvas>
-        </div>
-    </div>
-    <div class="col-xl-6">
-        <div class="content-card chart-card">
-            <div class="section-title">
-                <h3>Personal</h3>
-                <span>Grafico de barras</span>
+            <div class="col-lg-8">
+                <div class="row g-3">
+                    <partial name="_Card" model='new Tuple<string,string,string>("Entregadas", Model.Impresiones.Entregadas.ToString(), "bi-check2-square")' />
+                    <partial name="_Card" model='new Tuple<string,string,string>("En proceso", Model.Impresiones.EnProceso.ToString(), "bi-hourglass-split")' />
+                    <partial name="_Card" model='new Tuple<string,string,string>("Pendientes", Model.Impresiones.Pendientes.ToString(), "bi-clock")' />
+                    <partial name="_Card" model='new Tuple<string,string,string>("Rechazadas", Model.Impresiones.Rechazadas.ToString(), "bi-x-circle")' />
+                    <partial name="_Card" model='new Tuple<string,string,string>("Solicitudes del mes", Model.Impresiones.TotalMensualSolicitudes.ToString(), "bi-calendar2-check")' />
+                    <partial name="_Card" model='new Tuple<string,string,string>("Paginas del mes", Model.Impresiones.TotalMensualPaginas.ToString(), "bi-files")' />
+                    <partial name="_Card" model='new Tuple<string,string,string>("Copias del mes", Model.Impresiones.TotalMensualCopias.ToString(), "bi-stack")' />
+                </div>
             </div>
-            <canvas id="personalChart"></canvas>
-        </div>
-    </div>
-    <div class="col-xl-6">
-        <div class="content-card chart-card">
-            <div class="section-title">
-                <h3>Movimientos mensuales</h3>
-                <span>Total Impresiones</span>
+            <div class="col-12">
+                <div class="content-card">
+                    <div class="section-title"><h3>Ultimas solicitudes</h3><span>Trabajo reciente</span></div>
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+                            <thead><tr><th>Solicitante</th><th>Fecha</th><th>Total</th><th>Estado</th></tr></thead>
+                            <tbody>
+                            @foreach (var item in Model.Impresiones.UltimasSolicitudes)
+                            {
+                                <tr>
+                                    <td>@item.Solicitante</td>
+                                    <td>@item.FechaSolicitud.ToString("dd/MM/yyyy")</td>
+                                    <td>@item.TotalImpresiones</td>
+                                    <td><span class="badge @BadgeClass(item.Estado)">@item.Estado</span></td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-            <canvas id="movimientosChart"></canvas>
         </div>
+    </section>
+}
+
+@if (puedeInsumos)
+{
+    <section class="dashboard-section">
+        <h3 class="dashboard-section-heading">Inventario de Insumos</h3>
+        <div class="row g-3">
+            <div class="col-lg-4">
+                <div class="content-card h-100">
+                    <div class="section-title"><h3>Stock por tipo</h3><span>@Model.InventarioInsumos.TotalBajoStock alertas</span></div>
+                    @foreach (var tipo in Model.InventarioInsumos.InsumosPorTipo)
+                    {
+                        <div class="d-flex justify-content-between border-bottom py-2">
+                            <span>@tipo.Tipo</span>
+                            <strong>@tipo.Total <span class="text-danger small">(@tipo.BajoStock bajo)</span></strong>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="content-card">
+                    <div class="section-title"><h3>Recomendacion de compra mensual</h3><span>Ordenado por criticidad</span></div>
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+                            <thead><tr><th>Insumo</th><th>Tipo</th><th>Stock</th><th>Minimo</th><th>Sugerido</th></tr></thead>
+                            <tbody>
+                            @foreach (var item in Model.InventarioInsumos.RecomendacionCompra)
+                            {
+                                <tr>
+                                    <td><strong>@item.Nombre</strong><div class="small text-muted">@item.UnidadMedida</div></td>
+                                    <td>@item.Tipo</td>
+                                    <td>@item.StockActual</td>
+                                    <td>@item.StockMinimo</td>
+                                    <td><span class="badge text-bg-danger">@item.CantidadSugerida</span></td>
+                                </tr>
+                            }
+                            @if (!Model.InventarioInsumos.RecomendacionCompra.Any())
+                            {
+                                <tr><td colspan="5" class="text-muted">No hay insumos bajo stock para el filtro seleccionado.</td></tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="content-card">
+                    <div class="section-title"><h3>Mayor stock</h3><span>Top 5</span></div>
+                    @foreach (var item in Model.InventarioInsumos.MayorStock)
+                    {
+                        <div class="d-flex justify-content-between border-bottom py-2"><span>@item.Nombre</span><strong>@item.StockActual</strong></div>
+                    }
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="content-card">
+                    <div class="section-title"><h3>Menor stock</h3><span>Top 5</span></div>
+                    @foreach (var item in Model.InventarioInsumos.MenorStock)
+                    {
+                        <div class="d-flex justify-content-between border-bottom py-2"><span>@item.Nombre</span><strong>@item.StockActual</strong></div>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+}
+
+@if (puedeTecnologia || puedeAsignaciones || puedeReparaciones || puedeBajas)
+{
+    <section class="dashboard-section">
+        <h3 class="dashboard-section-heading">Gestion Tecnologica</h3>
+        <div class="row g-3">
+            @if (puedeTecnologia)
+            {
+                <div class="col-lg-4">
+                    <div class="content-card dashboard-mini-chart">
+                        <div class="section-title"><h3>Tecnologias</h3><span>Estado actual</span></div>
+                        <canvas id="tecnologiaEstadoChart"></canvas>
+                    </div>
+                </div>
+            }
+            <div class="col-lg-8">
+                <div class="row g-3">
+                    @if (puedeAsignaciones)
+                    {
+                        <partial name="_Card" model='new Tuple<string,string,string>("Asignaciones activas", Model.GestionTecnologica.Asignaciones.Activas.ToString(), "bi-clipboard-check")' />
+                        <partial name="_Card" model='new Tuple<string,string,string>("Asignaciones devueltas", Model.GestionTecnologica.Asignaciones.Devueltas.ToString(), "bi-arrow-return-left")' />
+                        <partial name="_Card" model='new Tuple<string,string,string>("Asignaciones del mes", Model.GestionTecnologica.Asignaciones.DelMes.ToString(), "bi-calendar2-week")' />
+                    }
+                    @if (puedeReparaciones)
+                    {
+                        <partial name="_Card" model='new Tuple<string,string,string>("Reparaciones pendientes", Model.GestionTecnologica.Reparaciones.Pendientes.ToString(), "bi-tools")' />
+                        <partial name="_Card" model='new Tuple<string,string,string>("Reparaciones en proceso", Model.GestionTecnologica.Reparaciones.EnProceso.ToString(), "bi-hourglass")' />
+                        <partial name="_Card" model='new Tuple<string,string,string>("Promedio dias reparacion", Model.GestionTecnologica.Reparaciones.PromedioDias.ToString("0.#"), "bi-stopwatch")' />
+                    }
+                    @if (puedeBajas)
+                    {
+                        <partial name="_Card" model='new Tuple<string,string,string>("Bajas pendientes", Model.GestionTecnologica.Bajas.Solicitadas.ToString(), "bi-archive")' />
+                        <partial name="_Card" model='new Tuple<string,string,string>("Bajas del mes", Model.GestionTecnologica.Bajas.DelMes.ToString(), "bi-calendar-minus")' />
+                    }
+                </div>
+            </div>
+
+            @if (puedeAsignaciones)
+            {
+                <div class="col-lg-4">
+                    <div class="content-card h-100">
+                        <div class="section-title"><h3>Ultimas asignaciones</h3><span>Productividad</span></div>
+                        @foreach (var item in Model.GestionTecnologica.Asignaciones.Ultimas)
+                        {
+                            <div class="dashboard-list-item">
+                                <strong>@item.CodigoEquipo</strong>
+                                <span>@item.Fecha.ToString("dd/MM/yyyy") · @item.Estado</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+            @if (puedeReparaciones)
+            {
+                <div class="col-lg-4">
+                    <div class="content-card h-100">
+                        <div class="section-title"><h3>Mas tiempo en reparacion</h3><span>Atencion requerida</span></div>
+                        @foreach (var item in Model.GestionTecnologica.Reparaciones.MasAntiguas)
+                        {
+                            <div class="dashboard-list-item">
+                                <strong>@item.CodigoEquipo</strong>
+                                <span>@item.DiasAbierta dias · @item.Estado</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+            @if (puedeBajas)
+            {
+                <div class="col-lg-4">
+                    <div class="content-card h-100">
+                        <div class="section-title"><h3>Ultimas bajas</h3><span>Control</span></div>
+                        @foreach (var item in Model.GestionTecnologica.Bajas.Ultimas)
+                        {
+                            <div class="dashboard-list-item">
+                                <strong>@item.CodigoEquipo</strong>
+                                <span>@item.Fecha.ToString("dd/MM/yyyy") · @item.Estado</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+}
+
+<section class="dashboard-section">
+    <h3 class="dashboard-section-heading">Alertas para la Gestion</h3>
+    <div class="row g-3">
+        @foreach (var alerta in Model.Alertas.Items)
+        {
+            <div class="col-md-6 col-xl-4">
+                <div class="dashboard-alert @AlertClass(alerta.Severidad)">
+                    <span>@alerta.Tipo · @alerta.Severidad</span>
+                    <strong>@alerta.Titulo</strong>
+                    <p>@alerta.Detalle</p>
+                </div>
+            </div>
+        }
+        @if (!Model.Alertas.Items.Any())
+        {
+            <div class="col-12">
+                <div class="content-card text-muted">No hay alertas relevantes para el periodo actual.</div>
+            </div>
+        }
     </div>
-</div>
+</section>
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
     <script>
-        const palette = ['#0B3D91', '#D4AF37', '#22A06B', '#E55353', '#6B7280', '#5B8DEF'];
-        const impresionColors = {
-            'Pendiente': '#D4AF37',
-            'En Proceso': '#0B3D91',
-            'Entregada': '#22A06B',
-            'Rechazada': '#E55353'
-        };
-        const equipos = @Html.Raw(equiposJson);
-        const impresiones = @Html.Raw(impresionesJson);
-        const personal = @Html.Raw(personalJson);
-        const movimientos = @Html.Raw(movimientosJson);
+        const chartPalette = ['#22A06B', '#0B3D91', '#D4AF37', '#E55353', '#6B7280'];
+        const impresionesEstado = @Html.Raw(impresionesEstadoJson);
+        const tecnologiaEstado = @Html.Raw(tecnologiaEstadoJson);
 
-        function labels(data) { return data.map(x => x.label); }
-        function values(data) { return data.map(x => x.value); }
-        function colors(data) { return data.map(x => impresionColors[x.label] || '#6B7280'); }
+        function renderDoughnut(id, data) {
+            const canvas = document.getElementById(id);
+            if (!canvas) return;
 
-        new Chart(document.getElementById('equiposChart'), {
-            type: 'doughnut',
-            data: { labels: labels(equipos), datasets: [{ data: values(equipos), backgroundColor: palette }] },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
-        });
+            const values = data.map(x => x.value);
+            const total = values.reduce((sum, value) => sum + value, 0);
+            const labels = total > 0 ? data.map(x => x.label) : ['Sin datos'];
+            const datasetValues = total > 0 ? values : [1];
+            const colors = total > 0 ? chartPalette : ['#D1D5DB'];
 
-        const impresionesChart = new Chart(document.getElementById('impresionesChart'), {
-            type: 'doughnut',
-            data: { labels: labels(impresiones), datasets: [{ data: values(impresiones), backgroundColor: colors(impresiones) }] },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
-        });
-
-        async function actualizarImpresionesChart() {
-            try {
-                const response = await fetch('@Url.Action("ImpresionesPorEstado", "Dashboard")', {
-                    cache: 'no-store',
-                    headers: { 'Accept': 'application/json' }
-                });
-
-                if (!response.ok) return;
-
-                const data = await response.json();
-                impresionesChart.data.labels = labels(data);
-                impresionesChart.data.datasets[0].data = values(data);
-                impresionesChart.data.datasets[0].backgroundColor = colors(data);
-                impresionesChart.update();
-            } catch {
-                // Si la sesion expira o la red falla, el dashboard conserva el ultimo dato visible.
-            }
+            new Chart(canvas, {
+                type: 'doughnut',
+                data: {
+                    labels,
+                    datasets: [{ data: datasetValues, backgroundColor: colors }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
         }
 
-        actualizarImpresionesChart();
-        setInterval(actualizarImpresionesChart, 5000);
-
-        new Chart(document.getElementById('personalChart'), {
-            type: 'bar',
-            data: { labels: labels(personal), datasets: [{ label: 'Personas', data: values(personal), backgroundColor: '#0B3D91' }] },
-            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }, plugins: { legend: { display: false } } }
-        });
-
-        new Chart(document.getElementById('movimientosChart'), {
-            type: 'bar',
-            data: { labels: labels(movimientos), datasets: [{ label: 'Movimientos', data: values(movimientos), backgroundColor: '#D4AF37' }] },
-            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }, plugins: { legend: { display: false } } }
-        });
+        renderDoughnut('impresionesEstadoChart', impresionesEstado);
+        renderDoughnut('tecnologiaEstadoChart', tecnologiaEstado);
     </script>
 }
