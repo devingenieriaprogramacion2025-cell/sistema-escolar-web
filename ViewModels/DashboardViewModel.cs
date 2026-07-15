@@ -14,11 +14,11 @@ public class DashboardViewModel
 
 public class DashboardFiltrosViewModel
 {
-    public int Mes { get; set; }
+    public int? Mes { get; set; }
     public int Anio { get; set; }
     public int? IdTipoInsumo { get; set; }
     public int? IdDependencia { get; set; }
-    public string Periodo => $"{Mes:00}/{Anio}";
+    public string Periodo => Mes.HasValue ? $"{Mes.Value:00}/{Anio}" : Anio.ToString();
     public List<SelectListItem> Meses { get; set; } = new();
     public List<SelectListItem> Anios { get; set; } = new();
     public List<SelectListItem> TiposInsumo { get; set; } = new();

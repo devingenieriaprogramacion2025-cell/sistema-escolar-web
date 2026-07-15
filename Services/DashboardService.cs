@@ -27,10 +27,14 @@ public class DashboardService
         int? idDependencia)
     {
         var hoy = DateTime.Today;
-        var mesFiltro = mes is >= 1 and <= 12 ? mes.Value : hoy.Month;
+        var mesFiltro = mes is >= 1 and <= 12 ? mes.Value : (int?)null;
         var anioFiltro = anio is >= 2000 and <= 2100 ? anio.Value : hoy.Year;
-        var desde = new DateTime(anioFiltro, mesFiltro, 1);
-        var hasta = desde.AddMonths(1);
+        var desde = mesFiltro.HasValue
+            ? new DateTime(anioFiltro, mesFiltro.Value, 1)
+            : new DateTime(anioFiltro, 1, 1);
+        var hasta = mesFiltro.HasValue
+            ? desde.AddMonths(1)
+            : desde.AddYears(1);
         var esProfesor = rol == "Profesor" && !string.IsNullOrWhiteSpace(rutPersonal);
 
         var model = new DashboardViewModel
@@ -38,14 +42,14 @@ public class DashboardService
             Filtros = await CrearFiltrosAsync(mesFiltro, anioFiltro, idTipoInsumo, idDependencia)
         };
 
-        model.GestionTecnologica.Tecnologias = await ObtenerTecnologiasAsync();
+        model.GestionTecnologica.Tecnologias = await ObtenerTecnologiasAsync(desde, hasta, idDependencia);
         model.ResumenGeneral = await ObtenerResumenGeneralAsync(model.GestionTecnologica.Tecnologias);
         model.Impresiones = await ObtenerImpresionesAsync(desde, hasta, esProfesor ? rutPersonal : null);
-        model.InventarioInsumos = await ObtenerInventarioInsumosAsync(idTipoInsumo);
+        model.InventarioInsumos = await ObtenerInventarioInsumosAsync(desde, hasta, idTipoInsumo, idDependencia);
         model.GestionTecnologica.Asignaciones = await ObtenerAsignacionesAsync(desde, hasta, esProfesor ? rutPersonal : null, idDependencia);
-        model.GestionTecnologica.Reparaciones = await ObtenerReparacionesAsync(desde, hasta);
-        model.GestionTecnologica.Bajas = await ObtenerBajasAsync(desde, hasta);
-        model.Alertas = await ObtenerAlertasAsync(esProfesor ? rutPersonal : null);
+        model.GestionTecnologica.Reparaciones = await ObtenerReparacionesAsync(desde, hasta, idDependencia);
+        model.GestionTecnologica.Bajas = await ObtenerBajasAsync(desde, hasta, idDependencia);
+        model.Alertas = await ObtenerAlertasAsync(desde, hasta, esProfesor ? rutPersonal : null, idTipoInsumo, idDependencia);
 
         model.ResumenGeneral.ImpresionesPendientes = model.Impresiones.Pendientes;
         model.ResumenGeneral.TotalInsumos = model.InventarioInsumos.TotalInsumos;
@@ -81,7 +85,7 @@ public class DashboardService
         };
     }
 
-    private async Task<DashboardFiltrosViewModel> CrearFiltrosAsync(int mes, int anio, int? idTipoInsumo, int? idDependencia)
+    private async Task<DashboardFiltrosViewModel> CrearFiltrosAsync(int? mes, int anio, int? idTipoInsumo, int? idDependencia)
     {
         var cultura = CultureInfo.GetCultureInfo("es-CL");
         var anioActual = DateTime.Today.Year;
@@ -92,13 +96,22 @@ public class DashboardService
             Anio = anio,
             IdTipoInsumo = idTipoInsumo,
             IdDependencia = idDependencia,
-            Meses = Enumerable.Range(1, 12)
+            Meses = new[]
+                {
+                    new SelectListItem
+                    {
+                        Value = string.Empty,
+                        Text = "Todos",
+                        Selected = !mes.HasValue
+                    }
+                }
+                .Concat(Enumerable.Range(1, 12)
                 .Select(m => new SelectListItem
                 {
                     Value = m.ToString(CultureInfo.InvariantCulture),
                     Text = cultura.DateTimeFormat.GetMonthName(m),
                     Selected = m == mes
-                })
+                }))
                 .ToList(),
             Anios = Enumerable.Range(anioActual - 4, 6)
                 .Select(a => new SelectListItem
@@ -129,29 +142,64 @@ public class DashboardService
         };
     }
 
-    private async Task<DashboardResumenGeneralViewModel> ObtenerResumenGeneralAsync(DashboardTecnologiaIndicadoresViewModel tecnologia)
+    private Task<DashboardResumenGeneralViewModel> ObtenerResumenGeneralAsync(DashboardTecnologiaIndicadoresViewModel tecnologia)
     {
-        return new DashboardResumenGeneralViewModel
+        return Task.FromResult(new DashboardResumenGeneralViewModel
         {
             TotalTecnologias = tecnologia.TotalRegistradas,
             TecnologiasDisponibles = tecnologia.Disponibles,
             TecnologiasAsignadas = tecnologia.Asignadas,
             TecnologiasEnReparacion = tecnologia.EnReparacion,
             TecnologiasDadasDeBaja = tecnologia.DadasDeBaja,
-            TotalInsumos = await _context.Insumos.AsNoTracking().CountAsync(i => i.Estado),
+            TotalInsumos = 0,
             ImpresionesPendientes = 0,
-            AlertasBajoStock = await _context.Insumos.AsNoTracking().CountAsync(i => i.Estado && i.StockActual < i.StockMinimo)
-        };
+            AlertasBajoStock = 0
+        });
     }
 
-    private async Task<DashboardTecnologiaIndicadoresViewModel> ObtenerTecnologiasAsync()
+    private async Task<DashboardTecnologiaIndicadoresViewModel> ObtenerTecnologiasAsync(DateTime desde, DateTime hasta, int? idDependencia)
     {
-        var total = await _context.Tecnologias.AsNoTracking().CountAsync();
+        var tecnologiasPeriodo =
+            from tecnologia in _context.Tecnologias.AsNoTracking()
+            join entrada in _context.EntradasTecnologia.AsNoTracking()
+                on tecnologia.IdEntradaTecnologia equals entrada.IdEntradaTecnologia
+            where entrada.FechaEntrada >= desde && entrada.FechaEntrada < hasta
+            select tecnologia;
+
+        if (idDependencia.HasValue)
+        {
+            tecnologiasPeriodo = tecnologiasPeriodo.Where(t =>
+                _context.Asignaciones.Any(a =>
+                    a.IdTecnologia == t.IdTecnologia &&
+                    a.IdDependencia == idDependencia.Value &&
+                    a.FechaAsignacion >= desde &&
+                    a.FechaAsignacion < hasta));
+        }
+
+        var tecnologiaIds = await tecnologiasPeriodo
+            .Select(t => t.IdTecnologia)
+            .Distinct()
+            .ToListAsync();
+
+        var total = tecnologiaIds.Count;
         var asignadas = await _context.Asignaciones.AsNoTracking().CountAsync(a =>
-            a.FechaDevolucion == null && (a.EstadoAsignacion == "Vigente" || a.EstadoAsignacion == "Activa"));
+            tecnologiaIds.Contains(a.IdTecnologia) &&
+            (!idDependencia.HasValue || a.IdDependencia == idDependencia.Value) &&
+            a.FechaAsignacion >= desde &&
+            a.FechaAsignacion < hasta &&
+            a.FechaDevolucion == null &&
+            (a.EstadoAsignacion == "Vigente" || a.EstadoAsignacion == "Activa"));
         var enReparacion = await _context.Reparaciones.AsNoTracking().CountAsync(r =>
-            r.EstadoReparacion != Estado.Reparada && r.EstadoReparacion != Estado.Rechazada);
-        var bajas = await _context.Bajas.AsNoTracking().CountAsync(b => b.Estado == Estado.Aprobada);
+            tecnologiaIds.Contains(r.IdTecnologia) &&
+            r.FechaEnvio >= desde &&
+            r.FechaEnvio < hasta &&
+            r.EstadoReparacion != Estado.Reparada &&
+            r.EstadoReparacion != Estado.Rechazada);
+        var bajas = await _context.Bajas.AsNoTracking().CountAsync(b =>
+            tecnologiaIds.Contains(b.IdTecnologia) &&
+            b.FechaBaja >= desde &&
+            b.FechaBaja < hasta &&
+            b.Estado == Estado.Aprobada);
 
         return new DashboardTecnologiaIndicadoresViewModel
         {
@@ -174,6 +222,7 @@ public class DashboardService
             query = query.Where(s => s.RutPersonal == rutPersonal);
 
         var solicitudes = await query
+            .Where(s => s.FechaSolicitud >= desde && s.FechaSolicitud < hasta)
             .Select(s => new
             {
                 s.FechaSolicitud,
@@ -184,9 +233,8 @@ public class DashboardService
             })
             .ToListAsync();
 
-        var mensuales = solicitudes.Where(s => s.FechaSolicitud >= desde && s.FechaSolicitud < hasta).ToList();
         var estados = solicitudes.GroupBy(s => NormalizarEstadoImpresion(s.Estado)).ToDictionary(g => g.Key, g => g.Count());
-        var resueltas = mensuales.Count(s =>
+        var resueltas = solicitudes.Count(s =>
             NormalizarEstadoImpresion(s.Estado) == Estado.Entregada ||
             NormalizarEstadoImpresion(s.Estado) == Estado.Rechazada);
 
@@ -196,10 +244,10 @@ public class DashboardService
             EnProceso = ObtenerConteo(estados, Estado.EnProceso),
             Entregadas = ObtenerConteo(estados, Estado.Entregada),
             Rechazadas = ObtenerConteo(estados, Estado.Rechazada),
-            TotalMensualSolicitudes = mensuales.Count,
-            TotalMensualPaginas = mensuales.Sum(s => s.CantidadPaginas * s.CantidadCopias),
-            TotalMensualCopias = mensuales.Sum(s => s.CantidadCopias),
-            PorcentajeResueltas = mensuales.Count == 0 ? 0 : Math.Round((decimal)resueltas * 100 / mensuales.Count, 1),
+            TotalMensualSolicitudes = solicitudes.Count,
+            TotalMensualPaginas = solicitudes.Sum(s => s.CantidadPaginas * s.CantidadCopias),
+            TotalMensualCopias = solicitudes.Sum(s => s.CantidadCopias),
+            PorcentajeResueltas = solicitudes.Count == 0 ? 0 : Math.Round((decimal)resueltas * 100 / solicitudes.Count, 1),
             UltimasSolicitudes = solicitudes
                 .OrderByDescending(s => s.FechaSolicitud)
                 .Take(5)
@@ -214,12 +262,33 @@ public class DashboardService
         };
     }
 
-    private async Task<DashboardInventarioInsumosViewModel> ObtenerInventarioInsumosAsync(int? idTipoInsumo)
+    private async Task<DashboardInventarioInsumosViewModel> ObtenerInventarioInsumosAsync(
+        DateTime desde,
+        DateTime hasta,
+        int? idTipoInsumo,
+        int? idDependencia)
     {
+        var insumosConMovimiento = _context.EntradasInsumo.AsNoTracking()
+            .Where(e => e.FechaEntrega >= desde && e.FechaEntrega < hasta)
+            .Select(e => e.IdInsumo);
+
+        var salidasPeriodo = _context.SalidasInsumo.AsNoTracking()
+            .Where(s => s.FechaSalida >= desde && s.FechaSalida < hasta);
+
+        if (idDependencia.HasValue)
+        {
+            salidasPeriodo = salidasPeriodo.Where(s => s.IdDependencia == idDependencia.Value);
+            insumosConMovimiento = salidasPeriodo.Select(s => s.IdInsumo);
+        }
+        else
+        {
+            insumosConMovimiento = insumosConMovimiento.Union(salidasPeriodo.Select(s => s.IdInsumo));
+        }
+
         var query =
             from insumo in _context.Insumos.AsNoTracking()
             join tipo in _context.TiposInsumo.AsNoTracking() on insumo.IdTipoInsumo equals tipo.IdTipoInsumo
-            where insumo.Estado
+            where insumo.Estado && insumosConMovimiento.Contains(insumo.IdInsumo)
             select new
             {
                 insumo.IdTipoInsumo,
@@ -280,7 +349,11 @@ public class DashboardService
 
     private async Task<DashboardAsignacionesIndicadoresViewModel> ObtenerAsignacionesAsync(DateTime desde, DateTime hasta, string? rutPersonal, int? idDependencia)
     {
-        var query = _context.Asignaciones.AsNoTracking().AsQueryable();
+        var query = _context.Asignaciones.AsNoTracking()
+            .Where(a =>
+                (a.FechaAsignacion >= desde && a.FechaAsignacion < hasta) ||
+                (a.FechaDevolucion.HasValue && a.FechaDevolucion.Value >= desde && a.FechaDevolucion.Value < hasta))
+            .AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(rutPersonal))
             query = query.Where(a => a.RutPersonal == rutPersonal);
@@ -302,22 +375,42 @@ public class DashboardService
 
         return new DashboardAsignacionesIndicadoresViewModel
         {
-            Activas = asignaciones.Count(a => a.FechaDevolucion == null && (a.EstadoAsignacion == "Vigente" || a.EstadoAsignacion == "Activa")),
-            Devueltas = asignaciones.Count(a => a.FechaDevolucion != null),
+            Activas = asignaciones.Count(a =>
+                a.FechaAsignacion >= desde &&
+                a.FechaAsignacion < hasta &&
+                a.FechaDevolucion == null &&
+                (a.EstadoAsignacion == "Vigente" || a.EstadoAsignacion == "Activa")),
+            Devueltas = asignaciones.Count(a =>
+                a.FechaDevolucion.HasValue &&
+                a.FechaDevolucion.Value >= desde &&
+                a.FechaDevolucion.Value < hasta),
             DelMes = asignaciones.Count(a => a.FechaAsignacion >= desde && a.FechaAsignacion < hasta),
             Ultimas = ultimas
         };
     }
 
-    private async Task<DashboardReparacionesIndicadoresViewModel> ObtenerReparacionesAsync(DateTime desde, DateTime hasta)
+    private async Task<DashboardReparacionesIndicadoresViewModel> ObtenerReparacionesAsync(DateTime desde, DateTime hasta, int? idDependencia)
     {
-        var reparaciones = await _context.Reparaciones.AsNoTracking().ToListAsync();
-        var finalizadasMes = reparaciones
+        var query = _context.Reparaciones.AsNoTracking()
+            .Where(r =>
+                (r.FechaEnvio >= desde && r.FechaEnvio < hasta) ||
+                (r.FechaRetorno.HasValue && r.FechaRetorno.Value >= desde && r.FechaRetorno.Value < hasta));
+
+        if (idDependencia.HasValue)
+        {
+            query = query.Where(r =>
+                _context.Asignaciones.Any(a =>
+                    a.IdTecnologia == r.IdTecnologia &&
+                    a.IdDependencia == idDependencia.Value));
+        }
+
+        var reparacionesPeriodo = await query.ToListAsync();
+        var finalizadasMes = reparacionesPeriodo
             .Where(r => r.FechaRetorno.HasValue && r.FechaRetorno.Value >= desde && r.FechaRetorno.Value < hasta)
             .ToList();
 
         var antiguas = await (
-            from reparacion in _context.Reparaciones.AsNoTracking()
+            from reparacion in query
             join tecnologia in _context.Tecnologias.AsNoTracking() on reparacion.IdTecnologia equals tecnologia.IdTecnologia
             where reparacion.EstadoReparacion != Estado.Reparada && reparacion.EstadoReparacion != Estado.Rechazada
             orderby reparacion.FechaEnvio
@@ -334,9 +427,15 @@ public class DashboardService
 
         return new DashboardReparacionesIndicadoresViewModel
         {
-            Pendientes = reparaciones.Count(r => r.EstadoReparacion == Estado.Pendiente || r.EstadoReparacion == "Solicitada"),
-            EnProceso = reparaciones.Count(r => r.EstadoReparacion == Estado.EnReparacion || r.EstadoReparacion == Estado.EnProceso),
-            Finalizadas = reparaciones.Count(r => r.EstadoReparacion == Estado.Reparada),
+            Pendientes = reparacionesPeriodo.Count(r =>
+                r.FechaEnvio >= desde &&
+                r.FechaEnvio < hasta &&
+                (r.EstadoReparacion == Estado.Pendiente || r.EstadoReparacion == "Solicitada")),
+            EnProceso = reparacionesPeriodo.Count(r =>
+                r.FechaEnvio >= desde &&
+                r.FechaEnvio < hasta &&
+                (r.EstadoReparacion == Estado.EnReparacion || r.EstadoReparacion == Estado.EnProceso)),
+            Finalizadas = finalizadasMes.Count(r => r.EstadoReparacion == Estado.Reparada),
             PromedioDias = finalizadasMes.Count == 0
                 ? 0
                 : Math.Round((decimal)finalizadasMes.Average(r => (r.FechaRetorno!.Value.Date - r.FechaEnvio.Date).TotalDays), 1),
@@ -344,11 +443,22 @@ public class DashboardService
         };
     }
 
-    private async Task<DashboardBajasIndicadoresViewModel> ObtenerBajasAsync(DateTime desde, DateTime hasta)
+    private async Task<DashboardBajasIndicadoresViewModel> ObtenerBajasAsync(DateTime desde, DateTime hasta, int? idDependencia)
     {
-        var bajas = await _context.Bajas.AsNoTracking().ToListAsync();
+        var query = _context.Bajas.AsNoTracking()
+            .Where(b => b.FechaBaja >= desde && b.FechaBaja < hasta);
+
+        if (idDependencia.HasValue)
+        {
+            query = query.Where(b =>
+                _context.Asignaciones.Any(a =>
+                    a.IdTecnologia == b.IdTecnologia &&
+                    a.IdDependencia == idDependencia.Value));
+        }
+
+        var bajas = await query.ToListAsync();
         var ultimas = await (
-            from baja in _context.Bajas.AsNoTracking().OrderByDescending(b => b.FechaBaja).Take(5)
+            from baja in query.OrderByDescending(b => b.FechaBaja).Take(5)
             join tecnologia in _context.Tecnologias.AsNoTracking() on baja.IdTecnologia equals tecnologia.IdTecnologia
             select new DashboardMovimientoEquipoViewModel
             {
@@ -369,14 +479,39 @@ public class DashboardService
         };
     }
 
-    private async Task<DashboardAlertasViewModel> ObtenerAlertasAsync(string? rutPersonal)
+    private async Task<DashboardAlertasViewModel> ObtenerAlertasAsync(
+        DateTime desde,
+        DateTime hasta,
+        string? rutPersonal,
+        int? idTipoInsumo,
+        int? idDependencia)
     {
         var alertas = new List<DashboardAlertaViewModel>();
+
+        var insumosConMovimiento = _context.EntradasInsumo.AsNoTracking()
+            .Where(e => e.FechaEntrega >= desde && e.FechaEntrega < hasta)
+            .Select(e => e.IdInsumo);
+
+        var salidasPeriodo = _context.SalidasInsumo.AsNoTracking()
+            .Where(s => s.FechaSalida >= desde && s.FechaSalida < hasta);
+
+        if (idDependencia.HasValue)
+        {
+            salidasPeriodo = salidasPeriodo.Where(s => s.IdDependencia == idDependencia.Value);
+            insumosConMovimiento = salidasPeriodo.Select(s => s.IdInsumo);
+        }
+        else
+        {
+            insumosConMovimiento = insumosConMovimiento.Union(salidasPeriodo.Select(s => s.IdInsumo));
+        }
 
         var bajoStock = await (
             from insumo in _context.Insumos.AsNoTracking()
             join tipo in _context.TiposInsumo.AsNoTracking() on insumo.IdTipoInsumo equals tipo.IdTipoInsumo
-            where insumo.Estado && insumo.StockActual < insumo.StockMinimo
+            where insumo.Estado &&
+                  insumo.StockActual < insumo.StockMinimo &&
+                  insumosConMovimiento.Contains(insumo.IdInsumo) &&
+                  (!idTipoInsumo.HasValue || insumo.IdTipoInsumo == idTipoInsumo.Value)
             orderby insumo.StockMinimo - insumo.StockActual descending
             select new { insumo.NombreInsumo, tipo.NombreTipoInsumo, insumo.StockActual, insumo.StockMinimo })
             .Take(5)
@@ -390,12 +525,25 @@ public class DashboardService
             Severidad = "Alta"
         }));
 
+        var reparacionesQuery = _context.Reparaciones.AsNoTracking()
+            .Where(r =>
+                r.FechaEnvio >= desde &&
+                r.FechaEnvio < hasta &&
+                r.EstadoReparacion != Estado.Reparada &&
+                r.EstadoReparacion != Estado.Rechazada &&
+                r.FechaEnvio <= DateTime.Today.AddDays(-7));
+
+        if (idDependencia.HasValue)
+        {
+            reparacionesQuery = reparacionesQuery.Where(r =>
+                _context.Asignaciones.Any(a =>
+                    a.IdTecnologia == r.IdTecnologia &&
+                    a.IdDependencia == idDependencia.Value));
+        }
+
         var reparacionesAntiguas = await (
-            from reparacion in _context.Reparaciones.AsNoTracking()
+            from reparacion in reparacionesQuery
             join tecnologia in _context.Tecnologias.AsNoTracking() on reparacion.IdTecnologia equals tecnologia.IdTecnologia
-            where reparacion.EstadoReparacion != Estado.Reparada &&
-                  reparacion.EstadoReparacion != Estado.Rechazada &&
-                  reparacion.FechaEnvio <= DateTime.Today.AddDays(-7)
             orderby reparacion.FechaEnvio
             select new { tecnologia.SkuCodigoInventario, reparacion.FechaEnvio, reparacion.EstadoReparacion })
             .Take(5)
@@ -411,7 +559,11 @@ public class DashboardService
 
         var impresionesPendientesQuery = _context.SolicitudesImpresion.AsNoTracking()
             .Include(s => s.EstadoImpresion)
-            .Where(s => s.EstadoImpresion != null && s.EstadoImpresion.Estado == Estado.Pendiente);
+            .Where(s =>
+                s.FechaSolicitud >= desde &&
+                s.FechaSolicitud < hasta &&
+                s.EstadoImpresion != null &&
+                s.EstadoImpresion.Estado == Estado.Pendiente);
         if (!string.IsNullOrWhiteSpace(rutPersonal))
             impresionesPendientesQuery = impresionesPendientesQuery.Where(s => s.RutPersonal == rutPersonal);
 
@@ -427,7 +579,21 @@ public class DashboardService
             });
         }
 
-        var bajasPendientes = await _context.Bajas.AsNoTracking().CountAsync(b => b.Estado == Estado.Pendiente);
+        var bajasPendientesQuery = _context.Bajas.AsNoTracking()
+            .Where(b =>
+                b.FechaBaja >= desde &&
+                b.FechaBaja < hasta &&
+                b.Estado == Estado.Pendiente);
+
+        if (idDependencia.HasValue)
+        {
+            bajasPendientesQuery = bajasPendientesQuery.Where(b =>
+                _context.Asignaciones.Any(a =>
+                    a.IdTecnologia == b.IdTecnologia &&
+                    a.IdDependencia == idDependencia.Value));
+        }
+
+        var bajasPendientes = await bajasPendientesQuery.CountAsync();
         if (bajasPendientes > 0)
         {
             alertas.Add(new DashboardAlertaViewModel
@@ -439,28 +605,31 @@ public class DashboardService
             });
         }
 
-        var tecnologiasSinAsignar = await (
-            from tecnologia in _context.Tecnologias.AsNoTracking()
-            join entrada in _context.EntradasTecnologia.AsNoTracking() on tecnologia.IdEntradaTecnologia equals entrada.IdEntradaTecnologia into entradas
-            from entrada in entradas.DefaultIfEmpty()
-            where tecnologia.Estado &&
-                  !_context.Asignaciones.Any(a => a.IdTecnologia == tecnologia.IdTecnologia && a.FechaDevolucion == null) &&
-                  !_context.Reparaciones.Any(r => r.IdTecnologia == tecnologia.IdTecnologia && r.EstadoReparacion != Estado.Reparada && r.EstadoReparacion != Estado.Rechazada) &&
-                  !_context.Bajas.Any(b => b.IdTecnologia == tecnologia.IdTecnologia && b.Estado == Estado.Aprobada) &&
-                  entrada != null &&
-                  entrada.FechaEntrada <= DateTime.Today.AddDays(-90)
-            orderby entrada!.FechaEntrada
-            select new { tecnologia.SkuCodigoInventario, entrada.FechaEntrada })
-            .Take(5)
-            .ToListAsync();
-
-        alertas.AddRange(tecnologiasSinAsignar.Select(t => new DashboardAlertaViewModel
+        if (!idDependencia.HasValue)
         {
-            Tipo = "Tecnologia",
-            Titulo = t.SkuCodigoInventario,
-            Detalle = $"Disponible sin asignacion desde {t.FechaEntrada:dd/MM/yyyy}.",
-            Severidad = "Baja"
-        }));
+            var tecnologiasSinAsignar = await (
+                from tecnologia in _context.Tecnologias.AsNoTracking()
+                join entrada in _context.EntradasTecnologia.AsNoTracking() on tecnologia.IdEntradaTecnologia equals entrada.IdEntradaTecnologia
+                where tecnologia.Estado &&
+                      entrada.FechaEntrada >= desde &&
+                      entrada.FechaEntrada < hasta &&
+                      entrada.FechaEntrada <= DateTime.Today.AddDays(-90) &&
+                      !_context.Asignaciones.Any(a => a.IdTecnologia == tecnologia.IdTecnologia && a.FechaDevolucion == null) &&
+                      !_context.Reparaciones.Any(r => r.IdTecnologia == tecnologia.IdTecnologia && r.EstadoReparacion != Estado.Reparada && r.EstadoReparacion != Estado.Rechazada) &&
+                      !_context.Bajas.Any(b => b.IdTecnologia == tecnologia.IdTecnologia && b.Estado == Estado.Aprobada)
+                orderby entrada.FechaEntrada
+                select new { tecnologia.SkuCodigoInventario, entrada.FechaEntrada })
+                .Take(5)
+                .ToListAsync();
+
+            alertas.AddRange(tecnologiasSinAsignar.Select(t => new DashboardAlertaViewModel
+            {
+                Tipo = "Tecnologia",
+                Titulo = t.SkuCodigoInventario,
+                Detalle = $"Disponible sin asignacion desde {t.FechaEntrada:dd/MM/yyyy}.",
+                Severidad = "Baja"
+            }));
+        }
 
         return new DashboardAlertasViewModel
         {

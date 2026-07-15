@@ -1,8 +1,9 @@
+Usando la configuraci√≥n de inicio de C:\Users\Andres\Desktop\SistemaEscolarWeb\Properties\launchSettings.json...
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (37ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (14ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
       SELECT 1
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (117ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (37ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
       
       IF EXISTS
           (SELECT *
@@ -19,7 +20,7 @@ info: Microsoft.EntityFrameworkCore.Database.Command[20101]
       )
       SELECT 1 ELSE SELECT 0
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (36ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (15ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
       IF OBJECT_ID(N'[Insumo]', N'U') IS NULL
 BEGIN
     IF OBJECT_ID(N'[Tipo_insumo]', N'U') IS NULL
@@ -123,7 +124,7 @@ BEGIN
         CREATE UNIQUE INDEX [UX_Rol_permisos_Rol_Permiso] ON [Rol_permisos]([id_rol], [id_permiso]);
 END
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
       IF OBJECT_ID(N'[De_baja]', N'U') IS NOT NULL
 BEGIN
     IF COL_LENGTH(N'De_baja', N'usuario_registra_baja') < 320
@@ -142,7 +143,7 @@ BEGIN
         ALTER TABLE [Reparacion] ALTER COLUMN [usuario_aprueba] nvarchar(160) NULL;
 END
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (64ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (15ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
       IF OBJECT_ID(N'[Asignaciones]', N'U') IS NOT NULL
 BEGIN
     IF EXISTS (
@@ -168,7 +169,46 @@ BEGIN
     END
 END
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      IF OBJECT_ID(N'[Asignaciones]', N'U') IS NOT NULL
+   AND EXISTS (
+        SELECT 1
+        FROM sys.columns
+        WHERE object_id = OBJECT_ID(N'[Asignaciones]')
+          AND name = N'tipo_asignacion'
+          AND max_length > 0
+   )
+BEGIN
+    ALTER TABLE [Asignaciones] ALTER COLUMN [tipo_asignacion] nvarchar(max) NOT NULL;
+END
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      IF OBJECT_ID(N'[Reparacion]', N'U') IS NOT NULL
+   AND EXISTS (
+        SELECT 1
+        FROM sys.columns
+        WHERE object_id = OBJECT_ID(N'[Reparacion]')
+          AND name = N'detalle'
+          AND max_length > 0
+   )
+BEGIN
+    ALTER TABLE [Reparacion] ALTER COLUMN [detalle] nvarchar(max) NULL;
+END
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      IF OBJECT_ID(N'[De_baja]', N'U') IS NOT NULL
+   AND EXISTS (
+        SELECT 1
+        FROM sys.columns
+        WHERE object_id = OBJECT_ID(N'[De_baja]')
+          AND name = N'detalle'
+          AND max_length > 0
+   )
+BEGIN
+    ALTER TABLE [De_baja] ALTER COLUMN [detalle] nvarchar(max) NULL;
+END
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
       IF OBJECT_ID(N'[Solicitud_impresion]', N'U') IS NOT NULL
    AND COL_LENGTH(N'Solicitud_impresion', N'cantidad_paginas') IS NULL
 BEGIN
@@ -177,7 +217,7 @@ BEGIN
         CONSTRAINT [DF_Solicitud_impresion_cantidad_paginas] DEFAULT 1;
 END
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (18ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (10ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
       IF NOT EXISTS (SELECT 1 FROM Proveedor)
 BEGIN
     INSERT INTO Proveedor (nombre_proveedor, rut_proveedor, correo, telefono)
@@ -214,56 +254,56 @@ BEGIN
     VALUES (@ProveedorId, CAST(GETDATE() AS date), 5, N'INI-2026');
 END
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
-      SELECT [r].[id_rol], [r].[nombre_rol]
-      FROM [Rol] AS [r]
-      ORDER BY [r].[id_rol]
-info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (25ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
-      UPDATE [Rol]
-SET [nombre_rol] = @p0
-WHERE [id_rol] = @p1;
-info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (1ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
-      UPDATE [Rol]
-SET [nombre_rol] = @p0
-WHERE [id_rol] = @p1;
-info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (1ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
-      UPDATE [Rol]
-SET [nombre_rol] = @p0
-WHERE [id_rol] = @p1;
-info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (1ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
-      UPDATE [Rol]
-SET [nombre_rol] = @p0
-WHERE [id_rol] = @p1;
-info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (1ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
-      UPDATE [Rol]
-SET [nombre_rol] = @p0
-WHERE [id_rol] = @p1;
-info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (1ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
-      UPDATE [Rol]
-SET [nombre_rol] = @p0
-WHERE [id_rol] = @p1;
-info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (0ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
-      UPDATE [Rol]
-SET [nombre_rol] = @p0
-WHERE [id_rol] = @p1;
-info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (0ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
-      UPDATE [Rol]
-SET [nombre_rol] = @p0
-WHERE [id_rol] = @p1;
-info: Microsoft.EntityFrameworkCore.Database.Command[20101]
       Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
       SELECT [r].[id_rol], [r].[nombre_rol]
       FROM [Rol] AS [r]
+      ORDER BY [r].[id_rol]
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (11ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      UPDATE [Rol]
+SET [nombre_rol] = @p0
+WHERE [id_rol] = @p1;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      UPDATE [Rol]
+SET [nombre_rol] = @p0
+WHERE [id_rol] = @p1;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      UPDATE [Rol]
+SET [nombre_rol] = @p0
+WHERE [id_rol] = @p1;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      UPDATE [Rol]
+SET [nombre_rol] = @p0
+WHERE [id_rol] = @p1;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      UPDATE [Rol]
+SET [nombre_rol] = @p0
+WHERE [id_rol] = @p1;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      UPDATE [Rol]
+SET [nombre_rol] = @p0
+WHERE [id_rol] = @p1;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      UPDATE [Rol]
+SET [nombre_rol] = @p0
+WHERE [id_rol] = @p1;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      UPDATE [Rol]
+SET [nombre_rol] = @p0
+WHERE [id_rol] = @p1;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [r].[id_rol], [r].[nombre_rol]
+      FROM [Rol] AS [r]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
       SELECT [r].[id_rol], [r].[nombre_rol]
       FROM [Rol] AS [r]
       ORDER BY [r].[id_rol]
@@ -308,7 +348,7 @@ info: Microsoft.EntityFrameworkCore.Database.Command[20101]
 SET [nombre_rol] = @p0
 WHERE [id_rol] = @p1;
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (16ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
       IF COL_LENGTH(N'Rol', N'nombre_rol_normalizado') IS NULL
 BEGIN
     ALTER TABLE [Rol]
@@ -323,13 +363,13 @@ BEGIN
                                     REPLACE(
                                         REPLACE(
                                             REPLACE(
-                                                REPLACE(UPPER([nombre_rol]), N'µ', N'A'),
-                                            N'ê', N'E'),
-                                        N'÷', N'I'),
-                                    N'‡', N'O'),
-                                N'È', N'U'),
-                            N'ö', N'U'),
-                        N'•', N'N'),
+                                                REPLACE(UPPER([nombre_rol]), N'√Å', N'A'),
+                                            N'√â', N'E'),
+                                        N'√ç', N'I'),
+                                    N'√ì', N'O'),
+                                N'√ö', N'U'),
+                            N'√ú', N'U'),
+                        N'√ë', N'N'),
                     N'LIBRERIA', N'BIBLIOTECA'),
                 N'ENCARGADO TECNOLOGIA', N'ENCARGADA TECNOLOGIA'),
             N'  ', N' ')
@@ -347,19 +387,7 @@ BEGIN
     ON [Rol]([nombre_rol_normalizado]);
 END
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (5ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (Size = 4000)], CommandType='Text', CommandTimeout='30']
-      IF NOT EXISTS (SELECT 1 FROM [Permisos] WHERE [nombre_permiso] = @p0)
-BEGIN
-    INSERT INTO [Permisos] ([nombre_permiso]) VALUES (@p1);
-END
-info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (4ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (Size = 4000)], CommandType='Text', CommandTimeout='30']
-      IF NOT EXISTS (SELECT 1 FROM [Permisos] WHERE [nombre_permiso] = @p0)
-BEGIN
-    INSERT INTO [Permisos] ([nombre_permiso]) VALUES (@p1);
-END
-info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (1ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (Size = 4000)], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (2ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (Size = 4000)], CommandType='Text', CommandTimeout='30']
       IF NOT EXISTS (SELECT 1 FROM [Permisos] WHERE [nombre_permiso] = @p0)
 BEGIN
     INSERT INTO [Permisos] ([nombre_permiso]) VALUES (@p1);
@@ -479,18 +507,6 @@ BEGIN
     INSERT INTO [Permisos] ([nombre_permiso]) VALUES (@p1);
 END
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (1ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (Size = 4000)], CommandType='Text', CommandTimeout='30']
-      IF NOT EXISTS (SELECT 1 FROM [Permisos] WHERE [nombre_permiso] = @p0)
-BEGIN
-    INSERT INTO [Permisos] ([nombre_permiso]) VALUES (@p1);
-END
-info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (1ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (Size = 4000)], CommandType='Text', CommandTimeout='30']
-      IF NOT EXISTS (SELECT 1 FROM [Permisos] WHERE [nombre_permiso] = @p0)
-BEGIN
-    INSERT INTO [Permisos] ([nombre_permiso]) VALUES (@p1);
-END
-info: Microsoft.EntityFrameworkCore.Database.Command[20101]
       Executed DbCommand (0ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (Size = 4000)], CommandType='Text', CommandTimeout='30']
       IF NOT EXISTS (SELECT 1 FROM [Permisos] WHERE [nombre_permiso] = @p0)
 BEGIN
@@ -581,7 +597,31 @@ BEGIN
     INSERT INTO [Permisos] ([nombre_permiso]) VALUES (@p1);
 END
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (18ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (0ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (Size = 4000)], CommandType='Text', CommandTimeout='30']
+      IF NOT EXISTS (SELECT 1 FROM [Permisos] WHERE [nombre_permiso] = @p0)
+BEGIN
+    INSERT INTO [Permisos] ([nombre_permiso]) VALUES (@p1);
+END
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (Size = 4000)], CommandType='Text', CommandTimeout='30']
+      IF NOT EXISTS (SELECT 1 FROM [Permisos] WHERE [nombre_permiso] = @p0)
+BEGIN
+    INSERT INTO [Permisos] ([nombre_permiso]) VALUES (@p1);
+END
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (Size = 4000)], CommandType='Text', CommandTimeout='30']
+      IF NOT EXISTS (SELECT 1 FROM [Permisos] WHERE [nombre_permiso] = @p0)
+BEGIN
+    INSERT INTO [Permisos] ([nombre_permiso]) VALUES (@p1);
+END
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (Size = 4000)], CommandType='Text', CommandTimeout='30']
+      IF NOT EXISTS (SELECT 1 FROM [Permisos] WHERE [nombre_permiso] = @p0)
+BEGIN
+    INSERT INTO [Permisos] ([nombre_permiso]) VALUES (@p1);
+END
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
       DECLARE @AdminId int = (
     SELECT TOP 1 [id_rol]
     FROM [Rol]
@@ -607,83 +647,55 @@ BEGIN
     WHERE rp.[id_rol] = @AdminId;
 END
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
       SELECT [d].[id_dependencia], [d].[id_tipodependencia], [d].[nombre_dependencia], [d].[responsable_dependencia]
       FROM [Dependencia] AS [d]
       ORDER BY [d].[id_dependencia]
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (9ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (3ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
       UPDATE [Dependencia]
 SET [id_tipodependencia] = @p0,
     [nombre_dependencia] = @p1,
     [responsable_dependencia] = @p2
 WHERE [id_dependencia] = @p3;
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (1ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
       UPDATE [Dependencia]
 SET [id_tipodependencia] = @p0,
     [nombre_dependencia] = @p1,
     [responsable_dependencia] = @p2
 WHERE [id_dependencia] = @p3;
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (1ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
       UPDATE [Dependencia]
 SET [id_tipodependencia] = @p0,
     [nombre_dependencia] = @p1,
     [responsable_dependencia] = @p2
 WHERE [id_dependencia] = @p3;
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (1ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
       UPDATE [Dependencia]
 SET [id_tipodependencia] = @p0,
     [nombre_dependencia] = @p1,
     [responsable_dependencia] = @p2
 WHERE [id_dependencia] = @p3;
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (1ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
       UPDATE [Dependencia]
 SET [id_tipodependencia] = @p0,
     [nombre_dependencia] = @p1,
     [responsable_dependencia] = @p2
 WHERE [id_dependencia] = @p3;
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
       SELECT [d].[id_dependencia], [d].[id_tipodependencia], [d].[nombre_dependencia], [d].[responsable_dependencia]
       FROM [Dependencia] AS [d]
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
       SELECT [d].[id_dependencia], [d].[id_tipodependencia], [d].[nombre_dependencia], [d].[responsable_dependencia]
       FROM [Dependencia] AS [d]
       ORDER BY [d].[id_dependencia]
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (7ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
-      UPDATE [Dependencia]
-SET [id_tipodependencia] = @p0,
-    [nombre_dependencia] = @p1,
-    [responsable_dependencia] = @p2
-WHERE [id_dependencia] = @p3;
-info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (7ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
-      UPDATE [Dependencia]
-SET [id_tipodependencia] = @p0,
-    [nombre_dependencia] = @p1,
-    [responsable_dependencia] = @p2
-WHERE [id_dependencia] = @p3;
-info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (7ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
-      UPDATE [Dependencia]
-SET [id_tipodependencia] = @p0,
-    [nombre_dependencia] = @p1,
-    [responsable_dependencia] = @p2
-WHERE [id_dependencia] = @p3;
-info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (7ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
-      UPDATE [Dependencia]
-SET [id_tipodependencia] = @p0,
-    [nombre_dependencia] = @p1,
-    [responsable_dependencia] = @p2
-WHERE [id_dependencia] = @p3;
-info: Microsoft.EntityFrameworkCore.Database.Command[20101]
       Executed DbCommand (1ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
       UPDATE [Dependencia]
 SET [id_tipodependencia] = @p0,
@@ -691,7 +703,35 @@ SET [id_tipodependencia] = @p0,
     [responsable_dependencia] = @p2
 WHERE [id_dependencia] = @p3;
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (13ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      UPDATE [Dependencia]
+SET [id_tipodependencia] = @p0,
+    [nombre_dependencia] = @p1,
+    [responsable_dependencia] = @p2
+WHERE [id_dependencia] = @p3;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      UPDATE [Dependencia]
+SET [id_tipodependencia] = @p0,
+    [nombre_dependencia] = @p1,
+    [responsable_dependencia] = @p2
+WHERE [id_dependencia] = @p3;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      UPDATE [Dependencia]
+SET [id_tipodependencia] = @p0,
+    [nombre_dependencia] = @p1,
+    [responsable_dependencia] = @p2
+WHERE [id_dependencia] = @p3;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      UPDATE [Dependencia]
+SET [id_tipodependencia] = @p0,
+    [nombre_dependencia] = @p1,
+    [responsable_dependencia] = @p2
+WHERE [id_dependencia] = @p3;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
       IF COL_LENGTH(N'Dependencia', N'nombre_dependencia_normalizado') IS NULL
 BEGIN
     ALTER TABLE [Dependencia]
@@ -705,13 +745,13 @@ BEGIN
                                 REPLACE(
                                     REPLACE(
                                         REPLACE(
-                                            REPLACE(UPPER([nombre_dependencia]), N'µ', N'A'),
-                                        N'ê', N'E'),
-                                    N'÷', N'I'),
-                                N'‡', N'O'),
-                            N'È', N'U'),
-                        N'ö', N'U'),
-                    N'•', N'N'),
+                                            REPLACE(UPPER([nombre_dependencia]), N'√Å', N'A'),
+                                        N'√â', N'E'),
+                                    N'√ç', N'I'),
+                                N'√ì', N'O'),
+                            N'√ö', N'U'),
+                        N'√ú', N'U'),
+                    N'√ë', N'N'),
                 N' DE ', N' '),
             N'  ', N' ')
         )) PERSISTED;
@@ -728,21 +768,11 @@ BEGIN
     ON [Dependencia]([nombre_dependencia_normalizado]);
 END
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
       SELECT [r].[id_rol], [r].[nombre_rol]
       FROM [Rol] AS [r]
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (3ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
-      SELECT TOP(1) [p].[rut_personal], [p].[activo], [p].[apellido], [p].[cargo], [p].[correo], [p].[id_rol], [p].[nombre], [p].[password_legacy], [p].[telefono]
-      FROM [Personal] AS [p]
-      WHERE REPLACE(REPLACE(REPLACE(UPPER([p].[rut_personal]), N'.', N''), N'-', N''), N' ', N'') = @__rutKey_0
-info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (3ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
-      SELECT TOP(1) [p].[rut_personal], [p].[activo], [p].[apellido], [p].[cargo], [p].[correo], [p].[id_rol], [p].[nombre], [p].[password_legacy], [p].[telefono]
-      FROM [Personal] AS [p]
-      WHERE REPLACE(REPLACE(REPLACE(UPPER([p].[rut_personal]), N'.', N''), N'-', N''), N' ', N'') = @__rutKey_0
-info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (3ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (2ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
       SELECT TOP(1) [p].[rut_personal], [p].[activo], [p].[apellido], [p].[cargo], [p].[correo], [p].[id_rol], [p].[nombre], [p].[password_legacy], [p].[telefono]
       FROM [Personal] AS [p]
       WHERE REPLACE(REPLACE(REPLACE(UPPER([p].[rut_personal]), N'.', N''), N'-', N''), N' ', N'') = @__rutKey_0
@@ -762,45 +792,17 @@ info: Microsoft.EntityFrameworkCore.Database.Command[20101]
       FROM [Personal] AS [p]
       WHERE REPLACE(REPLACE(REPLACE(UPPER([p].[rut_personal]), N'.', N''), N'-', N''), N' ', N'') = @__rutKey_0
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (4ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
-      SELECT TOP(1) [p].[rut_personal]
+      Executed DbCommand (1ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [p].[rut_personal], [p].[activo], [p].[apellido], [p].[cargo], [p].[correo], [p].[id_rol], [p].[nombre], [p].[password_legacy], [p].[telefono]
       FROM [Personal] AS [p]
       WHERE REPLACE(REPLACE(REPLACE(UPPER([p].[rut_personal]), N'.', N''), N'-', N''), N' ', N'') = @__rutKey_0
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (5ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
-      SELECT CASE
-          WHEN EXISTS (
-              SELECT 1
-              FROM [Usuario] AS [u]
-              WHERE REPLACE(REPLACE(REPLACE(UPPER([u].[rut_personal]), N'.', N''), N'-', N''), N' ', N'') = @__rutKey_0) THEN CAST(1 AS bit)
-          ELSE CAST(0 AS bit)
-      END
-info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (4ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
-      SELECT TOP(1) [u].[id_usuario], [u].[activo], [u].[creado_en], [u].[id_rol], [u].[password_hash], [u].[rut_personal], [u].[ultimo_acceso]
-      FROM [Usuario] AS [u]
-      WHERE REPLACE(REPLACE(REPLACE(UPPER([u].[rut_personal]), N'.', N''), N'-', N''), N' ', N'') = @__rutKey_0
-info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (3ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
-      SELECT TOP(1) [p].[rut_personal]
+      Executed DbCommand (1ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [p].[rut_personal], [p].[activo], [p].[apellido], [p].[cargo], [p].[correo], [p].[id_rol], [p].[nombre], [p].[password_legacy], [p].[telefono]
       FROM [Personal] AS [p]
       WHERE REPLACE(REPLACE(REPLACE(UPPER([p].[rut_personal]), N'.', N''), N'-', N''), N' ', N'') = @__rutKey_0
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (3ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
-      SELECT CASE
-          WHEN EXISTS (
-              SELECT 1
-              FROM [Usuario] AS [u]
-              WHERE REPLACE(REPLACE(REPLACE(UPPER([u].[rut_personal]), N'.', N''), N'-', N''), N' ', N'') = @__rutKey_0) THEN CAST(1 AS bit)
-          ELSE CAST(0 AS bit)
-      END
-info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (3ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
-      SELECT TOP(1) [u].[id_usuario], [u].[activo], [u].[creado_en], [u].[id_rol], [u].[password_hash], [u].[rut_personal], [u].[ultimo_acceso]
-      FROM [Usuario] AS [u]
-      WHERE REPLACE(REPLACE(REPLACE(UPPER([u].[rut_personal]), N'.', N''), N'-', N''), N' ', N'') = @__rutKey_0
-info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (4ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (2ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
       SELECT TOP(1) [p].[rut_personal]
       FROM [Personal] AS [p]
       WHERE REPLACE(REPLACE(REPLACE(UPPER([p].[rut_personal]), N'.', N''), N'-', N''), N' ', N'') = @__rutKey_0
@@ -819,12 +821,12 @@ info: Microsoft.EntityFrameworkCore.Database.Command[20101]
       FROM [Usuario] AS [u]
       WHERE REPLACE(REPLACE(REPLACE(UPPER([u].[rut_personal]), N'.', N''), N'-', N''), N' ', N'') = @__rutKey_0
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (2ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (1ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
       SELECT TOP(1) [p].[rut_personal]
       FROM [Personal] AS [p]
       WHERE REPLACE(REPLACE(REPLACE(UPPER([p].[rut_personal]), N'.', N''), N'-', N''), N' ', N'') = @__rutKey_0
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (3ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (1ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
       SELECT CASE
           WHEN EXISTS (
               SELECT 1
@@ -833,17 +835,17 @@ info: Microsoft.EntityFrameworkCore.Database.Command[20101]
           ELSE CAST(0 AS bit)
       END
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (4ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (0ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
       SELECT TOP(1) [u].[id_usuario], [u].[activo], [u].[creado_en], [u].[id_rol], [u].[password_hash], [u].[rut_personal], [u].[ultimo_acceso]
       FROM [Usuario] AS [u]
       WHERE REPLACE(REPLACE(REPLACE(UPPER([u].[rut_personal]), N'.', N''), N'-', N''), N' ', N'') = @__rutKey_0
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (3ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (0ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
       SELECT TOP(1) [p].[rut_personal]
       FROM [Personal] AS [p]
       WHERE REPLACE(REPLACE(REPLACE(UPPER([p].[rut_personal]), N'.', N''), N'-', N''), N' ', N'') = @__rutKey_0
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (4ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (0ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
       SELECT CASE
           WHEN EXISTS (
               SELECT 1
@@ -852,17 +854,17 @@ info: Microsoft.EntityFrameworkCore.Database.Command[20101]
           ELSE CAST(0 AS bit)
       END
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (3ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (0ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
       SELECT TOP(1) [u].[id_usuario], [u].[activo], [u].[creado_en], [u].[id_rol], [u].[password_hash], [u].[rut_personal], [u].[ultimo_acceso]
       FROM [Usuario] AS [u]
       WHERE REPLACE(REPLACE(REPLACE(UPPER([u].[rut_personal]), N'.', N''), N'-', N''), N' ', N'') = @__rutKey_0
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (4ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (1ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
       SELECT TOP(1) [p].[rut_personal]
       FROM [Personal] AS [p]
       WHERE REPLACE(REPLACE(REPLACE(UPPER([p].[rut_personal]), N'.', N''), N'-', N''), N' ', N'') = @__rutKey_0
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (4ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (0ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
       SELECT CASE
           WHEN EXISTS (
               SELECT 1
@@ -871,7 +873,45 @@ info: Microsoft.EntityFrameworkCore.Database.Command[20101]
           ELSE CAST(0 AS bit)
       END
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (2ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (1ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [u].[id_usuario], [u].[activo], [u].[creado_en], [u].[id_rol], [u].[password_hash], [u].[rut_personal], [u].[ultimo_acceso]
+      FROM [Usuario] AS [u]
+      WHERE REPLACE(REPLACE(REPLACE(UPPER([u].[rut_personal]), N'.', N''), N'-', N''), N' ', N'') = @__rutKey_0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [p].[rut_personal]
+      FROM [Personal] AS [p]
+      WHERE REPLACE(REPLACE(REPLACE(UPPER([p].[rut_personal]), N'.', N''), N'-', N''), N' ', N'') = @__rutKey_0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
+      SELECT CASE
+          WHEN EXISTS (
+              SELECT 1
+              FROM [Usuario] AS [u]
+              WHERE REPLACE(REPLACE(REPLACE(UPPER([u].[rut_personal]), N'.', N''), N'-', N''), N' ', N'') = @__rutKey_0) THEN CAST(1 AS bit)
+          ELSE CAST(0 AS bit)
+      END
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [u].[id_usuario], [u].[activo], [u].[creado_en], [u].[id_rol], [u].[password_hash], [u].[rut_personal], [u].[ultimo_acceso]
+      FROM [Usuario] AS [u]
+      WHERE REPLACE(REPLACE(REPLACE(UPPER([u].[rut_personal]), N'.', N''), N'-', N''), N' ', N'') = @__rutKey_0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [p].[rut_personal]
+      FROM [Personal] AS [p]
+      WHERE REPLACE(REPLACE(REPLACE(UPPER([p].[rut_personal]), N'.', N''), N'-', N''), N' ', N'') = @__rutKey_0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
+      SELECT CASE
+          WHEN EXISTS (
+              SELECT 1
+              FROM [Usuario] AS [u]
+              WHERE REPLACE(REPLACE(REPLACE(UPPER([u].[rut_personal]), N'.', N''), N'-', N''), N' ', N'') = @__rutKey_0) THEN CAST(1 AS bit)
+          ELSE CAST(0 AS bit)
+      END
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[@__rutKey_0='?' (Size = 450)], CommandType='Text', CommandTimeout='30']
       SELECT TOP(1) [u].[id_usuario], [u].[activo], [u].[creado_en], [u].[id_rol], [u].[password_hash], [u].[rut_personal], [u].[ultimo_acceso]
       FROM [Usuario] AS [u]
       WHERE REPLACE(REPLACE(REPLACE(UPPER([u].[rut_personal]), N'.', N''), N'-', N''), N' ', N'') = @__rutKey_0
@@ -888,7 +928,7 @@ info: Microsoft.EntityFrameworkCore.Database.Command[20101]
           ELSE CAST(0 AS bit)
       END
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
       SELECT CASE
           WHEN EXISTS (
               SELECT 1
@@ -901,7 +941,7 @@ info: Microsoft.EntityFrameworkCore.Database.Command[20101]
       FROM [Estado_impresion] AS [e]
       ORDER BY [e].[id_estado_impresion]
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
       SELECT [e].[id_estado_impresion], [e].[estado_impresion]
       FROM [Estado_impresion] AS [e]
       ORDER BY [e].[id_estado_impresion]
@@ -911,11 +951,6 @@ info: Microsoft.EntityFrameworkCore.Database.Command[20101]
       FROM [Estado_impresion] AS [e]
       ORDER BY [e].[id_estado_impresion]
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (3ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
-      UPDATE [Estado_impresion]
-SET [estado_impresion] = @p0
-WHERE [id_estado_impresion] = @p1;
-info: Microsoft.EntityFrameworkCore.Database.Command[20101]
       Executed DbCommand (1ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
       UPDATE [Estado_impresion]
 SET [estado_impresion] = @p0
@@ -931,7 +966,12 @@ info: Microsoft.EntityFrameworkCore.Database.Command[20101]
 SET [estado_impresion] = @p0
 WHERE [id_estado_impresion] = @p1;
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (0ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      UPDATE [Estado_impresion]
+SET [estado_impresion] = @p0
+WHERE [id_estado_impresion] = @p1;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
       SELECT CASE
           WHEN EXISTS (
               SELECT 1
@@ -939,7 +979,7 @@ info: Microsoft.EntityFrameworkCore.Database.Command[20101]
           ELSE CAST(0 AS bit)
       END
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
       SELECT CASE
           WHEN EXISTS (
               SELECT 1
@@ -955,7 +995,7 @@ info: Microsoft.EntityFrameworkCore.Database.Command[20101]
           ELSE CAST(0 AS bit)
       END
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
       SELECT CASE
           WHEN EXISTS (
               SELECT 1
@@ -978,34 +1018,34 @@ info: Microsoft.EntityFrameworkCore.Database.Command[20101]
       FROM [Estado_impresion] AS [e]
       ORDER BY [e].[id_estado_impresion]
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (1ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (0ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
       UPDATE [Estado_impresion]
 SET [estado_impresion] = @p0
 WHERE [id_estado_impresion] = @p1;
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (1ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (0ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
       UPDATE [Estado_impresion]
 SET [estado_impresion] = @p0
 WHERE [id_estado_impresion] = @p1;
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (1ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (0ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
       UPDATE [Estado_impresion]
 SET [estado_impresion] = @p0
 WHERE [id_estado_impresion] = @p1;
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (1ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (0ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
       UPDATE [Estado_impresion]
 SET [estado_impresion] = @p0
 WHERE [id_estado_impresion] = @p1;
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
       IF NOT EXISTS (SELECT 1 FROM Tipo_insumo WHERE nombre_tipoinsumo = N'Material de aseo')
     INSERT INTO Tipo_insumo (nombre_tipoinsumo) VALUES (N'Material de aseo');
 
 IF NOT EXISTS (SELECT 1 FROM Tipo_insumo WHERE nombre_tipoinsumo = N'Libreria')
     INSERT INTO Tipo_insumo (nombre_tipoinsumo) VALUES (N'Libreria');
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
       SELECT CASE
           WHEN EXISTS (
               SELECT 1
@@ -1013,7 +1053,7 @@ info: Microsoft.EntityFrameworkCore.Database.Command[20101]
           ELSE CAST(0 AS bit)
       END
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
       SELECT CASE
           WHEN EXISTS (
               SELECT 1
@@ -1028,48 +1068,3 @@ info: Microsoft.Hosting.Lifetime[0]
       Hosting environment: Production
 info: Microsoft.Hosting.Lifetime[0]
       Content root path: C:\Users\Andres\Desktop\SistemaEscolarWeb
-info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (6ms) [Parameters=[@__correo_0='?' (Size = 4000)], CommandType='Text', CommandTimeout='30']
-      SELECT TOP(1) [u].[id_usuario], [u].[activo], [u].[creado_en], [u].[id_rol], [u].[password_hash], [u].[rut_personal], [u].[ultimo_acceso], [p].[rut_personal], [p].[activo], [p].[apellido], [p].[cargo], [p].[correo], [p].[id_rol], [p].[nombre], [p].[password_legacy], [p].[telefono], [r].[id_rol], [r].[nombre_rol]
-      FROM [Usuario] AS [u]
-      INNER JOIN [Personal] AS [p] ON [u].[rut_personal] = [p].[rut_personal]
-      INNER JOIN [Rol] AS [r] ON [u].[id_rol] = [r].[id_rol]
-      WHERE [p].[correo] = @__correo_0
-info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (3ms) [Parameters=[@p1='?' (DbType = Int32), @p0='?' (DbType = DateTime2)], CommandType='Text', CommandTimeout='30']
-      SET IMPLICIT_TRANSACTIONS OFF;
-      SET NOCOUNT ON;
-      UPDATE [Usuario] SET [ultimo_acceso] = @p0
-      OUTPUT 1
-      WHERE [id_usuario] = @p1;
-info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (7ms) [Parameters=[@__usuario_IdRol_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
-      SELECT DISTINCT [p].[nombre_permiso]
-      FROM [Rol_permisos] AS [r]
-      INNER JOIN [Permisos] AS [p] ON [r].[id_permiso] = [p].[id_permiso]
-      WHERE [r].[id_rol] = @__usuario_IdRol_0 AND [r].[activo] = CAST(1 AS bit)
-info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (6ms) [Parameters=[@__rol_0='?' (Size = 4000)], CommandType='Text', CommandTimeout='30']
-      SELECT DISTINCT [p].[nombre_permiso]
-      FROM [Rol] AS [r]
-      INNER JOIN (
-          SELECT [r0].[id_rol], [r0].[id_permiso]
-          FROM [Rol_permisos] AS [r0]
-          WHERE [r0].[activo] = CAST(1 AS bit)
-      ) AS [t] ON [r].[id_rol] = [t].[id_rol]
-      INNER JOIN [Permisos] AS [p] ON [t].[id_permiso] = [p].[id_permiso]
-      WHERE [r].[nombre_rol] = @__rol_0
-info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
-      SELECT [s].[id_solicitud_impresion], [s].[archivo], [s].[cantidad_copias], [s].[cantidad_paginas], [s].[color], [s].[detalle], [s].[doble_cara], [s].[fecha_entrega], [s].[fecha_solicitud], [s].[id_estado_impresion], [s].[rut_personal], [e].[id_estado_impresion], [e].[estado_impresion], [p].[rut_personal], [p].[activo], [p].[apellido], [p].[cargo], [p].[correo], [p].[id_rol], [p].[nombre], [p].[password_legacy], [p].[telefono]
-      FROM [Solicitud_impresion] AS [s]
-      INNER JOIN [Estado_impresion] AS [e] ON [s].[id_estado_impresion] = [e].[id_estado_impresion]
-      INNER JOIN [Personal] AS [p] ON [s].[rut_personal] = [p].[rut_personal]
-info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
-      SELECT [s].[id_salidainsumo], [s].[cantidad], [s].[fecha_salida], [s].[id_dependencia], [s].[id_insumo], [s].[rut_personal]
-      FROM [Salida_insumo] AS [s]
-info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
-      SELECT [d].[id_dependencia], [d].[id_tipodependencia], [d].[nombre_dependencia], [d].[responsable_dependencia]
-      FROM [Dependencia] AS [d]

@@ -60,22 +60,40 @@
     <form asp-action="Index" method="get" class="row g-2 align-items-end">
         <div class="col-sm-6 col-lg-2">
             <label class="form-label">Mes</label>
-            <select name="mes" asp-items="Model.Filtros.Meses" class="form-select"></select>
+            <select name="mes" class="form-select">
+                @foreach (var mes in Model.Filtros.Meses)
+                {
+                    <option value="@mes.Value" selected="@mes.Selected">@mes.Text</option>
+                }
+            </select>
         </div>
         <div class="col-sm-6 col-lg-2">
             <label class="form-label">Año</label>
-            <select name="anio" asp-items="Model.Filtros.Anios" class="form-select"></select>
+            <select name="anio" class="form-select">
+                @foreach (var anio in Model.Filtros.Anios)
+                {
+                    <option value="@anio.Value" selected="@anio.Selected">@anio.Text</option>
+                }
+            </select>
         </div>
         <div class="col-sm-6 col-lg-3">
             <label class="form-label">Tipo de insumo</label>
-            <select name="idTipoInsumo" asp-items="Model.Filtros.TiposInsumo" class="form-select">
-                <option value="">Todos</option>
+            <select name="idTipoInsumo" class="form-select">
+                <option value="" selected="@(Model.Filtros.IdTipoInsumo == null)">Todos</option>
+                @foreach (var tipo in Model.Filtros.TiposInsumo)
+                {
+                    <option value="@tipo.Value" selected="@tipo.Selected">@tipo.Text</option>
+                }
             </select>
         </div>
         <div class="col-sm-6 col-lg-3">
             <label class="form-label">Dependencia</label>
-            <select name="idDependencia" asp-items="Model.Filtros.Dependencias" class="form-select">
-                <option value="">Todas</option>
+            <select name="idDependencia" class="form-select">
+                <option value="" selected="@(Model.Filtros.IdDependencia == null)">Todas</option>
+                @foreach (var dependencia in Model.Filtros.Dependencias)
+                {
+                    <option value="@dependencia.Value" selected="@dependencia.Selected">@dependencia.Text</option>
+                }
             </select>
         </div>
         <div class="col-lg-2 d-flex gap-2">

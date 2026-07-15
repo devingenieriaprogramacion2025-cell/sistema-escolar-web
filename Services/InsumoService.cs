@@ -7,6 +7,9 @@ using SistemaEscolarWeb.Models;
 
 public class InsumoService
 {
+    private const string TipoLibreria = "Libreria";
+    private const string TipoMaterialAseo = "Material de Aseo";
+
     private readonly ApplicationDbContext _context;
 
     public InsumoService(ApplicationDbContext context)
@@ -30,38 +33,24 @@ public class InsumoService
 
     public async Task<List<SelectListItem>> ObtenerTiposAsync()
     {
-        var tipos = await _context.TiposInsumo.AsNoTracking()
-            .Where(t => t.NombreTipoInsumo == "Material de aseo" ||
-                t.NombreTipoInsumo == "Libreria" ||
-                t.NombreTipoInsumo == "Librería" ||
-                t.NombreTipoInsumo == "LibrerÃ­a")
-            .OrderBy(t => t.NombreTipoInsumo)
-            .ToListAsync();
+        var libreria = await ObtenerOCrearTipoAsync(TipoLibreria);
+        var materialAseo = await ObtenerOCrearTipoAsync(TipoMaterialAseo);
 
-        var libreria = tipos
-            .Where(t => t.NombreTipoInsumo == "Libreria" ||
-                t.NombreTipoInsumo == "Librería" ||
-                t.NombreTipoInsumo == "LibrerÃ­a")
-            .OrderBy(t => t.IdTipoInsumo)
-            .FirstOrDefault();
-        var materialAseo = tipos.FirstOrDefault(t => t.NombreTipoInsumo == "Material de aseo");
-
-        var resultado = new List<SelectListItem>();
-        if (libreria != null)
-            resultado.Add(new SelectListItem { Value = libreria.IdTipoInsumo.ToString(), Text = "Librería" });
-        if (materialAseo != null)
-            resultado.Add(new SelectListItem { Value = materialAseo.IdTipoInsumo.ToString(), Text = materialAseo.NombreTipoInsumo });
-
-        return resultado;
+        return
+        [
+            new SelectListItem { Value = libreria.IdTipoInsumo.ToString(), Text = TipoLibreria },
+            new SelectListItem { Value = materialAseo.IdTipoInsumo.ToString(), Text = TipoMaterialAseo }
+        ];
     }
 
-    public Task<bool> EsTipoPermitidoAsync(int idTipoInsumo)
+    public async Task<bool> EsTipoPermitidoAsync(int idTipoInsumo)
     {
-        return _context.TiposInsumo.AnyAsync(t => t.IdTipoInsumo == idTipoInsumo &&
-            (t.NombreTipoInsumo == "Material de aseo" ||
-             t.NombreTipoInsumo == "Libreria" ||
-             t.NombreTipoInsumo == "Librería" ||
-             t.NombreTipoInsumo == "LibrerÃ­a"));
+        var tipo = await _context.TiposInsumo.AsNoTracking()
+            .Where(t => t.IdTipoInsumo == idTipoInsumo)
+            .Select(t => t.NombreTipoInsumo)
+            .FirstOrDefaultAsync();
+
+        return EsTipoPermitido(tipo);
     }
 
     public async Task<Dictionary<int, string>> ObtenerMapaTiposAsync()
@@ -126,17 +115,58 @@ public class InsumoService
         return (true, "Insumo desactivado correctamente.");
     }
 
-    private static string NormalizarTipo(string tipo)
-    {
-        return tipo is "Libreria" or "LibrerÃ­a" ? "Librería" : tipo;
-    }
-
     private async Task<int> ObtenerTipoDefaultAsync()
     {
-        var id = await _context.Database.SqlQueryRaw<int>("SELECT TOP 1 id_tipoinsumo AS Value FROM Tipo_insumo ORDER BY id_tipoinsumo").FirstOrDefaultAsync();
-        if (id > 0) return id;
+        var tipos = await ObtenerTiposAsync();
+        return tipos
+            .Select(t => int.TryParse(t.Value, out var value) ? value : 0)
+            .First(value => value > 0);
+    }
 
-        await _context.Database.ExecuteSqlRawAsync("INSERT INTO Tipo_insumo (nombre_tipoinsumo) VALUES (N'General')");
-        return await _context.Database.SqlQueryRaw<int>("SELECT TOP 1 id_tipoinsumo AS Value FROM Tipo_insumo ORDER BY id_tipoinsumo").FirstAsync();
+    private async Task<TipoInsumo> ObtenerOCrearTipoAsync(string nombreCanonico)
+    {
+        var clave = NormalizarClave(nombreCanonico);
+        var tipos = await _context.TiposInsumo.ToListAsync();
+        var tipo = tipos
+            .OrderBy(t => t.IdTipoInsumo)
+            .FirstOrDefault(t => NormalizarClave(t.NombreTipoInsumo) == clave);
+
+        if (tipo != null)
+            return tipo;
+
+        tipo = new TipoInsumo { NombreTipoInsumo = nombreCanonico };
+        _context.TiposInsumo.Add(tipo);
+        await _context.SaveChangesAsync();
+
+        return tipo;
+    }
+
+    private static bool EsTipoPermitido(string? tipo)
+    {
+        var clave = NormalizarClave(tipo);
+        return clave is "LIBRERIA" or "MATERIAL DE ASEO";
+    }
+
+    private static string NormalizarTipo(string tipo)
+    {
+        return NormalizarClave(tipo) switch
+        {
+            "LIBRERIA" => TipoLibreria,
+            "MATERIAL DE ASEO" => TipoMaterialAseo,
+            _ => tipo
+        };
+    }
+
+    private static string NormalizarClave(string? valor)
+    {
+        if (string.IsNullOrWhiteSpace(valor))
+            return string.Empty;
+
+        var normalizado = valor.Trim().Normalize(System.Text.NormalizationForm.FormD);
+        var caracteres = normalizado
+            .Where(c => System.Globalization.CharUnicodeInfo.GetUnicodeCategory(c) != System.Globalization.UnicodeCategory.NonSpacingMark)
+            .ToArray();
+
+        return new string(caracteres).Normalize(System.Text.NormalizationForm.FormC).ToUpperInvariant();
     }
 }
